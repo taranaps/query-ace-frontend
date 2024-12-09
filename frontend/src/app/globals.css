@@ -1,21 +1,96 @@
-@tailwind base;
+/* frontend\src\app\globals.css */
+/* @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* src/styles/globals.css */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* Backgrounds */
+  --background-color: #F2F2F2;
+  --container-color: #FFFFFF;
+  --hover-color: #FFFAF2;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Main Accent Color */
+  --main-accent-color: #FF9500;
+
+  /* Font Colors */
+  --font-color: #324054;
+  --primary-text-color: #292D32;
+  --secondary-text-color: #B5B7C0;
+  --heading-text-color: #000000;
+
+  /* Icon Colors */
+  --icon-color: #71839B;
+
+  /* Button Colors */
+  --active-button-bg-color: #16C098;
+  --active-button-stroke-color: #00B087;
+  --active-button-font-color: #008767;
+
+  --inactive-button-bg-color: #FFC5C5;
+  --inactive-button-stroke-color: #DF0404;
+  --inactive-button-font-color: #DF0404;
+
+  --active-slider-button-bg-color: #A6E7D8;
+  --inactive-slider-button-bg-color: #FFC5C5;
+
+  --standard-button-color: #3070A4;
+
+  /* Form Field Colors */
+  --field-color: #D9D9D9;
+
+  /* Typography */
+  --font-family-primary: 'Poppins', sans-serif;
+  --font-family-secondary: 'Montserrat', sans-serif;
+
+  /* Font Sizes */
+  --heading-text-size: 22px;
+  --title-text-size: 24px;
+  --side-bar-item-text-size: 16px;
+  --table-content-text-size: 14px;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-family-primary);
+  background-color: var(--background-color);
+  color: var(--font-color);
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-secondary);
+  color: var(--heading-text-color);
+}
+
+.container {
+  background-color: var(--container-color);
+  padding: 16px;
+  margin: 16px auto;
+  border-radius: 8px;
+}
+
+a {
+  color: var(--main-accent-color);
+  text-decoration: none;
+}
+
+a:hover {
+  background-color: var(--hover-color);
+}
+
+button {
+  font-family: var(--font-family-primary);
+}
+
+button.active {
+  background-color: var(--active-button-bg-color);
+  border: 1px solid var(--active-button-stroke-color);
+  color: var(--active-button-font-color);
+}
+
+button.inactive {
+  background-color: var(--inactive-button-bg-color);
+  border: 1px solid var(--inactive-button-stroke-color);
+  color: var(--inactive-button-font-color);
 }
