@@ -1,0 +1,261 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* In your CSS file */
+
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--foreground);
+  font-family: "montserrat";
+
+}
+/* Global container setup */
+.container {
+  display: flex;
+  font-family: "montserrat";
+  height: 90vh;
+  margin: 20px auto; /* Center the container */
+  padding: 20px;
+  max-width: 1200px; /* Optional: Limit the maximum width */
+  border: 1px solid #e0e0e0; /* Add border */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow */
+  background-color: #ffffff; /* Box background color */
+}
+
+/* /* Sidebar Styling */
+/* .sidebar {
+  width: 250px;
+  background-color: #f5f6fa;
+  padding: 20px;
+  box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar h2 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.sidebar nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar nav ul li {
+  margin: 15px 0;
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+}
+
+.sidebar nav ul li.active {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.sidebar nav ul li:hover {
+  color: #007bff;
+}
+
+.sidebar .user-info {
+  font-size: 12px;
+  color: #555;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.sidebar .user-info img {
+  border-radius: 50%;
+  width: 40px;
+  margin-bottom: 10px;
+}
+
+.sidebar .logout {
+  font-size: 14px;
+  color: #d9534f;
+  cursor: pointer;
+  text-align: center;
+}  */
+
+/* Main Content Styling */
+.content {
+  flex: 1;
+  background-color: #fff;
+  padding: 30px 50px;
+  overflow-y: auto;
+}
+
+.content header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.content header h1 {
+  font-size: 24px;
+  color: #333;
+}
+
+
+
+/* Logs Styling */
+.container {
+  display: flex;
+  font-family: Arial, sans-serif;
+}
+
+/* .sidebar {
+  width: 200px;
+  padding: 20px;
+  background-color: #f5f5f5;
+} */
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 150px;
+}
+header h1{
+
+}
+
+
+/* .logs {
+  position: relative;
+  margin-left: 50px;
+  border-left: 2px solid #e0e0e0;
+  padding: 10px 0;
+} */
+.logs {
+  position: relative;
+  padding-left: 30px; /* Space for the vertical line */
+}
+
+.log-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* .log-item::before {
+  content: "";
+  position: absolute;
+  left: 15px;
+  top: 0;
+  width: 2px; 
+  height: 100%;
+  background-color: #e0e0e0;
+} */
+
+.log-item:last-child {
+  margin-bottom: 0;
+}
+
+
+.time {
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 20px;
+  color: #000;
+  min-width: 60px;
+}
+
+.log-item:last-child::before {
+  height: 0; /* End the line halfway for the last item */
+}
+
+.circle {
+  width: 12px;
+  height: 12px;
+  background-color: orange;
+  border-radius: 50%;
+  margin-left: -6px; /* Center-align the circle with the line */
+  z-index: 1; /* Ensure the circle is on top of the line */
+}
+
+.circle::before {
+  content: "";
+  position: absolute;
+  top: 100%; 
+  left: 7.3%; 
+  transform: translateX(-50%); 
+  width: .15px; 
+  height: 20px; 
+  background-color: #686565; 
+}
+
+/* .log-item::after {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background-color: #e0e0e0;
+} */
+
+
+
+
+
+.user {
+  font-weight: normal;
+  color: #000;
+}
+
+.action {
+  font-weight: bold;
+  margin-left: 5px;
+  color: #040202;
+}
+.actionTypes {
+  color: #000;
+  font-weight: bold;
+}
+
+.details {
+  margin-left: 10px;
+  font-size: 14px;
+  color: #040202;
+}
+
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
