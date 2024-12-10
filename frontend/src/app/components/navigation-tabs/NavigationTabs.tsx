@@ -1,12 +1,15 @@
 'use client';
 
+
 import React, { useState } from 'react';
 import AddRecordForm from '../add-record-form/AddRecordForm';
 import styles from '../navigation-tabs/NavigationTabs.module.css';
 import ImportFilesPage from '../import-query-page/ImportQueryPage';
 
+
 const NavigationTabs = () => {
   const [activeTab, setActiveTab] = useState('addQuery');
+
 
   const renderContent = () => {
     if (activeTab === 'addQuery') {
@@ -15,6 +18,7 @@ const NavigationTabs = () => {
       return  <ImportFilesPage />;
     }
   };
+
 
   return (
     <div className={styles.container}>
@@ -39,4 +43,6 @@ const NavigationTabs = () => {
   );
 };
 
+
 export default NavigationTabs;
+

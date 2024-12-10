@@ -11,6 +11,7 @@
    
 }
 
+
 /* White box for content */
 .whiteBox {
     width: 60%;
@@ -28,12 +29,14 @@
    
 }
 
+
 /* Navbar container style */
 .navBar {
     display: flex;
     border-bottom: 1px solid #ddd;
     background-color: white; /* Make navbar white so it's attached to the white box */
 }
+
 
 /* Tab style for navigation */
 .navTab {
@@ -51,6 +54,7 @@
     border-top-right-radius: 8px;
 }
 
+
 /* Active tab style */
 .navTab.active {
     background-color: white;
@@ -58,11 +62,13 @@
     transform: translateY(-5px); /* Raised effect */
 }
 
+
 /* Hover effect for inactive tabs */
 .navTab:not(.active):hover {
     background-color: #e0e0e0;
     transform: translateY(-2px); /* Slight raise on hover */
 }
+
 
 /* Content inside the white box */
 .content {
@@ -70,12 +76,14 @@
     font-size: 16px;
 }
 
+
 /* Styling for the tab content */
 .tabContent {
     font-size: 18px;
     font-weight: bold;
     text-align: center;
 }
+
 
 /* Styling for text fields */
 .textField {
@@ -87,9 +95,11 @@
     font-size: 16px;
 }
 
+
 .queryTextField {
     height: 200px; /* Larger height for the query text field */
 }
+
 
 /* Buttons */
 .button {
@@ -101,15 +111,18 @@
     transition: background-color 0.3s ease;
 }
 
+
 .button.clear {
     background-color: #ff4d4d;
     color: white;
 }
 
+
 .button.save {
     background-color: #28a745;
     color: white;
 }
+
 
 .button:hover {
     opacity: 0.8;
