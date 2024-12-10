@@ -1,0 +1,121 @@
+/* Container for page */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    background-color: #f0f0f0; /* Gray background */
+    margin: 0;
+    padding: 20px;
+    /* Padding to create space around the white box */
+   
+}
+
+/* White box for content */
+.whiteBox {
+    width: 60%;
+    max-width: 900px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 0;
+    display: flex;
+    flex-direction: column; /* Makes navbar and content stack vertically */
+    /* margin-left: 200px; */
+     /* Reduce this value to move the box closer to the left */
+    position: relative;
+    width: 700px;
+   
+}
+
+/* Navbar container style */
+.navBar {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    background-color: white; /* Make navbar white so it's attached to the white box */
+}
+
+/* Tab style for navigation */
+.navTab {
+    flex: 1;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    text-align: center;
+    font-size: 16px;
+    transition: 0.3s;
+    position: relative;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+/* Active tab style */
+.navTab.active {
+    background-color: white;
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1); /* Raised effect for active tab */
+    transform: translateY(-5px); /* Raised effect */
+}
+
+/* Hover effect for inactive tabs */
+.navTab:not(.active):hover {
+    background-color: #e0e0e0;
+    transform: translateY(-2px); /* Slight raise on hover */
+}
+
+/* Content inside the white box */
+.content {
+    padding: 20px;
+    font-size: 16px;
+}
+
+/* Styling for the tab content */
+.tabContent {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Styling for text fields */
+.textField {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.queryTextField {
+    height: 200px; /* Larger height for the query text field */
+}
+
+/* Buttons */
+.button {
+    padding: 12px 20px;
+    border-radius: 4px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button.clear {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+.button.save {
+    background-color: #28a745;
+    color: white;
+}
+
+.button:hover {
+    opacity: 0.8;
+}
+
+
+/* src/styles/globals.css */
+
+/* Global reset for padding and margin */

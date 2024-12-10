@@ -1,0 +1,78 @@
+.addRecordForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* Add spacing between fields */
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .inputField {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  
+  .inputField:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(219, 142, 8, 0.92);
+  }
+  
+  .small {
+    height: 2.5rem;
+  }
+  
+  .large {
+    height: auto; /* Allows it to expand */
+    resize: none;
+  }
+  
+  .buttonGroup {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+  
+  .clearBtn, .saveBtn {
+    display: flex;
+    align-items: center; /* Center text and icon on the same line */
+    justify-content: center; /* Ensures the content is centered inside the button */
+    gap: 8px; /* Space between text and icon */
+    padding: 0.2rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .clearBtn {
+    background-color: #ff4d4f;
+    color: white;
+  }
+  
+  .clearBtn:hover {
+    background-color: #ff7875;
+    transform: translateY(-2px);
+  }
+  
+  .saveBtn {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .saveBtn:hover {
+    background-color: #45d07a;
+    transform: translateY(-2px);
+  }
+  
+  .buttonIcon {
+    width: 16px; /* Icon size */
+    height: 16px; /* Icon size */
+  }
+  
