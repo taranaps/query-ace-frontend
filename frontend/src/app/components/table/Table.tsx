@@ -17,8 +17,9 @@ interface TableWrapperProps {
         location: string;
         status: "Active" | "Inactive";
         isActive: boolean;
+        timestamp: Date;
     }[];
-    onToggleStatus: (index: number, newStatus: boolean) => void;
+    onToggleStatus: (email: string, newStatus: boolean) => void;
 }
 
 const TableWrapper: React.FC<TableWrapperProps> = ({ data, onToggleStatus }) => {
@@ -35,16 +36,19 @@ const TableWrapper: React.FC<TableWrapperProps> = ({ data, onToggleStatus }) => 
                     </MuiTableRow>
                 </TableHead>
                 <TableBody>
-                    {data.map((row, index) => (
+                    {data.map((row) => (
                         <TableRow
-                            key={index}
-                            name={row.name}
-                            email={row.email}
-                            location={row.location}
-                            status={row.status}
-                            isActive={row.isActive}
-                            onToggle={(newStatus) => onToggleStatus(index, newStatus)}
-                        />
+                        key={`${row.name}-${row.timestamp}`} // Ensure unique key for each row
+                        name={row.name}
+                        email={row.email}
+                        location={row.location}
+                        status={row.status}
+                        isActive={row.isActive}
+                        onToggle={(newStatus) => {
+                            console.log(`Email: ${row.email}, Toggle to: ${newStatus}`); // Debug
+                            onToggleStatus(row.email, newStatus); // Pass email instead of index
+                        }}
+                    />                    
                     ))}
                 </TableBody>
             </Table>
