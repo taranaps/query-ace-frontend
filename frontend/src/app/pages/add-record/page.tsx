@@ -8,7 +8,7 @@ const AddRecordPage = () => {
   return (
     <div>
        <NavigationTabs/>
-      
+       
     </div>
   );
 };

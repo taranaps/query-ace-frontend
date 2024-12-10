@@ -1,7 +1,10 @@
 'use client';
 
+
 import React, { useState } from 'react';
 import styles from '../add-record-form/AddRecordForm.module.css';
+
+
 
 
 const AddRecordForm = () => {
@@ -11,11 +14,13 @@ const AddRecordForm = () => {
   const [question, setQuestion] = useState('');
   const [query, setQuery] = useState('');
 
+
   // Handle input changes
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value);
   const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => setTags(e.target.value);
   const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>) => setQuestion(e.target.value);
   const handleQueryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setQuery(e.target.value);
+
 
   // Clear all fields
   const handleClear = () => {
@@ -25,6 +30,7 @@ const AddRecordForm = () => {
     setQuery('');
     alert("Clear all fields?");
   };
+
 
   // Save the form data
   const handleSave = (e: React.FormEvent) => {
@@ -37,6 +43,7 @@ const AddRecordForm = () => {
     }
   };
 
+
   return (
     <form className={styles.addRecordForm} onSubmit={handleSave}>
       {/* Keyword Input */}
@@ -48,6 +55,7 @@ const AddRecordForm = () => {
         onChange={handleKeywordChange}
       />
 
+
       {/* Tags Input */}
       <input
         type="text"
@@ -56,6 +64,7 @@ const AddRecordForm = () => {
         value={tags}
         onChange={handleTagsChange}
       />
+
 
       {/* Question Input */}
       <input
@@ -66,14 +75,16 @@ const AddRecordForm = () => {
         onChange={handleQuestionChange}
       />
 
+
       {/* Query Input */}
       <textarea
         className={`${styles.inputField} ${styles.large}`}
         placeholder="Query"
-        rows={6}
+        rows={9}
         value={query}
         onChange={handleQueryChange}
       ></textarea>
+
 
       {/* Buttons */}
       <div className={styles.buttonGroup}>
@@ -97,5 +108,6 @@ const AddRecordForm = () => {
     </form>
   );
 };
+
 
 export default AddRecordForm;
