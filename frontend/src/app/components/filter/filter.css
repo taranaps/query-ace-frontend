@@ -1,0 +1,106 @@
+.filter-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .filter-button {
+    margin-right: 110px;
+    padding: 8px 16px;
+    font-size: 14px;
+    background-color: #FCF4E7;
+    border: 1px solid #FF9500;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #333;
+  }
+  
+  .filter-button:hover {
+    background-color: #f2c47a;
+  }
+  
+  /* Popup */
+  .filter-popup {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    width: 250px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 10px;
+  }
+  
+  .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .popup-header h4 {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0;
+    color: #555;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #aaa;
+  }
+  
+  .close-button:hover {
+    color: #333;
+  }
+  
+  .filter-search {
+    margin-bottom: 10px;
+    
+  }
+  
+  .filter-search input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .filter-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .filter-list li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  
+  .filter-list input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  .filter-list label {
+    font-size: 14px;
+    color: #333;
+  }
+  
+  /* Scrollbar customization */
+  .filter-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .filter-list::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+  }
+  
