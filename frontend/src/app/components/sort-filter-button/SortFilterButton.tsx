@@ -1,18 +1,46 @@
-"use client";
-
 import React from "react";
-import { Button } from "@mui/material";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { ButtonGroup, Button, SxProps } from "@mui/material";
 
-const SortFilterButton: React.FC<{ sx?: object }> = ({ sx }) => {
+interface SortFilterButtonProps {
+    sx?: SxProps;
+    sortOrder: "newest" | "earliest";
+    onSortChange: (order: "newest" | "earliest") => void;
+}
+
+const SortFilterButton: React.FC<SortFilterButtonProps> = ({ sx, sortOrder, onSortChange }) => {
     return (
-        <Button
-            variant="outlined"
-            endIcon={<ArrowDropDownIcon />}
-            sx={{ ...sx, maxWidth: "300px", textTransform: "none", borderRadius: 4 }}
-        >
-            Sort by: Newest
-        </Button>
+        <ButtonGroup variant="outlined" sx={{ ...sx }}>
+            <Button
+                onClick={() => onSortChange("newest")}
+                sx={{
+                    backgroundColor: sortOrder === "newest" ? "#FFEBD8" : "#F9FBFF",
+                    color: sortOrder === "newest" ? "#FF9500" : "#B5B7C0",
+                    textTransform: "none",
+                    border: "1px solid #E7E7E7",
+                    "&:hover": {
+                        backgroundColor: "#FFEBD8",
+                        color: "#FF9500",
+                    },
+                }}
+            >
+                Newest
+            </Button>
+            <Button
+                onClick={() => onSortChange("earliest")}
+                sx={{
+                    backgroundColor: sortOrder === "earliest" ? "#FFEBD8" : "#F9FBFF",
+                    color: sortOrder === "earliest" ? "#FF9500" : "#B5B7C0",
+                    textTransform: "none",
+                    border: "1px solid #E7E7E7",
+                    "&:hover": {
+                        backgroundColor: "#FFEBD8",
+                        color: "#FF9500",
+                    },
+                }}
+            >
+                Earliest
+            </Button>
+        </ButtonGroup>
     );
 };
 
