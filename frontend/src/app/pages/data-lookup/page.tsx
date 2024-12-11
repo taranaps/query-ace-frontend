@@ -38,9 +38,7 @@ export default function QueryLookup() {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     } else if (sortBy === "oldest") {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    } else if (sortBy === "alphabetical") {
-      return a.text.localeCompare(b.text);
-    }
+    } 
     return 0;
   });
 
@@ -105,7 +103,7 @@ export default function QueryLookup() {
             >
               <option value="newest">Sort by Newest</option>
               <option value="oldest">Sort by Oldest</option>
-              <option value="alphabetical">Sort Alphabetically</option>
+              
             </select>
           </div>
         </div>
