@@ -43,6 +43,7 @@
     font-size: 16px;
     text-transform: none;
     transition: background-color 0.3s ease, transform 0.3s ease;
+    top: 100px;
   
   }
  
@@ -50,6 +51,7 @@
     background-color: #007bff;
     text-transform: none;
     padding: 0.5rem 1.5rem;
+    top: 100px;
   }
  
   .selectButton:hover {
