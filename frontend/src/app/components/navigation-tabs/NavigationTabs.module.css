@@ -7,7 +7,7 @@
 /* Navbar container style */
 .navBar {
     display: flex;
-    border-bottom: 1px solid #ddd;
+   
     background-color: white; 
     width: 800px;
     /* Make navbar white so it's attached to the white box */
@@ -28,8 +28,8 @@
     font-size: 16px;
     transition: 0.3s;
     position: relative;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
     
 }
 
@@ -37,7 +37,7 @@
 /* Active tab style */
 .navTab.active {
     background-color: white;
-    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1); /* Raised effect for active tab */
+    /* Raised effect for active tab */
     transform: translateY(-5px); /* Raised effect */
 }
 

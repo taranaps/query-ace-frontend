@@ -44,6 +44,7 @@
     text-transform: none;
     transition: background-color 0.3s ease, transform 0.3s ease;
     top: 100px;
+    
   
   }
  
@@ -52,6 +53,7 @@
     text-transform: none;
     padding: 0.5rem 1.5rem;
     top: 100px;
+    
   }
  
   .selectButton:hover {
@@ -73,7 +75,7 @@
  
   .buttonBox button {
     text-transform: none;
-    padding: 0.2rem 1.5rem; /* Prevents text from being capitalized */
+    padding: 0.5rem 1.5rem; /* Prevents text from being capitalized */
   }
  
   .buttonIcon {
