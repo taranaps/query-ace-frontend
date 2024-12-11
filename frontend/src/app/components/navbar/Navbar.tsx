@@ -1,27 +1,61 @@
-"use client";
+'use client';
+import { useRouter, usePathname } from 'next/navigation';
+import React from 'react';
 
-import React from "react";
-import { AppBar, Toolbar, Typography, IconButton, Button } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import Link from "next/link";
+import "./Navbar.css";
 
-const Navbar: React.FC = () => {
+const Navbar = () => {
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const isActive = (path: string) => (pathname === path ? 'active' : '');
+
+  const navigateTo = (path: string) => {
+    router.push(path);
+  };
+
   return (
-    <AppBar position="static" color="default" elevation={0}>
-      <Toolbar>
-        <IconButton edge="start" color="inherit" aria-label="menu">
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" color="inherit" noWrap>
+    <div className="sidebar">
+      <div className="top">
+        <div className="logo">
           ACE Queries
-        </Typography>
-        <Button color="inherit" component={Link} href="/pages/dashboard">Dashboard</Button>
-        <Button color="inherit" component={Link} href="/pages/data-lookup">Data Lookup</Button>
-        <Button color="inherit" component={Link} href="/pages/manage-accounts">Manage Accounts</Button>
-        <Button color="inherit" component={Link} href="/pages/add-records">Add Records</Button>
-        <Button color="inherit" component={Link} href="/pages/system-log">System Log</Button>
-      </Toolbar>
-    </AppBar>
+        </div>
+      </div>
+      <div className="midlle">
+
+        <nav className="nav">
+          <ul>
+            <li className={isActive('/data-vault')} onClick={() => navigateTo('/data-vault')}>
+              Data Vault
+            </li>
+            <li className={isActive('/add-queries')} onClick={() => navigateTo('/login')}>
+              Add Queries
+            </li>
+            <li className={isActive('/file-processing')} onClick={() => navigateTo('/file-processing')}>
+              File Processing
+            </li>
+            <li className={isActive('/manage-accounts')} onClick={() => navigateTo('/manage-accounts')}>
+              Manage Accounts
+            </li>
+            <li className={isActive('/data-lookup')} onClick={() => navigateTo('/data-lookup')}>
+              Data Lookup
+            </li>
+            <li className={isActive('/insights')} onClick={() => navigateTo('/insights')}>
+              Insights
+            </li>
+            <li className={isActive('/system-log')} onClick={() => navigateTo('/system-log')}>
+              System Log
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div className="bottom">
+        <ul>
+          <li onClick={() => navigateTo('/logout')}>Logout</li>
+        </ul>
+      </div>
+    </div >
   );
 };
 

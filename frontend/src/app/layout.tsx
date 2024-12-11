@@ -1,30 +1,20 @@
-// src/app/layout.tsx
 "use client";
+
 import './globals.css';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme/theme';
-import MainLayout from '../app/components/main-layout/MainLayout';
-import { usePathname } from 'next/navigation';
+import MainLayout from './components/main-layout/MainLayout';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-
-  // Define pages where the layout shouldn't appear (e.g., login page)
-  const pagesWithoutLayout = ['/pages/login'];
-
-  return (
-    <html lang="en">
-      <body>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-            {!pagesWithoutLayout.includes(pathname) && (
-              <MainLayout>{children}</MainLayout>
-            )}
-            {pagesWithoutLayout.includes(pathname) && <>{children}</>}
-        </ThemeProvider>
-
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en">
+            <body>
+                <ThemeProvider theme={theme}>
+                    <CssBaseline />
+                    <MainLayout>{children}</MainLayout>
+                </ThemeProvider>
+            </body>
+        </html>
+    );
 }
