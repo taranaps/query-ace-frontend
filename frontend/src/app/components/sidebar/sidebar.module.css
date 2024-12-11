@@ -91,35 +91,35 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 48px; 
+  height: 48px;
   background-color: #FFFAF2;
   border-radius: 4px;
-  transition: top 0.3s ease-in-out; 
+  transition: top 0.3s ease-in-out;
   z-index: 0;
 }
 
-.sidebar-nav-item-icon{
+.sidebar-nav-item-icon {
   width: 16px;
   height: auto;
 }
 
-.sidebar-bottom{
+.sidebar-bottom {
   display: flex;
   flex-direction: column;
 }
 
-.sidebar-bottom-account-details-name-and-email{
+.sidebar-bottom-account-details-name-and-email {
   width: 100%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
 }
 
-.sidebar-bottom-account-details-name{
+.sidebar-bottom-account-details-name {
   font-size: 14px;
 }
 
-.sidebar-bottom-account-details-email{
+.sidebar-bottom-account-details-email {
   font-size: 12px;
 }
 
