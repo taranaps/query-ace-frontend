@@ -2,7 +2,6 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
 
 import styles from './sidebar.module.css';
 
@@ -16,7 +15,7 @@ const Sidebar = React.memo(() => {
 
     const navItems = [
         { navigationPath: '/dashboard', iconPath: '/assets/icons/home-icon.svg', label: 'Home' },
-        { navigationPath: '/add-queries', iconPath: '/assets/icons/add-icon.svg', label: 'Add Queries' },
+        { navigationPath: '/add-record', iconPath: '/assets/icons/add-icon.svg', label: 'Add Record' },
         { navigationPath: '/file-processing', iconPath: '/assets/icons/file-processing-icon.svg', label: 'File Processing' },
         { navigationPath: '/manage-accounts', iconPath: '/assets/icons/manage-accounts-icon.svg', label: 'Manage Accounts' },
         { navigationPath: '/data-lookup', iconPath: '/assets/icons/data-lookup-icon.svg', label: 'Data Lookup' },

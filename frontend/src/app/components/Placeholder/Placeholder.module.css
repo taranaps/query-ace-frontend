@@ -1,0 +1,54 @@
+/* placeholder.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #ccc;
+  width: 100%;
+  border-radius: 10px;
+  background-color: #ffffff;
+  height: auto;
+  padding: 20px;
+  margin-top: 30px; /* Adjusts spacing below the header */
+}
+
+.clipboard_img {
+  height: 250px;
+  width: 250px;
+  margin-bottom: 30px;
+}
+
+.clipboards {
+  position: relative;
+  width: 150px;
+  height: 200px;
+  margin-top: 20px;
+}
+
+.clipboard {
+  position: absolute;
+  width: 150px;
+  height: 200px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.clipboard_back {
+  transform: rotate(-10deg);
+  z-index: 0;
+  top: 10px;
+  left: 10px;
+}
+
+.clipboard_front {
+  z-index: 1;
+}
+
+.message {
+  font-size: 18px;
+  font-weight: 500;
+  color: #555;
+  margin-top: 20px;
+}

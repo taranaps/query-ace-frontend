@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { Switch } from "@mui/material";
 
 interface SlidingToggleProps {
     checked: boolean;
@@ -10,36 +9,19 @@ interface SlidingToggleProps {
 
 const SlidingToggle: React.FC<SlidingToggleProps> = ({ checked, onChange }) => {
     return (
-        <Switch
-            checked={checked}
-            onChange={(e) => onChange(e.target.checked)}
-            color="default" // Use default color for the switch (iOS appearance)
-            sx={{
-                // Custom styling for iOS-like toggle
-                width: 56,
-                height: 34,
-                padding: 0,
-                "& .MuiSwitch-switchBase": {
-                    padding: 1,
-                    "&.Mui-checked": {
-                        transform: "translateX(22px)",
-                        color: "#fff", // White color for the knob when checked
-                        "& + .MuiSwitch-track": {
-                            backgroundColor: "#4CAF50", // Green background when checked (Active)
-                        },
-                    },
-                    "&.Mui-checked + .MuiSwitch-track": {
-                        backgroundColor: "#80e27e", // Lighter green when checked
-                    },
-                },
-                "& .MuiSwitch-track": {
-                    borderRadius: 34 / 2,
-                    backgroundColor: "#bdbdbd", // Grey background when unchecked (Inactive)
-                    opacity: 1,
-                    transition: "background-color 0.2s",
-                },
+        <div
+            className={`relative w-[40px] h-[20px] flex items-center rounded-full cursor-pointer transition duration-300 ${checked ? "bg-[#A6E7D8]" : "bg-[#FFC5C5]"
+                }`}
+            style={{
+                boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.2)", // Inner shadow
             }}
-        />
+            onClick={() => onChange(!checked)}
+        >
+            <div
+                className={`absolute w-[16px] h-[16px] rounded-full bg-white shadow-lg transform transition duration-300 ${checked ? "translate-x-[20px]" : "translate-x-[2px]"
+                    }`}
+            ></div>
+        </div>
     );
 };
 
