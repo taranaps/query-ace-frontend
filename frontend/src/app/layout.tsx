@@ -9,22 +9,14 @@ import { usePathname } from 'next/navigation';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-
-  // Define pages where the layout shouldn't appear (e.g., login page)
   const pagesWithoutLayout = ['/pages/login'];
-
-  return (
-    <html lang="en">
-      <body>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-            {!pagesWithoutLayout.includes(pathname) && (
-              <MainLayout>{children}</MainLayout>
-            )}
-            {pagesWithoutLayout.includes(pathname) && <>{children}</>}
-        </ThemeProvider>
-
-      </body>
-    </html>
+  return (<html lang="en">
+    <body>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {!pagesWithoutLayout.includes(pathname) && (<MainLayout>{children}</MainLayout>)}
+        {pagesWithoutLayout.includes(pathname) && <>{children}</>}        </ThemeProvider>
+    </body>
+  </html>
   );
 }
