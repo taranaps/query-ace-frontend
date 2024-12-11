@@ -3,13 +3,17 @@
 import React from "react";
 import { Box, Button, Typography } from "@mui/material";
 
-const Pagination: React.FC = () => {
+interface PaginationProps {
+    sx?: object;
+}
+
+const Pagination: React.FC<PaginationProps> = ({ sx }) => {
     return (
-        <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: 2, ...sx }}>
             <Button variant="outlined" size="small" disabled>
                 {"<"}
             </Button>
-            <Typography>Showing Page 1 out of 1</Typography>
+            <Typography> 1 </Typography>
             <Button variant="outlined" size="small" disabled>
                 {">"}
             </Button>
