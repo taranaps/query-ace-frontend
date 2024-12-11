@@ -26,7 +26,7 @@ const Sidebar = React.memo(() => {
 
     useEffect(() => {
         const index = navItems.findIndex((item) => item.navigationPath === pathname);
-        if (index !== -1) setActiveIndex(index);
+        if (index !== -1) setActiveIndex(index+30);
     }, [pathname]);
 
     const navigateTo = (path: string, index: number) => {
