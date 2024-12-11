@@ -27,7 +27,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             >
                 <Box
                     sx={{
-                        padding: '1rem',
                         backgroundColor: '#fff',
                         borderRadius: '8px',
                         height: '90vh'
