@@ -14,21 +14,21 @@ const SearchBar: React.FC<{ sx?: object; onChange: (e: React.ChangeEvent<HTMLInp
                 fullWidth
                 sx={{
                     "& .MuiOutlinedInput-root": {
-                        borderRadius: "8px",
-                        height: "38px",
-                        backgroundColor: "#F9FBFF",
-                        border: "1px solid #E7E7E7",
-                        color: "#B5B7C0",
-                        "&:hover": {
-                            backgroundColor: "#FFEBD8", // Orangeish background
-                            borderColor: "#FF9500",
-                        },
+                        // borderRadius: "8px",
+                        // height: "38px",
+                        // backgroundColor: "#F9FBFF",
+                        // border: "1px solid #E7E7E7",
+                        // color: "#B5B7C0",
+                        // "&:hover": {
+                        //     backgroundColor: "#FFEBD8", // Orangeish background
+                        //     borderColor: "#FF9500",
+                        // },
                     },
                     "& .MuiInputBase-input": {
-                        color: "#B5B7C0",
+                        // color: "#B5B7C0",
                     },
                 }}
-                variant="outlined"
+                // variant="outlined"
                 placeholder="Search"
                 size="small"
                 InputProps={{

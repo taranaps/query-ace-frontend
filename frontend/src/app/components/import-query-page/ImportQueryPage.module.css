@@ -31,7 +31,8 @@
     margin-top: 32px;
     padding-right: 0;
     padding: 0.5rem 1.5rem;
-    width: 100%;  /* Ensures the container stretches across the available width */
+    width: 100%; 
+    margin-top: -0.2px; /* Ensures the container stretches across the available width */
   }
  
   .button {
@@ -42,12 +43,15 @@
     font-size: 16px;
     text-transform: none;
     transition: background-color 0.3s ease, transform 0.3s ease;
+    top: 100px;
+  
   }
  
   .selectButton {
     background-color: #007bff;
     text-transform: none;
     padding: 0.5rem 1.5rem;
+    top: 100px;
   }
  
   .selectButton:hover {

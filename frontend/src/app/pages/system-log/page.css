@@ -22,19 +22,7 @@ body {
   font-family: "montserrat";
 
 }
-/* Global container setup */
-.container {
-  display: flex;
-  font-family: "montserrat";
-  height: 90vh;
-  margin: 20px auto; /* Center the container */
-  padding: 20px;
-  max-width: 1200px; /* Optional: Limit the maximum width */
-  border: 1px solid #e0e0e0; /* Add border */
-  border-radius: 10px; /* Rounded corners */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow */
-  background-color: #ffffff; /* Box background color */
-}
+
 
 /* /* Sidebar Styling */
 /* .sidebar {
@@ -203,7 +191,7 @@ header h1{
   content: "";
   position: absolute;
   top: 100%; 
-  left: 7.3%; 
+  left: 7.6%; 
   transform: translateX(-50%); 
   width: .15px; 
   height: 20px; 
