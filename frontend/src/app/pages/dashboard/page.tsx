@@ -1,12 +1,15 @@
+import React from 'react';
+// import Layout from '../../components/Layout/Layout';
+import Header from '../../components/Header/Header';
+import Placeholder from '../../components/Placeholder/Placeholder';
 
-export default function Dashboard() {
+const Home: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-100">
-
-      <div className="p-4">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="mt-2">Welcome to the dashboard!</p>
+    <div>
+      <Header />
+      <Placeholder />
       </div>
-    </div>
   );
-}
+};
+
+export default Home;
