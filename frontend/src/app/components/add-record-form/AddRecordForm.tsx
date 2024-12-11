@@ -30,7 +30,12 @@ const AddRecordForm = () => {
     setQuery('');
     alert("Clear all fields?");
   };
+  
 
+  const handleDownload = () => {
+   
+  };
+  
 
   // Save the form data
   const handleSave = (e: React.FormEvent) => {
@@ -84,9 +89,24 @@ const AddRecordForm = () => {
         value={query}
         onChange={handleQueryChange}
       ></textarea>
+        
+        
 
+
+
+
+<div className='downloadbox'>
 
       {/* Buttons */}
+      <button type="button" className={styles.downloadBtn} onClick={handleDownload}>
+          Download Template
+          <img
+            src="/download.png"
+            alt="Download Template"
+            className={styles.buttonIcon}
+          />
+        </button>
+        </div>
       <div className={styles.buttonGroup}>
         <button type="button" className={styles.clearBtn} onClick={handleClear}>
           Clear
@@ -96,6 +116,7 @@ const AddRecordForm = () => {
             className={styles.buttonIcon}
           />
         </button>
+        
         <button type="submit" className={styles.saveBtn}>
           Save
           <img
@@ -104,6 +125,7 @@ const AddRecordForm = () => {
             className={styles.buttonIcon}
           />
         </button>
+       
       </div>
     </form>
   );
