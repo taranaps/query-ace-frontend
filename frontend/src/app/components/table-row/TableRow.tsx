@@ -8,12 +8,21 @@ interface TableRowProps {
     location: string;
     status: "Active" | "Inactive";
     isActive: boolean;
+    rowClassName?: string;
     onToggle: (newStatus: boolean) => void;
 }
 
-const TableRow: React.FC<TableRowProps> = ({ name, email, location, status, isActive, onToggle }) => {
+const TableRow: React.FC<TableRowProps> = ({
+    name,
+    email,
+    location,
+    status,
+    isActive,
+    rowClassName,
+    onToggle,
+}) => {
     return (
-        <MuiTableRow>
+        <MuiTableRow className={rowClassName} sx={{ marginBottom: "8px" }}>
             <TableCell>
                 <Typography variant="body2">{name}</Typography>
             </TableCell>
@@ -24,7 +33,7 @@ const TableRow: React.FC<TableRowProps> = ({ name, email, location, status, isAc
                 <Typography variant="body2">{location}</Typography>
             </TableCell>
             <TableCell>
-                <Typography
+                {/* <Typography
                     variant="body2"
                     sx={{
                         color: status === "Active" ? "green" : "red",
@@ -32,7 +41,15 @@ const TableRow: React.FC<TableRowProps> = ({ name, email, location, status, isAc
                     }}
                 >
                     {status}
-                </Typography>
+                </Typography> */}
+                <span
+                    className={`inline-flex items-center justify-center w-[80px] h-[30px] text-sm font-semibold rounded-lg ${status === "Active"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                >
+                    {status}
+                </span>
             </TableCell>
             <TableCell>
                 <SlidingToggle checked={isActive} onChange={onToggle} />

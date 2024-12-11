@@ -1,0 +1,10 @@
+.container {
+    background-color: #ffffff; /* White background */
+    flex-grow: 1; /* Make the container grow to occupy the remaining space */
+    padding: 20px; /* Padding for content spacing */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow for depth */
+    border-radius: 8px; /* Optional: rounded corners */
+    overflow: auto; /* Handle overflowing content */
+}

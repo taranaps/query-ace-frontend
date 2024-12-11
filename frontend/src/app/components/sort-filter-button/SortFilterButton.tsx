@@ -9,7 +9,10 @@ interface SortFilterButtonProps {
 
 const SortFilterButton: React.FC<SortFilterButtonProps> = ({ sx, sortOrder, onSortChange }) => {
     return (
-        <ButtonGroup variant="outlined" sx={{ ...sx }}>
+        <ButtonGroup variant="outlined" sx={{
+            borderRadius: "8px",
+            ...sx,
+        }}>
             <Button
                 onClick={() => onSortChange("newest")}
                 sx={{
