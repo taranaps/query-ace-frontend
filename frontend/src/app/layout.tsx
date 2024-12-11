@@ -1,20 +1,22 @@
+// src/app/layout.tsx
 "use client";
-
 import './globals.css';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme/theme';
-import MainLayout from './components/main-layout/MainLayout';
+import MainLayout from '../app/components/main-layout/MainLayout';
+import { usePathname } from 'next/navigation';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-    return (
-        <html lang="en">
-            <body>
-                <ThemeProvider theme={theme}>
-                    <CssBaseline />
-                    <MainLayout>{children}</MainLayout>
-                </ThemeProvider>
-            </body>
-        </html>
-    );
+  const pathname = usePathname();
+  const pagesWithoutLayout = ['/pages/login'];
+  return (<html lang="en">
+    <body>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {!pagesWithoutLayout.includes(pathname) && (<MainLayout>{children}</MainLayout>)}
+        {pagesWithoutLayout.includes(pathname) && <>{children}</>}        </ThemeProvider>
+    </body>
+  </html>
+  );
 }

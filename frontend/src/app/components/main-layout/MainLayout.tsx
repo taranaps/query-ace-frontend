@@ -1,13 +1,13 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { Sidebar } from '../sidebar/Sidebar';
-import './mainlayoutmodule.css';
 
 interface MainLayoutProps {
     children: React.ReactNode;
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+
     return (
         <Box sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
 
