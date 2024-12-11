@@ -80,7 +80,7 @@ const AddRecordForm = () => {
       <textarea
         className={`${styles.inputField} ${styles.large}`}
         placeholder="Query"
-        rows={9}
+        rows={11}
         value={query}
         onChange={handleQueryChange}
       ></textarea>
