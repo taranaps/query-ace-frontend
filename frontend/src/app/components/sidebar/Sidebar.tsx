@@ -26,7 +26,7 @@ const Sidebar = React.memo(() => {
 
     useEffect(() => {
         const index = navItems.findIndex((item) => item.navigationPath === pathname);
-        if (index !== -1) setActiveIndex(index+30);
+        if (index !== -1) setActiveIndex(index);
     }, [pathname]);
 
     const navigateTo = (path: string, index: number) => {
@@ -48,7 +48,7 @@ const Sidebar = React.memo(() => {
                 <div
                     className={styles['active-indicator']}
                     style={{
-                        top: `${activeIndex * 4}rem`,
+                        top: `${activeIndex * 3.5}rem`,
                         transition: 'top 0.3s ease',
                     }}
                 ></div>
