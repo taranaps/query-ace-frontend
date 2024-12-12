@@ -80,15 +80,16 @@ const ManageAccountsPage: React.FC = () => {
     return (
             <div className="bg-white p-6 space-y-8 h-full flex-grow">
                 {/* First Section: Title, Search, Sort Filter */}
-                <div className="flex items-center justify-between">
+                <div className="flex">
                     <h1 className="text-black text-[22px] font-semibold flex-grow">All Accounts</h1>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex space-x-2">
                         <SearchBar
                             onChange={handleSearchChange}
                             sx={{
                                 width: "216px",
                                 height: "40px",
                                 backgroundColor: "#F9FBFF",
+                                borderColor: "F9FBFF",
                                 borderRadius: "10px",
                                 marginLeft: 0,
                                 "&:focus": {
@@ -131,7 +132,7 @@ const ManageAccountsPage: React.FC = () => {
                     />
                 </div>
                 {/* Third Section: Pagination and Add Account */}
-                <div className="flex items-center justify-between mt-auto">
+                <div className="flex justify-between">
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}

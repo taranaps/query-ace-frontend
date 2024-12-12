@@ -9,7 +9,7 @@ interface SortFilterButtonProps {
 
 const SortFilterButton: React.FC<SortFilterButtonProps> = ({ sx, sortOrder, onSortChange }) => {
     return (
-        <ButtonGroup variant="outlined" sx={{
+        <ButtonGroup sx={{
             borderRadius: "8px",
             ...sx,
         }}>

@@ -9,11 +9,12 @@ const SearchBar: React.FC<{ sx?: object; onChange: (e: React.ChangeEvent<HTMLInp
     onChange,
 }) => {    
     return (
-        <Box sx={{ width: "216px", height: "38px", ...sx }}>
+        <Box sx={{ ...sx }}>
             <TextField
                 fullWidth
                 sx={{
                     "& .MuiOutlinedInput-root": {
+                        border: "none",
                         // borderRadius: "8px",
                         // height: "38px",
                         // backgroundColor: "#F9FBFF",
@@ -28,15 +29,16 @@ const SearchBar: React.FC<{ sx?: object; onChange: (e: React.ChangeEvent<HTMLInp
                         // color: "#B5B7C0",
                     },
                 }}
-                // variant="outlined"
                 placeholder="Search"
                 size="small"
-                InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            <SearchIcon />
-                        </InputAdornment>
-                    ),
+                slotProps={{
+                    input: {
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon />
+                            </InputAdornment>
+                        ),
+                    },
                 }}
                 onChange={onChange}
             />
