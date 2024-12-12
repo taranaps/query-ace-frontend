@@ -48,7 +48,7 @@ const Sidebar = React.memo(() => {
                 <div
                     className={styles['active-indicator']}
                     style={{
-                        top: `${activeIndex * 4}rem`,
+                        top: `${activeIndex * 3.5}rem`,
                         transition: 'top 0.3s ease',
                     }}
                 ></div>

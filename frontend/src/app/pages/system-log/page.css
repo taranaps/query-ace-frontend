@@ -24,66 +24,13 @@ body {
 }
 
 
-/* /* Sidebar Styling */
-/* .sidebar {
-  width: 250px;
-  background-color: #f5f6fa;
+.container {
+  
+  height: 90vh;
   padding: 20px;
-  box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  max-width: 1200px; 
 }
 
-.sidebar h2 {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.sidebar nav ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar nav ul li {
-  margin: 15px 0;
-  font-size: 14px;
-  color: #555;
-  cursor: pointer;
-}
-
-.sidebar nav ul li.active {
-  font-weight: bold;
-  color: #007bff;
-}
-
-.sidebar nav ul li:hover {
-  color: #007bff;
-}
-
-.sidebar .user-info {
-  font-size: 12px;
-  color: #555;
-  text-align: center;
-  margin-top: 50px;
-}
-
-.sidebar .user-info img {
-  border-radius: 50%;
-  width: 40px;
-  margin-bottom: 10px;
-}
-
-.sidebar .logout {
-  font-size: 14px;
-  color: #d9534f;
-  cursor: pointer;
-  text-align: center;
-}  */
-
-/* Main Content Styling */
 .content {
   flex: 1;
   background-color: #fff;
@@ -128,17 +75,7 @@ header {
   align-items: center;
   margin-bottom: 150px;
 }
-header h1{
 
-}
-
-
-/* .logs {
-  position: relative;
-  margin-left: 50px;
-  border-left: 2px solid #e0e0e0;
-  padding: 10px 0;
-} */
 .logs {
   position: relative;
   padding-left: 30px; /* Space for the vertical line */
@@ -151,15 +88,6 @@ header h1{
   margin-bottom: 20px;
 }
 
-/* .log-item::before {
-  content: "";
-  position: absolute;
-  left: 15px;
-  top: 0;
-  width: 2px; 
-  height: 100%;
-  background-color: #e0e0e0;
-} */
 
 .log-item:last-child {
   margin-bottom: 0;
@@ -175,7 +103,7 @@ header h1{
 }
 
 .log-item:last-child::before {
-  height: 0; /* End the line halfway for the last item */
+  height: 0; 
 }
 
 .circle {
@@ -183,15 +111,15 @@ header h1{
   height: 12px;
   background-color: orange;
   border-radius: 50%;
-  margin-left: -6px; /* Center-align the circle with the line */
-  z-index: 1; /* Ensure the circle is on top of the line */
+  margin-left: -6px; 
+  z-index: 1;
 }
 
 .circle::before {
   content: "";
   position: absolute;
   top: 100%; 
-  left: 7.6%; 
+  left: 7.4%; 
   transform: translateX(-50%); 
   width: .15px; 
   height: 20px; 

@@ -1,61 +1,93 @@
 "use client";
 
 import React from "react";
+import { Card, CardContent, Typography, Box, Button, Stack } from "@mui/material";
+
+interface ButtonConfig {
+  label: string;
+  onClick: () => void;
+  color?: "primary" | "secondary" | "error" | "success";
+}
 
 interface DataCardProps {
   id: number;
-  text: string;
-  customer: string;
-  createdBy: string;
-  createdAt: string;
-  description: string; // Added description property
-  onDelete: (id: number) => void;
-  onEdit: (id: number) => void;
-  onCopy: (text: string) => void;
+  title: string;
+  client: string;
+  creator: string;
+  date: string;
+  details: string;
+  buttons: ButtonConfig[];
+  scrollable: boolean;
+  buttonAlignment?: "left" | "center" | "right"; // 
 }
 
 const DataCard: React.FC<DataCardProps> = ({
-  id,
-  text,
-  customer,
-  createdBy,
-  createdAt,
-  description,
-  onDelete,
-  onEdit,
-  onCopy,
+  title,
+  client,
+  creator,
+  date,
+  details,
+  buttons,
+  scrollable,
+  buttonAlignment = "left", 
 }) => {
   return (
-    <div className="bg-white p-4 shadow rounded flex flex-col space-y-2">
-      <p className="text-lg font-semibold">{text}</p>
-      <p className="text-sm text-gray-700">{description}</p>
-      <div className="flex justify-between items-center text-sm text-gray-500">
-        <div>
-          <span>Customer: {customer}</span> | <span>Created By: {createdBy}</span> |{" "}
-          <span>Date: {createdAt}</span>
-        </div>
-        <div className="flex space-x-2">
-          <button
-            className="bg-red-400 text-white py-1 px-3 rounded hover:bg-red-600"
-            onClick={() => onDelete(id)}
-          >
-            Delete
-          </button>
-          <button
-            className="bg-blue-400 text-white py-1 px-3 rounded hover:bg-blue-600"
-            onClick={() => onEdit(id)}
-          >
-            Edit
-          </button>
-          <button
-            className="bg-green-400 text-white py-1 px-3 rounded hover:bg-green-600"
-            onClick={() => onCopy(text)}
-          >
-            Copy
-          </button>
-        </div>
-      </div>
-    </div>
+    <Card sx={{ borderRadius: 2, boxShadow: 2, mb: 2 }}>
+      <CardContent>
+        {/* Title */}
+        <Typography variant="h6" gutterBottom>
+          {title}
+        </Typography>
+
+        {/* Details with optional scrolling */}
+        <Box
+          sx={{
+            maxHeight: scrollable ? 100 : "auto",
+            overflowY: scrollable ? "auto" : "visible",
+            mb: 2,
+          }}
+        >
+          <Typography variant="body2" color="text.secondary">
+            {details}
+          </Typography>
+        </Box>
+
+        {/* Meta Information */}
+        <Typography variant="body2" color="text.secondary" mb={1}>
+          {client && `Client: ${client}`}
+          {creator && ` | Creator: ${creator}`}
+          {date && ` | Date: ${date}`}
+        </Typography>
+
+        {/* Buttons with alignment */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent:
+              buttonAlignment === "right"
+                ? "flex-end"
+                : buttonAlignment === "center"
+                ? "center"
+                : "flex-start",
+            mt: 2,
+          }}
+        >
+          <Stack direction="row" spacing={1}>
+            {buttons.map((button, index) => (
+              <Button
+                key={index}
+                variant="contained"
+                size="small"
+                color={button.color || "primary"}
+                onClick={button.onClick}
+              >
+                {button.label}
+              </Button>
+            ))}
+          </Stack>
+        </Box>
+      </CardContent>
+    </Card>
   );
 };
 
