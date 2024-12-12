@@ -1,0 +1,19 @@
+
+
+.inputField {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+
+  
+  .inputField:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(219, 142, 8, 0.92);
+  }
+  
