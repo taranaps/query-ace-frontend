@@ -6,7 +6,6 @@ import {
     TableCell,
     TableRow as MuiTableRow,
     TableContainer,
-    Paper,
 } from "@mui/material";
 import TableRow from "../table-row/TableRow";
 
@@ -17,16 +16,36 @@ interface TableWrapperProps {
         location: string;
         status: "Active" | "Inactive";
         isActive: boolean;
+        timestamp: Date;
     }[];
-    onToggleStatus: (index: number, newStatus: boolean) => void;
+    onToggleStatus: (email: string, newStatus: boolean) => void;
+    sx?: object;
+    headerClassName?: string; // Add headerClassName
+    rowClassName?: string;    // Add rowClassName
 }
 
-const TableWrapper: React.FC<TableWrapperProps> = ({ data, onToggleStatus }) => {
+const TableWrapper: React.FC<TableWrapperProps> = ({
+    data,
+    onToggleStatus,
+    sx,
+    headerClassName,
+    rowClassName,
+}) => {
     return (
-        <TableContainer component={Paper}>
+        <TableContainer
+            sx={{
+                ...sx,
+                border: "none",         // Removes border around table
+                boxShadow: "none",      // Removes box shadow
+                "& .MuiTableCell-root": {
+                    // border: "none",    // Removes cell borders
+                    padding: "8px",     // Adjust padding if needed
+                },
+            }}
+        >
             <Table>
                 <TableHead>
-                    <MuiTableRow>
+                    <MuiTableRow className={headerClassName}>
                         <TableCell>Admin Name</TableCell>
                         <TableCell>Email</TableCell>
                         <TableCell>Location</TableCell>
@@ -35,15 +54,19 @@ const TableWrapper: React.FC<TableWrapperProps> = ({ data, onToggleStatus }) => 
                     </MuiTableRow>
                 </TableHead>
                 <TableBody>
-                    {data.map((row, index) => (
+                    {data.map((row) => (
                         <TableRow
-                            key={index}
+                            key={`${row.name}-${row.timestamp}`} // Ensure unique key for each row
                             name={row.name}
                             email={row.email}
                             location={row.location}
                             status={row.status}
                             isActive={row.isActive}
-                            onToggle={(newStatus) => onToggleStatus(index, newStatus)}
+                            rowClassName={rowClassName}
+                            onToggle={(newStatus) => {
+                                console.log(`Email: ${row.email}, Toggle to: ${newStatus}`); // Debug
+                                onToggleStatus(row.email, newStatus); // Pass email instead of index
+                            }}
                         />
                     ))}
                 </TableBody>

@@ -1,0 +1,33 @@
+html, body {
+    overflow: hidden; 
+}
+
+/* .tableContainer {
+    margin-top: 24px; 
+    box-shadow: none;
+    background-color: #ffffff; 
+    border: 1px solid #e0e0e0;
+    border-radius: 8px; 
+    overflow: hidden; 
+} */
+
+/* .paginationContainer {
+    margin-top: 16px; 
+} */
+
+/* .manageAccountsContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+} */
+
+/* .buttonsContainer {
+    display: flex;
+    gap: 16px; 
+} */
+
+/* .buttonElement {
+    width: 200px;
+    height: 40px;
+} */
+

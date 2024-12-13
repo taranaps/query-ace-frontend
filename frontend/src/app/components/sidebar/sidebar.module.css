@@ -1,0 +1,129 @@
+.sidebar {
+  width: 250px;
+  background-color: #FFFFFF;
+  height: 100vh;
+  position: fixed;
+  left: 2rem;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 2rem 1.5rem;
+  color: #324054;
+  z-index: 1000;
+}
+
+.sidebar-logo {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.sidebar-logo-text {
+  font-size: 20px;
+  font-weight: bold;
+  margin-left: 10px;
+  color: #324054;
+  text-decoration: none;
+}
+
+.sidebar-logo-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 24px;
+  font-weight: bold;
+  margin-left: 10px;
+  color: #FFFFFF;
+  background-color: #f1a924;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.sidebar-middle {
+  display: flex;
+  width: 100%;
+  position: relative;
+}
+
+.sidebar-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  position: relative;
+}
+
+.sidebar-nav-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  color: #324054;
+  fill: #324054;
+  font-weight: 500;
+  border-radius: 4px;
+  padding: 12px 12px;
+  width: 100%;
+  fill: #324054;
+  cursor: pointer;
+  z-index: 1;
+  font-size: 14px;
+}
+
+.sidebar-nav-item.active {
+  color: #f1a924;
+  fill: #f1a924;
+}
+
+.sidebar-nav-item:hover {
+  background-color: #FFFAF2;
+}
+
+.active-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 48px;
+  background-color: #FFFAF2;
+  border-radius: 4px;
+  transition: top 0.3s ease-in-out;
+  z-index: 0;
+}
+
+.sidebar-nav-item-icon {
+  width: 16px;
+  height: auto;
+}
+
+.sidebar-bottom {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-bottom-account-details-name-and-email {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-bottom-account-details-name {
+  font-size: 14px;
+}
+
+.sidebar-bottom-account-details-email {
+  font-size: 12px;
+}
+
+
+.sidebar-nav-item.active .sidebar-nav-item-icon {
+  filter: invert(61%) sepia(67%) saturate(628%) hue-rotate(345deg) brightness(92%) contrast(85%);
+}
