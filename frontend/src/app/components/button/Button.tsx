@@ -1,18 +1,38 @@
-type ButtonProps = {
-    text: string;
-    onClick?: () => void;
-    type?: 'button' | 'submit';
-  };
-  
-  export default function Button({ text, onClick, type = 'button' }: ButtonProps) {
-    return (
-      <button
-        type={type}
-        onClick={onClick}
-        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-      >
-        {text}
-      </button>
-    );
-  }
-  
+"use client";
+
+import React from "react";
+import styles from "./button.module.css"
+
+interface ButtonProps {
+  leftIconPath?: string;
+  rightIconPath?: string;
+  backgroundColor: string;
+  onClick: () => void;
+  label: string;
+}
+
+const Button: React.FC<ButtonProps> = ({
+  leftIconPath,
+  rightIconPath,
+  backgroundColor,
+  onClick,
+  label,
+}) => {
+  return (
+    <button
+      style={{ backgroundColor }}
+      onClick={onClick}
+      className={styles.button}
+    >
+      {leftIconPath && (
+        <img src={leftIconPath} alt="Left Icon" className={styles["button-icon"]} />
+      )}
+      <span>{label}</span>
+      {rightIconPath && (
+        <img src={rightIconPath} alt="Right Icon" className={styles["button-icon"]} />
+      )}
+    </button>
+  );
+};
+
+export default Button;

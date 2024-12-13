@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import DataCard from '@/app/components/lookup-datacard/DataCard';
+import DataCardDashboard from '@/app/components/dashboard-datacard/DataCardDashboard';
 import styles from './dashboard.module.css';
 
 const Dashboard: React.FC = () => {
@@ -61,7 +61,7 @@ const Dashboard: React.FC = () => {
       </div>
       <div className={styles['dashboard-body']}>
         {dataCards.map((data) => (
-          <DataCard
+          <DataCardDashboard
             key={data.id}
             id={data.id}
             text={data.text}
