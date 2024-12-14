@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useState } from "react";
-// import { Box, Typography, Button, Grid2 } from "@mui/material";
 import SearchBar from "../../components/search-bar/SearchBar";
 import SortFilterButton from "../../components/sort-filter-button/SortFilterButton";
 import TableWrapper from "../../components/table/Table";
@@ -95,7 +94,7 @@ const ManageAccountsPage: React.FC = () => {
                         sx={{
                             width: "216px",
                             height: "40px",
-                            borderRadius: "10px", // Same corner radius for Sort button
+                            borderRadius: "10px", 
                             marginLeft: 0,
                         }} />
                 </div>
@@ -112,7 +111,6 @@ const ManageAccountsPage: React.FC = () => {
                             color: "#B5B7C0",
                         },
                     }}
-                    // className="border-none divide-y divide-[#EEEEEE]"
                     headerClassName="text-[#B5B7C0] font-medium text-[14px]"
                     rowClassName="text-[#292D32] font-medium text-[14px]"
                 />
