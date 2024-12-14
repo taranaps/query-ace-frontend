@@ -15,6 +15,7 @@ const SearchBar: React.FC<{ sx?: object; onChange: (e: React.ChangeEvent<HTMLInp
                 sx={{
                     "& .MuiOutlinedInput-root": {
                         border: "none",
+                        outline: "none",
                         // borderRadius: "8px",
                         // height: "38px",
                         // backgroundColor: "#F9FBFF",
@@ -24,6 +25,9 @@ const SearchBar: React.FC<{ sx?: object; onChange: (e: React.ChangeEvent<HTMLInp
                         //     backgroundColor: "#FFEBD8", // Orangeish background
                         //     borderColor: "#FF9500",
                         // },
+                        "& fieldset": {
+                            border: "none", // Removes the Material-UI fieldset border
+                        },
                     },
                     "& .MuiInputBase-input": {
                         // color: "#B5B7C0",

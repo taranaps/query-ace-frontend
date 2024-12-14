@@ -49,7 +49,7 @@ const ManageAccountsPage: React.FC = () => {
             }
             return item;
         });
-        setData(updatedData); // Update the table data
+        setData(updatedData);
     };
 
     const handleAddAccount = () => setOpenPopup(true);
@@ -78,76 +78,78 @@ const ManageAccountsPage: React.FC = () => {
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
     return (
-            <div className="bg-white p-6 space-y-8 h-full flex-grow">
-                {/* First Section: Title, Search, Sort Filter */}
-                <div className="flex">
-                    <h1 className="text-black text-[22px] font-semibold flex-grow">All Accounts</h1>
-                    <div className="flex space-x-2">
-                        <SearchBar
-                            onChange={handleSearchChange}
-                            sx={{
-                                width: "216px",
-                                height: "40px",
-                                backgroundColor: "#F9FBFF",
-                                borderColor: "F9FBFF",
-                                borderRadius: "10px",
-                                marginLeft: 0,
-                                "&:focus": {
-                                    backgroundColor: "#FCF4E7",
-                                    outline: "2px solid #FF9500",
-                                    borderColor: "#FF9500", // Ensures focus state is same as hover
-                                },
-                                "&:hover": {
-                                    backgroundColor: "#FFEBD8", // Orangeish background
-                                    borderColor: "#FF9500", // Consistent hover border
-                                },
-                                color: "#7E7E7E",
-                            }} />
-                        <SortFilterButton
-                            sortOrder={sortOrder}
-                            onSortChange={(newOrder: "newest" | "earliest") => setSortOrder(newOrder)}
-                            sx={{
-                                width: "216px",
-                                height: "40px",
-                                borderRadius: "10px", // Same corner radius for Sort button
-                                marginLeft: 0,
-                            }} />
-                    </div>
-                </div>
-                {/* Second Section: Table */}
-                <div>
-                    <TableWrapper
-                        data={paginatedData}
-                        onToggleStatus={(email, newStatus) => handleToggleStatus(email, newStatus)}
+        <div className="bg-white p-6 space-y-8 h-full flex-grow">
+            {/* First Section: Title, Search, Sort Filter */}
+            <div className="flex">
+                <h1 className="text-black text-[22px] font-semibold flex-grow">All Accounts</h1>
+                <div className="flex space-x-2">
+                    <SearchBar
+                        onChange={handleSearchChange}
                         sx={{
+                            width: "216px",
+                            height: "40px",
+                            backgroundColor: "#F9FBFF",
                             border: "none",
-                            "& .MuiTableCell-root": {
-                                fontSize: "14px",
-                                color: "#B5B7C0",
+                            outline: "none",
+                            borderColor: "F9FBFF",
+                            borderRadius: "10px",
+                            marginLeft: 0,
+                            "&:focus": {
+                                backgroundColor: "#FCF4E7",
+                                outline: "2px solid #FF9500",
+                                borderColor: "#FF9500", // Ensures focus state is same as hover
                             },
-                        }}
-                        // className="border-none divide-y divide-[#EEEEEE]"
-                        headerClassName="text-[#B5B7C0] font-medium text-[14px]"
-                        rowClassName="text-[#292D32] font-medium text-[14px]"
-                    />
+                            "&:hover": {
+                                backgroundColor: "#FFEBD8", // Orangeish background
+                                borderColor: "#FF9500", // Consistent hover border
+                            },
+                            color: "#7E7E7E",
+                        }} />
+                    <SortFilterButton
+                        sortOrder={sortOrder}
+                        onSortChange={(newOrder: "newest" | "earliest") => setSortOrder(newOrder)}
+                        sx={{
+                            width: "216px",
+                            height: "40px",
+                            borderRadius: "10px", // Same corner radius for Sort button
+                            marginLeft: 0,
+                        }} />
                 </div>
-                {/* Third Section: Pagination and Add Account */}
-                <div className="flex justify-between">
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={handlePageChange}
-                    />
-                    <button
-                        className="bg-[#3070A4] text-white px-6 py-2 rounded-lg h-[44px] w-[150px] text-sm"
-                        onClick={handleAddAccount}
-                    >
-                        + Add Account
-                    </button>
-                </div>
-                {/* Popup */}
-                {openPopup && <AddAdminPopup onClose={handleClosePopup} />}
             </div>
+            {/* Second Section: Table */}
+            <div>
+                <TableWrapper
+                    data={paginatedData}
+                    onToggleStatus={(email, newStatus) => handleToggleStatus(email, newStatus)}
+                    sx={{
+                        border: "none",
+                        "& .MuiTableCell-root": {
+                            fontSize: "14px",
+                            color: "#B5B7C0",
+                        },
+                    }}
+                    // className="border-none divide-y divide-[#EEEEEE]"
+                    headerClassName="text-[#B5B7C0] font-medium text-[14px]"
+                    rowClassName="text-[#292D32] font-medium text-[14px]"
+                />
+            </div>
+            {/* Third Section: Pagination and Add Account */}
+            <div className="flex justify-between">
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                />
+                <button
+                    className="bg-[#3070A4] text-white px-6 py-2 rounded-lg h-[44px] w-[150px] text-sm"
+                    onClick={handleAddAccount}
+                >
+                    + Add Account
+                </button>
+            </div>
+            {/* Popup */}
+            {openPopup && <AddAdminPopup onClose={handleClosePopup} />}
+        </div>
     );
 };
 
