@@ -1,9 +1,9 @@
 import React from "react";
-
 interface PaginationProps {
     currentPage: number;
     totalPages: number;
     onPageChange: (page: number) => void;
+    itemsPerPage?: number; 
 }
 
 const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
@@ -24,27 +24,22 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
     const renderPageNumbers = () => {
         const pageNumbers = [];
 
-        // Always show the first page
         if (currentPage > 2) {
             pageNumbers.push(1);
         }
 
-        // Show ellipsis if current page is more than 3
         if (currentPage > 3) {
-            pageNumbers.push('...');
+            pageNumbers.push("...");
         }
 
-        // Show current page and surrounding pages
         if (currentPage > 1) pageNumbers.push(currentPage - 1);
         pageNumbers.push(currentPage);
         if (currentPage < totalPages) pageNumbers.push(currentPage + 1);
 
-        // Show ellipsis if current page is less than total pages - 2
         if (currentPage < totalPages - 2) {
-            pageNumbers.push('...');
+            pageNumbers.push("...");
         }
 
-        // Always show the last page
         if (currentPage < totalPages - 1) {
             pageNumbers.push(totalPages);
         }
@@ -53,27 +48,25 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
     };
 
     return (
-        <div className="flex items-center space-x-4">
-            {/* Previous Button */}
+        <div className="flex items-center space-x-2">
             <div
                 className={`${currentPage === 1
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-[#F5F5F5] border border-[#EEEEEE] hover:bg-blue-600"
-                    } px-4 py-2 rounded-lg text-sm`}
+                    : "bg-[#F5F5F5] border border-[#EEEEEE] hover:bg-[#FF9500]"
+                    } px-2 py-1 rounded-lg text-xs`}
             >
                 <button
                     onClick={handlePrev}
                     disabled={currentPage === 1}
-                    className="text-sm text-gray-700"
+                    className="text-xs text-gray-700"
                 >
                     {"<"}
                 </button>
             </div>
 
-            {/* Page Numbers */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1">
                 {renderPageNumbers().map((page, index) => (
-                    page === '...' ? (
+                    page === "..." ? (
                         <span key={index} className="text-gray-600">...</span>
                     ) : (
                         <div
@@ -81,11 +74,11 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
                             className={`${page === currentPage
                                 ? "bg-[#FF9500] border-[#FF9500]"
                                 : "bg-[#F5F5F5] border-[#EEEEEE]"
-                                } border px-3 py-2 rounded-md`}
+                                } border px-2 py-1 rounded-md h-6 flex items-center justify-center`}
                         >
                             <button
                                 onClick={() => goToPage(page as number)}
-                                className={`text-sm ${page === currentPage ? "text-white" : "text-gray-700"}`}
+                                className={`text-xs ${page === currentPage ? "text-white" : "text-gray-700"}`}
                                 disabled={page === currentPage}
                             >
                                 {page}
@@ -95,17 +88,16 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
                 ))}
             </div>
 
-            {/* Next Button */}
             <div
                 className={`${currentPage === totalPages
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-[#F5F5F5] border border-[#EEEEEE] hover:bg-blue-600"
-                    } px-4 py-2 rounded-lg text-sm`}
+                    : "bg-[#F5F5F5] border border-[#EEEEEE] hover:bg-[#FF9500]"
+                    } px-2 py-1 rounded-lg text-xs`}
             >
                 <button
                     onClick={handleNext}
                     disabled={currentPage === totalPages}
-                    className="text-sm text-gray-700"
+                    className="text-xs text-gray-700"
                 >
                     {">"}
                 </button>
@@ -113,7 +105,5 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         </div>
     );
 };
+
 export default Pagination;
-
-
-
