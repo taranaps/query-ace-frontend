@@ -88,22 +88,6 @@ const ManageAccountsPage: React.FC = () => {
                         sx={{
                             width: "216px",
                             height: "40px",
-                            backgroundColor: "#F9FBFF",
-                            border: "none",
-                            outline: "none",
-                            borderColor: "F9FBFF",
-                            borderRadius: "10px",
-                            marginLeft: 0,
-                            "&:focus": {
-                                backgroundColor: "#FCF4E7",
-                                outline: "2px solid #FF9500",
-                                borderColor: "#FF9500", // Ensures focus state is same as hover
-                            },
-                            "&:hover": {
-                                backgroundColor: "#FFEBD8", // Orangeish background
-                                borderColor: "#FF9500", // Consistent hover border
-                            },
-                            color: "#7E7E7E",
                         }} />
                     <SortFilterButton
                         sortOrder={sortOrder}
