@@ -1,14 +1,14 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 
 interface TwoColumnContentProps {
-  Question: string;
-  Answer: string;
+  Questions: string;
+  Answers: string;
 }
 
 const TwoColumnContent: React.FC<TwoColumnContentProps> = ({
-  Question,
-  Answer,
+    Questions,
+    Answers,
 }) => {
   return (
     <Box
@@ -30,8 +30,18 @@ const TwoColumnContent: React.FC<TwoColumnContentProps> = ({
           textAlign: "left",
         }}
       >
-        {Question}
+        {Questions}
       </Typography>
+
+      {/* Center Divider */}
+      <Divider
+        orientation="vertical"
+        flexItem
+        sx={{
+          backgroundColor: "#d3d3d3", // Color of the divider
+          width: "2px", // Width of the line
+        }}
+      />
 
       {/* Right Column */}
       <Typography
@@ -41,7 +51,7 @@ const TwoColumnContent: React.FC<TwoColumnContentProps> = ({
           textAlign: "left",
         }}
       >
-        {Answer}
+        {Answers}
       </Typography>
     </Box>
   );
