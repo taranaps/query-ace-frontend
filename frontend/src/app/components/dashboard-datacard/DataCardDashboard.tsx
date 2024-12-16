@@ -2,6 +2,7 @@
 
 import React from "react";
 import Button from "../button/Button";
+import styles from "./datacard.module.css";
 
 interface DataCardProps {
   id: number;
@@ -27,38 +28,31 @@ const DataCardDashboard: React.FC<DataCardProps> = ({
   onCopy,
 }) => {
   return (
-    <div
-      className="bg-white p-4 shadow rounded flex flex-col space-y-2"
-      style={{
-        width: "100%",
-      }}
-    >
-
-      <p className="text-lg font-semibold">{text}</p>
-      <p className="text-sm text-gray-700">{description}</p>
-      <div className="flex justify-between items-center text-sm text-gray-500">
-        <div>
+    <div className={styles.dataCard}>
+      <p className={styles.dataCardText}>{text}</p>
+      <p className={styles.dataCardDescription}>{description}</p>
+      <div className={styles.dataCardFooter}>
+        <div className={styles.dataCardDetails}>
           <span>Customer: {customer}</span> | <span>Created By: {createdBy}</span> |{" "}
           <span>Date: {createdAt}</span>
         </div>
-        <div className="flex space-x-2">
+        <div className={styles.dataCardActions}>
           <Button
-            backgroundColor="#EF9A9A"
-            label="Delete"
+            backgroundColor="#D64545"
+            label=""
             onClick={() => onDelete(id)}
             rightIconPath="/assets/icons/delete-white-small.png"
           />
-
           <Button
-            backgroundColor="#A5D6A7"
-            label="Edit"
-            onClick={() => onDelete(id)}
+            backgroundColor="#6C9A8B"
+            label=""
+            onClick={() => onEdit(id)}
             rightIconPath="/assets/icons/edit-white-small.png"
           />
           <Button
-            backgroundColor="#90CAF9"
-            label="Copy"
-            onClick={() => onDelete(id)}
+            backgroundColor="#567899"
+            label=""
+            onClick={() => onCopy(text)}
             rightIconPath="/assets/icons/copy-white-small.png"
           />
         </div>

@@ -1,10 +1,14 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import DataCardDashboard from '@/app/components/dashboard-datacard/DataCardDashboard';
 import styles from './dashboard.module.css';
 
 const Dashboard: React.FC = () => {
+  // State for search query
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // Data Cards
   const dataCards = [
     {
       id: 1,
@@ -48,6 +52,26 @@ const Dashboard: React.FC = () => {
     },
   ];
 
+  // Filter data based on the search query
+  const filteredDataCards = searchQuery
+    ? dataCards.filter((data) => {
+        const lowerCaseQuery = searchQuery.toLowerCase();
+        return (
+          data.text.toLowerCase().includes(lowerCaseQuery) ||
+          data.customer.toLowerCase().includes(lowerCaseQuery) ||
+          data.createdBy.toLowerCase().includes(lowerCaseQuery) ||
+          data.createdAt.toLowerCase().includes(lowerCaseQuery) ||
+          data.description.toLowerCase().includes(lowerCaseQuery)
+        );
+      })
+    : []; // If searchQuery is empty, no data cards will be shown
+
+  // Handle search input change
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  // Handle delete, edit, and copy actions
   const handleDelete = (id: number) => console.log(`Delete card with id: ${id}`);
   const handleEdit = (id: number) => console.log(`Edit card with id: ${id}`);
   const handleCopy = (text: string) => console.log(`Copied text: ${text}`);
@@ -55,25 +79,49 @@ const Dashboard: React.FC = () => {
   return (
     <div className={styles.dashboard}>
       <div className={styles['dashboard-search-bar']}>
-        <img src="/assets/icons/cross-grey-icon.png" alt="" />
-        <input placeholder="Search..." type="text" />
-        <img src="/assets/icons/search-grey-icon.png" alt="" />
+        <img src="/assets/icons/cross-grey-icon.png" alt="Clear" />
+        <input
+          placeholder="Search..."
+          type="text"
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+        <img src="/assets/icons/search-grey-icon.png" alt="Search" />
       </div>
       <div className={styles['dashboard-body']}>
-        {dataCards.map((data) => (
-          <DataCardDashboard
-            key={data.id}
-            id={data.id}
-            text={data.text}
-            customer={data.customer}
-            createdBy={data.createdBy}
-            createdAt={data.createdAt}
-            description={data.description}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-            onCopy={handleCopy}
-          />
-        ))}
+        <div className={styles['dashboard-content']}>
+          {/* Show image if there is no search query or no filtered results */}
+          {searchQuery === '' && (
+            <div className={styles['image-placeholder']}>
+                <img src="/assets/images/dashboard-clipboard.png" alt="No Results" />
+                </div>
+          )}
+
+          {/* Show filtered data cards */}
+          {filteredDataCards.length > 0 ? (
+            filteredDataCards.map((data) => (
+              <DataCardDashboard
+                key={data.id}
+                id={data.id}
+                text={data.text}
+                customer={data.customer}
+                createdBy={data.createdBy}
+                createdAt={data.createdAt}
+                description={data.description}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+                onCopy={handleCopy}
+              />
+            ))
+          ) : (
+            // Show message or image when no data matches the search query
+            searchQuery !== '' && (
+              <div className={styles['image-placeholder']}>
+                <img src="/assets/images/dashboard-clipboard.png" alt="No Results" />
+              </div>
+            )
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,102 +1,163 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button } from '@mui/material';
-import styles from './ImportQueryPage.module.css'; // Import the CSS module
+'use client';
 
+import React, { useState } from 'react';
+import * as XLSX from 'xlsx'; // Import the xlsx library
+import { Box, Button, Typography } from '@mui/material';
+import DataCardDashboard from '../dashboard-datacard/DataCardDashboard';
+import styles from './ImportQueryPage.module.css';
 
-const ImportFilesPage = () => {
+interface DataCard {
+  id: number;
+  text: string;
+  customer: string;
+  createdBy: string;
+  createdAt: string;
+  description: string;
+}
+
+const ImportQueryPage = () => {
   const [file, setFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [dataCards, setDataCards] = useState<DataCard[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-
-  // Handle file selection
+  // Handle file change (Excel file upload)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
     setFile(selectedFile);
-  };
 
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const data = new Uint8Array(event.target?.result as ArrayBuffer);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
 
-  // Handle save button click
-  const handleSave = () => {
-    alert("Successfully saved data!");
-  };
+        // Convert sheet data to JSON
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
+        // Process and map the JSON data to the DataCard format
+        const processedData: DataCard[] = jsonData.slice(1).map((row, index) => ({
+          id: index + 1,
+          text: row[0] || 'No Question',
+          customer: row[2] || 'Unknown Company',
+          createdBy: 'System', // Example default value
+          createdAt: new Date().toISOString().split('T')[0], // Current date
+          description: row[1] || 'No Response',
+        }));
 
- 
+        setDataCards(processedData);
+        setError(null); // Clear any previous errors
+      };
 
+      reader.onerror = () => {
+        setError('Failed to read the file. Please try again.');
+      };
 
-  useEffect(() => {
-    if (file) {
-      const objectURL = URL.createObjectURL(file);
-      setImagePreview(objectURL);
-
-
-      // Clean up the object URL when component unmounts or file changes
-      return () => URL.revokeObjectURL(objectURL);
+      reader.readAsArrayBuffer(selectedFile);
     }
-  }, [file]);
+  };
 
+  // Handle delete action for a card
+  const handleDelete = (id: number) => {
+    setDataCards((prev) => prev.filter((card) => card.id !== id));
+  };
+
+  // Handle edit action for a card
+  const handleEdit = (id: number) => {
+    alert(`Edit card with ID: ${id}`);
+  };
+
+  // Handle copy action for a card
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    alert(`Copied: ${text}`);
+  };
+
+  // Clear uploaded file and data
+  const handleClear = () => {
+    setFile(null);
+    setDataCards([]);
+    setError(null);
+  };
+
+  // Handle save action
+  const handleSave = () => {
+    alert('Data successfully saved!');
+  };
 
   return (
-    <Box className={styles.container}>
-      {/* Image Preview Section */}
-      <Box className={styles.previewBox}>
-        <img
-          src={imagePreview || "/images.png"}
-          alt="Image preview"
-          className={styles.previewImage}
-        />
-      </Box>
+    <div className={styles.container}>
+      {/* Buttons Section */}
 
 
-      {/* Select, Save and Clear Buttons */}
-      <Box className={styles.buttonBox}>
+      <div className={styles.dataCardsContainer}>
+        {dataCards.length > 0 ? (
+          dataCards.map((card) => (
+            <DataCardDashboard
+              key={card.id}
+              id={card.id}
+              text={card.text}
+              customer={card.customer}
+              createdBy={card.createdBy}
+              createdAt={card.createdAt}
+              description={card.description}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
+              onCopy={handleCopy}
+            />
+          ))
+        ) : (
+          <div className={styles.previewBox}>
+            <img
+              src="/assets/images/import-clipboard.png"
+              alt="No Data"
+              className={styles.previewImage}
+            />
+          </div>
+        )}
+      </div>
+      <div className={styles.buttonBox}>
         <Button
           variant="contained"
-          color="info"
+          color={dataCards.length > 0 ? 'success' : 'info'}
           className={styles.selectButton}
-          sx={{ textTransform: 'none', marginLeft: '20px' }}
-          onClick={() => document.getElementById("fileInput")?.click()} // Open file picker
+          sx={{ textTransform: 'none' }}
+          onClick={() =>
+            dataCards.length > 0
+              ? handleSave()
+              : document.getElementById('fileInput')?.click()
+          }
         >
-          Select File
-          <img
-            src="/selectfile.png"
-            alt="Select Icon"
-            className={styles.buttonIcon}
-          />
+          {dataCards.length > 0 ? 'Save Data' : 'Import File'}
           <input
             id="fileInput"
             type="file"
             hidden
+            accept=".xlsx, .xls"
             onChange={handleFileChange}
           />
         </Button>
-       
+
         <Button
           variant="contained"
-          color="success"
-          className={`${styles.button} ${styles.saveButton}`}
-          sx={{ textTransform: 'none', marginLeft: '20px'}}
-          onClick={handleSave}
+          color="secondary"
+          className={styles.clearButton}
+          sx={{ textTransform: 'none', marginLeft: '10px' }}
+          onClick={handleClear}
+          disabled={!file && dataCards.length === 0}
         >
-          Save Data
-          <img
-            src="/tick.png"
-            alt="Save Icon"
-            className={styles.buttonIcon}
-          />
+          Clear
         </Button>
 
-
-     
-      </Box>
-    </Box>
+        {error && (
+          <Typography color="error" className={styles.errorMessage}>
+            {error}
+          </Typography>
+        )}
+      </div>
+    </div>
   );
 };
 
-
-export default ImportFilesPage;
-
-
-
-
-
+export default ImportQueryPage;

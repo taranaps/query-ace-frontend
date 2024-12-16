@@ -77,7 +77,7 @@ const Sidebar = React.memo(() => {
                     onClick={() => navigateTo('/logout', navItems.length)}
                 >
                     <img
-                        src="../../../public/icons/logout-icon.svg'"
+                        src="/asstes/icons/logout-icon.svg"
                         alt=""
                         className={styles['sidebar-nav-item-icon']}
                     />
