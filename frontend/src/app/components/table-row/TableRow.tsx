@@ -33,17 +33,9 @@ const TableRow: React.FC<TableRowProps> = ({
                 <Typography variant="body2">{location}</Typography>
             </TableCell>
             <TableCell>
-                {/* <Typography
-                    variant="body2"
-                    sx={{
-                        color: status === "Active" ? "green" : "red",
-                        fontWeight: "bold",
-                    }}
-                >
-                    {status}
-                </Typography> */}
                 <span
-                    className={`inline-flex items-center justify-center w-[80px] h-[30px] text-sm font-semibold rounded-lg ${status === "Active"
+                    className={`inline-flex items-center justify-center w-[80px] h-[30px] text-sm font-semibold rounded-lg 
+                        ${status === "Active"
                             ? "bg-green-100 text-green-700"
                             : "bg-red-100 text-red-700"
                         }`}

@@ -10,7 +10,8 @@ interface SortFilterButtonProps {
 const SortFilterButton: React.FC<SortFilterButtonProps> = ({ sx, sortOrder, onSortChange }) => {
     return (
         <ButtonGroup sx={{
-            borderRadius: "8px",
+            borderRadius: "10px",
+            overflow: "hidden",
             ...sx,
         }}>
             <Button
@@ -19,6 +20,8 @@ const SortFilterButton: React.FC<SortFilterButtonProps> = ({ sx, sortOrder, onSo
                     backgroundColor: sortOrder === "newest" ? "#FFEBD8" : "#F9FBFF",
                     color: sortOrder === "newest" ? "#FF9500" : "#B5B7C0",
                     textTransform: "none",
+                    fontSize: "14px",
+                    fontWeight: 500,
                     border: "1px solid #E7E7E7",
                     "&:hover": {
                         backgroundColor: "#FFEBD8",
@@ -34,6 +37,8 @@ const SortFilterButton: React.FC<SortFilterButtonProps> = ({ sx, sortOrder, onSo
                     backgroundColor: sortOrder === "earliest" ? "#FFEBD8" : "#F9FBFF",
                     color: sortOrder === "earliest" ? "#FF9500" : "#B5B7C0",
                     textTransform: "none",
+                    fontSize: "14px",
+                    fontWeight: 500,
                     border: "1px solid #E7E7E7",
                     "&:hover": {
                         backgroundColor: "#FFEBD8",
