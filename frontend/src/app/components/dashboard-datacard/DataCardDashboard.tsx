@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Button from "../button/Button";
+import styles from "./datacard.module.css";
 
 interface DataCardProps {
   id: number;
@@ -11,7 +12,7 @@ interface DataCardProps {
   createdAt: string;
   description: string;
   onDelete: (id: number) => void;
-  onEdit: (id: number) => void;
+  onEdit: (id: number, newText: string, newDescription: string) => void;
   onCopy: (text: string) => void;
 }
 
@@ -26,40 +27,84 @@ const DataCardDashboard: React.FC<DataCardProps> = ({
   onEdit,
   onCopy,
 }) => {
-  return (
-    <div
-      className="bg-white p-4 shadow rounded flex flex-col space-y-2"
-      style={{
-        width: "100%",
-      }}
-    >
+  const [isEditing, setIsEditing] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [editableText, setEditableText] = useState(text);
+  const [editableDescription, setEditableDescription] = useState(description);
 
-      <p className="text-lg font-semibold">{text}</p>
-      <p className="text-sm text-gray-700">{description}</p>
-      <div className="flex justify-between items-center text-sm text-gray-500">
+  // Handle Copy to Clipboard
+  const handleCopy = () => {
+    navigator.clipboard.writeText(editableText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); // Reset copied state after 2 seconds
+  };
+
+  // Handle Save Changes
+  const handleSave = () => {
+    setIsEditing(false);
+    onEdit(id, editableText, editableDescription); // Save new values
+  };
+
+  return (
+    <div className={styles.dataCard}>
+      {/* Editable Text and Description */}
+      {isEditing ? (
         <div>
+          <input
+            type="text"
+            value={editableText}
+            onChange={(e) => setEditableText(e.target.value)}
+            className={styles.editableInput}
+          />
+          <textarea
+            value={editableDescription}
+            onChange={(e) => setEditableDescription(e.target.value)}
+            className={styles.editableTextarea}
+          />
+        </div>
+      ) : (
+        <div>
+          <p className={styles.dataCardText}>{editableText}</p>
+          <p className={styles.dataCardDescription}>{editableDescription}</p>
+        </div>
+      )}
+
+      {/* Footer */}
+      <div className={styles.dataCardFooter}>
+        <div className={styles.dataCardDetails}>
           <span>Customer: {customer}</span> | <span>Created By: {createdBy}</span> |{" "}
           <span>Date: {createdAt}</span>
         </div>
-        <div className="flex space-x-2">
+        <div className={styles.dataCardActions}>
+          {/* Delete Button */}
           <Button
-            backgroundColor="#EF9A9A"
-            label="Delete"
+            backgroundColor="#D64545"
+            label=""
             onClick={() => onDelete(id)}
             rightIconPath="/assets/icons/delete-white-small.png"
           />
-
+          {/* Edit/Save Button */}
+          {isEditing ? (
+            <Button
+              backgroundColor="#6C9A8B"
+              label="Save"
+              onClick={handleSave}
+              rightIconPath="/assets/icons/save-white-small.png"
+            />
+          ) : (
+            <Button
+              backgroundColor="#6C9A8B"
+              label=""
+              onClick={() => setIsEditing(true)}
+              rightIconPath="/assets/icons/edit-white-small.png"
+            />
+          )}
+          {/* Copy Button */}
           <Button
-            backgroundColor="#A5D6A7"
-            label="Edit"
-            onClick={() => onDelete(id)}
-            rightIconPath="/assets/icons/edit-white-small.png"
-          />
-          <Button
-            backgroundColor="#90CAF9"
-            label="Copy"
-            onClick={() => onDelete(id)}
-            rightIconPath="/assets/icons/copy-white-small.png"
+            backgroundColor={copied ? "#4CAF50" : "#567899"} // Change color when copied
+            label={copied ? "Copied!" : ""}
+            onClick={handleCopy}
+            rightIconPath={copied ? "" : "/assets/icons/copy-white-small.png"} // Hide icon when copied
           />
         </div>
       </div>

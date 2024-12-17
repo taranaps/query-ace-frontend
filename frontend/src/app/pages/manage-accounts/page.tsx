@@ -8,6 +8,8 @@ import TableWrapper from "../../components/table/Table";
 import Pagination from "../../components/pagination/Pagination";
 import AddAdminPopup from "../../components/add-admin-popup/AddAdminPopup";
 
+import styles from "./ManageAccountsPage.module.css"
+
 const initialData: {
     name: string;
     email: string;

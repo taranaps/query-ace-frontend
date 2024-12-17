@@ -1,86 +1,190 @@
 .addRecordForm {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem; /* Add spacing between fields */
-   
-  }
- 
-  .inputField {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f0f0f0;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-  }
- 
-  .inputField:focus {
-    outline: none;
-    box-shadow: 0 0 8px rgba(219, 142, 8, 0.92);
-  }
- 
-  .small {
-    height: 2.5rem;
-  }
- 
-  .large {
-    height: auto; /* Allows it to expand */
-    resize: none;
-  }
- 
-  .buttonGroup {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-top: -70px;
-  }
- 
-  .clearBtn, .saveBtn, .downloadBtn {
-    display: flex;
-    align-items: center; /* Center text and icon on the same line */
-    justify-content: center; /* Ensures the content is centered inside the button */
-    gap: 8px; /* Space between text and icon */
-    padding: 0.5rem 1.5rem;
-    font-size: 1rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-  }
- 
-  .clearBtn {
-    background-color: #ff4d4f;
-    color: white;
-  }
- 
-  .clearBtn:hover {
-    background-color: #ff7875;
-    transform: translateY(-2px);
-  }
- 
-  .saveBtn {
-    background-color: #28a745;
-    color: white;
-  }
- 
-  .saveBtn:hover {
-    background-color: #45d07a;
-    transform: translateY(-2px);
-  }
- 
-  .buttonIcon {
-    width: 16px; /* Icon size */
-    height: 16px; /* Icon size */
-  }
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: space-between;
+}
 
-  .downloadBtn{
-    background-color: #FF9500;
-    transform: translateY(-2px);
-    color: white;
-    
-   
-  }
-  .downloadbox{
-    margin-left: 100px;
-  }
+.inputField {
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #F2F3FA;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.addRecordForm input,
+.addRecordForm textarea {
+  border: none;
+  outline: none;
+}
+
+.inputField:focus {
+  border: none;
+  outline: none;
+}
+
+/* .small {
+  height: 2.5rem;
+} */
+
+/* .large {
+  height: auto;
+  /* Allows it to expand 
+  resize: none;
+} */
+
+.buttonGroup {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 1rem;
+
+}
+
+.clearBtn,
+.saveBtn,
+.downloadBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0.5rem 1.2rem;
+  font-size: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.clearBtn {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+.clearBtn:hover {
+  background-color: #ff7875;
+  transform: translateY(-2px);
+}
+
+.saveBtn {
+  background-color: #28a745;
+  color: white;
+}
+
+.saveBtn:hover {
+  background-color: #45d07a;
+  transform: translateY(-2px);
+}
+
+.buttonIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.downloadBtn {
+  background-color: #FF9500;
+  color: white;
+}
+
+.downloadBox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.answers {
+  /* flex: 1; */
+  width: 100%;
+  height: 100%;
+  background-color: #F2F3FA;
+  border-radius: 4px;
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.answersAndAddButton {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.answersAndAddButton p {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ccc;
+}
+
+.answersAndAddButton button {
+  font-size: 18px;
+  font-weight: 600;
+  color: aquamarine;
+  background-color: #ccc;
+  border-radius: 25px;
+  height: 42px;
+  width: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.answersList {
+  /* flex: 1; */
+  overflow-y: auto;
+  width: 100%;
+  height: 40vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  box-sizing: border-box;
+
+}
+
+.answerItem {
+  width: 100%;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #FFFFFF;
+  padding: 6px 20px;
+  gap: 12px;
+}
+
+.answerItem input {
+
+  background-color: #FFFFFF;
+}
+
+.answerItem img {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+.answersAndAddButton img {
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  background-color: #FFFFFF;
+  border-radius: 22px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

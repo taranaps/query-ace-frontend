@@ -1,84 +1,99 @@
 .container {
-    padding: 24px;
-    text-align: center;
-    max-width: 100%;
-    margin: auto;
-  }
- 
-  .previewBox {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    border-radius: 8px;
-    padding: 24px;
-    margin-bottom: 24px;
-    max-width: 100%;
-    margin: auto;
-  }
- 
-  .previewImage {
-    max-width: 100%;
-    max-height: 300px;
-    object-fit: cover;
-    margin-bottom: 16px;
-  }
- 
-  .buttonBox {
-    display: flex;
-    justify-content: flex-end;  /* Align buttons to the right */
-    gap: 5 px;  /* Add gap between buttons */
-    margin-top: 32px;
-    padding-right: 0;
-    padding: 0.5rem 1.5rem;
-    width: 100%; 
-    margin-top: -0.2px; /* Ensures the container stretches across the available width */
-  }
- 
-  .button {
-    display: flex;
-    align-items: center;  /* Centers the text and icon */
-    gap: 8px;  /* Adds space between text and icon */
-    padding: 0.5rem 1.5rem;
-    font-size: 16px;
-    text-transform: none;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    top: 100px;
-    
-  
-  }
- 
-  .selectButton {
-    background-color: #007bff;
-    text-transform: none;
-    padding: 0.5rem 1.5rem;
-    top: 100px;
-    
-  }
- 
-  .selectButton:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-  }
- 
-  .saveButton {
-    background-color: #28a745;
-    text-transform: none;
-    padding: 0.2rem 1.5rem;
-    justify-content: space-between;
-  }
- 
-  .saveButton:hover {
-    background-color: #218838;
-    transform: translateY(-2px);
-  }
- 
-  .buttonBox button {
-    text-transform: none;
-    padding: 0.5rem 1.5rem; /* Prevents text from being capitalized */
-  }
- 
-  .buttonIcon {
-    width: 16px;  /* Set the icon size */
-    height: 16px; /* Set the icon size */
-  }
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  gap: 12px;
+}
+
+
+
+.dataCardsContainer {
+  width: 100%;
+  flex: 1;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.previewBox {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  max-width: 100%;
+}
+
+.previewImage {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+}
+
+.buttonBox {
+  /* position: absolute; */
+  display: flex;
+  justify-content: flex-end;
+  /* Align buttons to the right */
+  gap: 5 px;
+  /* Add gap between buttons */
+  padding-right: 0;
+  width: 100%;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  /* Centers the text and icon */
+  gap: 8px;
+  /* Adds space between text and icon */
+  padding: 0.5rem 1.5rem;
+  font-size: 16px;
+  text-transform: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.selectButton {
+  background-color: #007bff;
+  text-transform: none;
+  padding: 0.5rem 1.5rem;
+}
+
+.selectButton:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.saveButton {
+  background-color: #28a745;
+  text-transform: none;
+  padding: 0.2rem 1.5rem;
+  justify-content: space-between;
+}
+
+.saveButton:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+.buttonBox button {
+  text-transform: none;
+  padding: 0.5rem 1.5rem;
+  /* Prevents text from being capitalized */
+}
+
+.buttonIcon {
+  width: 16px;
+  height: 16px;
+}
