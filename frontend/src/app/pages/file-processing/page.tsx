@@ -2,7 +2,23 @@
 
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
-import { Box, Typography, Button, LinearProgress, FormControlLabel, Radio, RadioGroup, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  LinearProgress,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TextField,
+} from "@mui/material";
 import QuestionCard from "@/app/components/question-card/QuestionCard";
 import styles from "./fileprocessing.module.css";
 
@@ -16,6 +32,7 @@ const FileProcessingPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<"import" | "questions" | "result">("import");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: string }>({});
+  const [searchQuery, setSearchQuery] = useState<string>(""); // State for search query
 
   const dummyAnswers = [
     "Corporate culture refers to the shared values, beliefs, and practices that define an organization.",
@@ -27,8 +44,14 @@ const FileProcessingPage: React.FC = () => {
     "Corporate brand is the identity and reputation of a company, shaped by its products, services, and customer experiences.",
     "Key performance indicators (KPIs) are measurable values used to track how well a company is achieving its business objectives.",
     "Corporate merger or acquisition is the process where companies combine or one company buys another to expand market share or improve efficiencies.",
-    "Corporate ethics refers to the principles that guide a company’s behavior, ensuring decisions are made in a morally sound way."
+    "Corporate ethics refers to the principles that guide a company’s behavior, ensuring decisions are made in a morally sound way.",
   ];
+
+  const filteredAnswers = searchQuery
+    ? dummyAnswers.filter((answer) =>
+        answer.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : dummyAnswers;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
@@ -168,6 +191,17 @@ const FileProcessingPage: React.FC = () => {
             />
           </div>
 
+          {/* Search Box */}
+          <Box marginTop="16px" marginBottom="16px">
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Search for an answer..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </Box>
+
           {/* Question Section */}
           <Box className={styles.questionSection}>
             <Typography variant="h5" fontWeight="bold" marginBottom="16px">
@@ -175,14 +209,16 @@ const FileProcessingPage: React.FC = () => {
             </Typography>
 
             {/* Answers Section */}
-            <RadioGroup className={styles.answersFormDiv}
+            <RadioGroup
+              className={styles.answersFormDiv}
               value={selectedAnswers[questions[currentQuestionIndex].id] || ""}
               onChange={(e) =>
                 handleAnswerSelect(questions[currentQuestionIndex].id, e.target.value)
               }
             >
-              {dummyAnswers.map((answer, index) => (
-                <FormControlLabel className={styles.answersForm}
+              {filteredAnswers.map((answer, index) => (
+                <FormControlLabel
+                  className={styles.answersForm}
                   key={index}
                   value={answer}
                   control={<Radio />}
