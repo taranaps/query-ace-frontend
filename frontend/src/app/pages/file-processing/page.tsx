@@ -1,295 +1,259 @@
-
 "use client";
 
 import React, { useState } from "react";
-import { Box, Typography, Button } from "@mui/material";
-import Image from "next/image";
-import DataCard from "@/app/components/lookup-datacard/DataCard";
-import Pagination from "@/app/components/pagination/Pagination";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import * as XLSX from "xlsx";
+import { Box, Typography, Button, LinearProgress, FormControlLabel, Radio, RadioGroup, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import QuestionCard from "@/app/components/question-card/QuestionCard";
+import styles from "./fileprocessing.module.css";
 
-// Dummy questions for development purposes
-const dummyQuestions = Array.from({ length: 100 }, (_, index) => ({
-    id: index + 1,
-    text: `Question ${index + 1}: This is a sample question about Experion Technologies, From where Experion got these high talented people in ILP batch 05 .`,
-    createdAt: "11/11/2024",
-}));
+interface Question {
+  id: number;
+  text: string;
+}
 
 const FileProcessingPage: React.FC = () => {
-    const [questions, setQuestions] = useState(dummyQuestions); // Use dummy data for now
-    const [isQuestionsVisible, setIsQuestionsVisible] = useState(false); // Toggle between Import Page and Questions Page
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10; // Show 10 questions per page
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [currentPage, setCurrentPage] = useState<"import" | "questions" | "result">("import");
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: string }>({});
 
-    const totalPages = Math.ceil(questions.length / itemsPerPage);
+  const dummyAnswers = [
+    "Corporate culture refers to the shared values, beliefs, and practices that define an organization.",
+    "Corporate strategy involves long-term planning to achieve goals through resource allocation, market positioning, and growth.",
+    "Corporate governance is the system of rules by which a company is directed and controlled, ensuring accountability and transparency.",
+    "Corporate social responsibility (CSR) reflects a company’s commitment to ethical behavior and contributing to societal welfare.",
+    "Leadership in a corporation is responsible for setting the vision, creating strategies, and motivating employees to achieve company goals.",
+    "Corporate finance manages a company’s financial activities, including investments, capital structure, and risk management.",
+    "Corporate brand is the identity and reputation of a company, shaped by its products, services, and customer experiences.",
+    "Key performance indicators (KPIs) are measurable values used to track how well a company is achieving its business objectives.",
+    "Corporate merger or acquisition is the process where companies combine or one company buys another to expand market share or improve efficiencies.",
+    "Corporate ethics refers to the principles that guide a company’s behavior, ensuring decisions are made in a morally sound way."
+  ];
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-    };
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files ? e.target.files[0] : null;
 
-    const handleDelete = (id: number) => {
-        setQuestions((prev) => prev.filter((q) => q.id !== id));
-        console.log(`Deleted Question ${id}`);
-    };
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const data = new Uint8Array(event.target?.result as ArrayBuffer);
+        const workbook = XLSX.read(data, { type: "array" });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
 
-    const handleEdit = (id: number) => {
-        const newText = prompt(
-            "Edit the question:",
-            questions.find((q) => q.id === id)?.text
-        );
-        if (newText) {
-            setQuestions((prev) =>
-                prev.map((q) => (q.id === id ? { ...q, text: newText } : q))
-            );
-            console.log(`Edited Question ${id}`);
-        }
-    };
+        const jsonData = XLSX.utils.sheet_to_json<string[]>(worksheet, { header: 1 });
 
-    const handleProceed = () => {
-        if (!isQuestionsVisible) {
-            setIsQuestionsVisible(true); // Transition to the Questions List Page
-        } else {
-            const confirmSave = window.confirm(
-                "Questions will be saved, click OK!"
-            );
-            if (confirmSave) {
-                setIsQuestionsVisible(false); // Go back to the Import File Page
-                setQuestions(dummyQuestions); // Reset questions to the dummy data
-                setCurrentPage(1); // Reset pagination to the first page
-            }
-        }
-    };
+        const processedQuestions: Question[] = jsonData.slice(1).map((row, index) => ({
+          id: index + 1,
+          text: row[0] || `Question ${index + 1}`,
+        }));
 
-    const handleDiscard = () => {
-        const confirmDiscard = window.confirm(
-            "Are you sure you want to discard all changes and go back?"
-        );
-        if (confirmDiscard) {
-            setIsQuestionsVisible(false); // Go back to Import File Page
-            setQuestions(dummyQuestions); // Reset questions to initial dummy data
-            setCurrentPage(1); // Reset pagination to the first page
-        }
-    };
+        setQuestions(processedQuestions);
+      };
 
-    return (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                height: "100vh",
-                backgroundColor: "#ffffff",
-            }}
-        >
-            {!isQuestionsVisible ? (
-                <>
-                    {/* Import File Page */}
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            height: "100vh",
-                            backgroundColor: "#ffffff",
-                        }}
-                    >
-                        {/* This section shows the header and the "Import File" button. */}
-                        <DataCard
-                            id={1}
-                            title="File Processing"
-                            details="Let's start by importing an Excel file"
-                            scrollable={false}
-                            buttonAlignment="right"
-                            buttonPosition="same-row"
-                            disableBoxShadow={true}
-                            buttons={[
-                                {
-                                    label: "Import File",
-                                    onClick: () => console.log("Import File button clicked"),
-                                    color: "primary",
-                                    startIcon: <CloudUploadIcon />,
-                                },
-                            ]}
-                            sx={{
-                                marginBottom: "1.5rem",
-                                padding: "2rem",
-                                borderRadius: 0,
-                                backgroundColor: "#FFFFFF",
-                            }}
-                        />
+      reader.onerror = () => alert("Error processing file. Please try again.");
+      reader.readAsArrayBuffer(selectedFile);
+    }
+  };
 
-                        {/* This section shows an illustration and a message prompting the user to import a file. */}
-                        <Box
-                            sx={{
-                                flex: 1,
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                flexDirection: "column",
-                            }}
-                        >
-                            <Box sx={{ textAlign: "center" }}>
-                                <Image
-                                    src="/images.png"
-                                    alt="File Processing Illustration"
-                                    width={300}
-                                    height={300}
-                                />
-                            </Box>
-                        </Box>
+  const handleProceed = () => {
+    if (questions.length > 0) setCurrentPage("questions");
+  };
 
-                        {/* This section has a "Proceed" button to transition to the Questions List Page. */}
-                        <DataCard
-                            id={2}
-                            title=""
-                            details={
-                                <p style={{ fontSize: "12px" }}>
-                                    Having trouble with importing Excel?{" "}
-                                    <a
-                                        href="#"
-                                        style={{ color: "#007BFF", textDecoration: "none", fontSize: "12px" }}
-                                    >
-                                        Download template
-                                    </a>
-                                </p>
-                            }
-                            scrollable={false}
-                            buttonAlignment="right"
-                            buttonPosition="same-row"
-                            disableBoxShadow={true}
-                            buttons={[
-                                {
-                                    label: "Proceed",
-                                    onClick: handleProceed,
-                                    color: "primary",
-                                    endIcon: <ArrowForwardIcon />,
-                                },
-                            ]}
-                            sx={{
-                                marginTop: "1.5rem",
-                                padding: "2rem",
-                                borderRadius: 0,
-                                backgroundColor: "#FFFFFF",
-                            }}
-                        />
-                    </Box>
-                </>
+  const handleAnswerSelect = (questionId: number, answer: string) => {
+    setSelectedAnswers((prev) => ({
+      ...prev,
+      [questionId]: answer,
+    }));
+  };
+
+  const handleNext = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+    }
+  };
+
+  const handleFinish = () => {
+    setCurrentPage("result");
+  };
+
+  const handleDownload = () => {
+    const resultData = questions.map((question) => ({
+      Question: question.text,
+      Answer: selectedAnswers[question.id] || "No answer selected",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(resultData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Answers");
+
+    // Download the Excel file
+    XLSX.writeFile(workbook, "questions_and_answers.xlsx");
+  };
+
+  const handleDeleteQuestion = (id: number) => {
+    setQuestions(questions.filter((question) => question.id !== id));
+  };
+
+  return (
+    <Box className={styles.fileProcessingPage}>
+      {currentPage === "import" ? (
+        <>
+          {/* Header Section */}
+          <Box className={styles.header}>
+            <Typography variant="h5" fontWeight="bold">
+              Import Excel Questions
+            </Typography>
+            <label htmlFor="fileInput">
+              <Button variant="contained" component="span">
+                Import File
+              </Button>
+              <input
+                id="fileInput"
+                type="file"
+                hidden
+                accept=".xlsx, .xls"
+                onChange={handleFileChange}
+              />
+            </label>
+          </Box>
+
+          {/* Questions List */}
+          <Box className={styles.questionsContainer}>
+            {questions.length === 0 ? (
+              <Typography className={styles.noAnswer} variant="body1" textAlign="center" color="textSecondary">
+                No questions imported yet. Upload an Excel file to proceed.
+              </Typography>
             ) : (
-                <>
-                    {/* Questions List Page */}
-                    <Box
-                        sx={{
-                            padding: "1.5rem",
-                            backgroundColor: "#FFFFFF",
-                            borderBottom: "1px solid #EEEEEE",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                        }}
-                    >
-                        {/* Header Title */}
-                        <Typography variant="h5" fontWeight="bold">
-                            Review Questions
-                        </Typography>
-
-                        {/* Discard Button */}
-                        <Button
-                            variant="outlined"
-                            sx={{
-                                color: "#FF0000",
-                                borderColor: "#FF0000",
-                                "&:hover": {
-                                    backgroundColor: "rgba(255, 0, 0, 0.1)",
-                                    borderColor: "#FF0000",
-                                },
-                            }}
-                            onClick={handleDiscard}
-                        >
-                            Discard
-                        </Button>
-                    </Box>
-
-                    {/* This section displays the list of questions with pagination. */}
-                    <Box
-                        sx={{
-                            flex: 1,
-                            padding: "1.5rem",
-                            overflowY: "scroll",
-                            backgroundColor: "#ffffff",
-                        }}
-                    >
-                        {questions.slice(
-                            (currentPage - 1) * itemsPerPage,
-                            currentPage * itemsPerPage
-                        ).map((question) => (
-                            <DataCard
-                                key={question.id}
-                                id={question.id}
-                                title={question.text}
-                                details={`Created at: ${question.createdAt}`}
-                                buttons={[
-                                    {
-                                        label: "Edit",
-                                        onClick: () => handleEdit(question.id),
-                                        color: "primary",
-                                    },
-                                    {
-                                        label: "Delete",
-                                        onClick: () => handleDelete(question.id),
-                                        color: "error",
-                                    },
-                                ]}
-                                sx={{
-                                    marginBottom: "1rem",
-                                    padding: "1rem",
-                                    backgroundColor: "#F9F9F9",
-                                    borderRadius: "8px",
-                                }}
-                            />
-                        ))}
-                    </Box>
-
-                    {/* Footer Section with Swapped Pagination and Page Info */}
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            padding: "1rem",
-                            borderTop: "1px solid #EEEEEE",
-                            position: "sticky",
-                            bottom: 0,
-                            backgroundColor: "#ffffff",
-                            zIndex: 10,
-                        }}
-                    >
-                        {/* Pagination Info */}
-
-                        {/* Pagination Controls */}
-                        <Pagination
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            onPageChange={handlePageChange}
-                        />
-
-                        <Typography variant="body2" color="text.secondary">
-                            {`Showing page ${currentPage} out of ${totalPages} | Total questions ${questions.length}`}
-                        </Typography>
-
-                        {/* Proceed Button */}
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            endIcon={<ArrowForwardIcon />}
-                            onClick={handleProceed}
-                        >
-                            Proceed
-                        </Button>
-                    </Box>
-                </>
+              questions.map((question) => (
+                <QuestionCard
+                  key={question.id}
+                  id={question.id}
+                  text={question.text}
+                  onDelete={() => handleDeleteQuestion(question.id)}
+                  onEdit={() => {}}
+                />
+              ))
             )}
-        </Box>
-    );
+          </Box>
+
+          {/* Footer */}
+          <Box className={styles.footer}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleProceed}
+              disabled={questions.length === 0}
+            >
+              Proceed
+            </Button>
+          </Box>
+        </>
+      ) : currentPage === "questions" ? (
+        <>
+          {/* Progress Bar */}
+          <div className={styles.progressContainer}>
+            <Typography variant="h6">
+              Question {currentQuestionIndex + 1} of {questions.length}
+            </Typography>
+            <LinearProgress
+              variant="determinate"
+              value={((currentQuestionIndex + 1) / questions.length) * 100}
+            />
+          </div>
+
+          {/* Question Section */}
+          <Box className={styles.questionSection}>
+            <Typography variant="h5" fontWeight="bold" marginBottom="16px">
+              {questions[currentQuestionIndex]?.text}
+            </Typography>
+
+            {/* Answers Section */}
+            <RadioGroup className={styles.answersFormDiv}
+              value={selectedAnswers[questions[currentQuestionIndex].id] || ""}
+              onChange={(e) =>
+                handleAnswerSelect(questions[currentQuestionIndex].id, e.target.value)
+              }
+            >
+              {dummyAnswers.map((answer, index) => (
+                <FormControlLabel className={styles.answersForm}
+                  key={index}
+                  value={answer}
+                  control={<Radio />}
+                  label={answer}
+                />
+              ))}
+            </RadioGroup>
+          </Box>
+
+          {/* Navigation Buttons */}
+          <Box className={styles.footer}>
+            <Button
+              variant="outlined"
+              onClick={handlePrevious}
+              disabled={currentQuestionIndex === 0}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={currentQuestionIndex === questions.length - 1 ? handleFinish : handleNext}
+            >
+              {currentQuestionIndex === questions.length - 1 ? "Finish" : "Next"}
+            </Button>
+          </Box>
+        </>
+      ) : (
+        <>
+          {/* Display Selected Answers in Table Format */}
+          <Box className={styles.resultContainer}>
+            <Typography variant="h5" fontWeight="bold" marginBottom="16px">
+              Final Answers
+            </Typography>
+
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell><strong>Question</strong></TableCell>
+                    <TableCell><strong>Selected Answer</strong></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {questions.map((question) => (
+                    <TableRow key={question.id}>
+                      <TableCell>{question.text}</TableCell>
+                      <TableCell>
+                        {selectedAnswers[question.id] || "No answer selected"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+
+          {/* Download Button */}
+          <Box className={styles.footer}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleDownload}
+            >
+              Download as Excel
+            </Button>
+          </Box>
+        </>
+      )}
+    </Box>
+  );
 };
 
 export default FileProcessingPage;
-

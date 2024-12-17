@@ -1,10 +1,12 @@
-"use client";
+'use client';
 
 import { useState } from "react";
-import DataCard from "@/app/components/lookup-datacard/DataCard";
+import DataCardDashboard from "@/app/components/dashboard-datacard/DataCardDashboard";
 import FilterDropdown from "@/app/components/lookup-filterdropdown/FilterDropDown";
+import Pagination from "@/app/components/pagination/Pagination";
+import styles from "./datalookup.module.css";
 
-const dummyData = Array.from({ length: 20 }, (_, i) => ({
+const dummyData = Array.from({ length: 50 }, (_, i) => ({
   id: i + 1,
   customer: ["Accenture", "Microsoft", "Google", "TCS"][i % 4],
   createdBy: ["John Doe", "Jane Smith", "Alice Brown", "Bob Johnson"][i % 4],
@@ -15,14 +17,12 @@ const dummyData = Array.from({ length: 20 }, (_, i) => ({
 
 export default function QueryLookup() {
   const [data, setData] = useState(dummyData);
-  const [currentPage, setCurrentPage] = useState<number>(1);
   const [sortBy, setSortBy] = useState<string>("newest");
-
   const [selectedCustomers, setSelectedCustomers] = useState<string[]>([]);
   const [selectedCreators, setSelectedCreators] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const itemsPerPage = 5;
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const itemsPerPage = 10; // Number of items per page
 
   const filteredData = data.filter(
     (item) =>
@@ -40,6 +40,9 @@ export default function QueryLookup() {
     return 0;
   });
 
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+
+  // Paginate the data
   const paginatedData = sortedData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -64,12 +67,16 @@ export default function QueryLookup() {
     navigator.clipboard.writeText(text);
   };
 
+  // Calculate item range
+  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, sortedData.length);
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      {/* Header Row with Filters and Sorting */}
-      <div className="flex justify-between items-center w-full px-6 py-4">
-        <h2 className="text-xl font-bold">Query Lookup</h2>
-        <div className="flex space-x-4">
+    <div className={styles.dataLookupContainer}>
+      {/* Header Row */}
+      <div className={styles.headerRow}>
+        <h2 className={styles.headerTitle}>Query Lookup</h2>
+        <div className={styles.filterContainer}>
           <FilterDropdown
             label="Filter by Customer"
             options={["Accenture", "Microsoft", "Google", "TCS"]}
@@ -83,7 +90,7 @@ export default function QueryLookup() {
             onChange={(selected) => setSelectedCreators(selected)}
           />
           <select
-            className="border rounded p-2 hover:bg-orange-100 focus:outline-none transition duration-200"
+            className={styles.sortDropdown}
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
           >
@@ -93,49 +100,40 @@ export default function QueryLookup() {
         </div>
       </div>
 
-      {/* Paginated Content */}
-      <div
-        style={{
-          overflowY: "auto",
-          flexGrow: 1,
-          padding: "0 1.5rem",
-        }}
-      >
+      {/* Data Content */}
+      <div className={styles.dataItems}>
         {paginatedData.map((item) => (
-          <DataCard
+          <DataCardDashboard
             key={item.id}
             id={item.id}
-            title={item.text}
-            client={item.customer}
-            creator={item.createdBy}
-            date={item.createdAt}
-            details={item.description}
-            scrollable={true}
-            buttonAlignment="right" // Align buttons to the right
-            buttons={[
-              { label: "Delete", onClick: () => handleDelete(item.id), color: "error" },
-              { label: "Edit", onClick: () => handleEdit(item.id), color: "primary" },
-              { label: "Copy", onClick: () => handleCopy(item.text), color: "success" },
-            ]}
+            text={item.text}
+            description={item.description}
+            customer={item.customer}
+            createdAt={item.createdAt}
+            createdBy={item.createdBy}
+            onCopy={handleCopy}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
           />
         ))}
       </div>
 
+
+
       {/* Pagination */}
-      <div className="flex justify-center space-x-2 px-6 py-4">
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-          <button
-            key={page}
-            className={`px-4 py-2 border rounded ${
-              page === currentPage
-                ? "bg-blue-500 text-white"
-                : "bg-gray-100 text-gray-700"
-            }`}
-            onClick={() => setCurrentPage(page)}
-          >
-            {page}
-          </button>
-        ))}
+      <div className={styles.paginationContainer}>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+
+        {/* Display Item Range */}
+        <div className={styles.itemRange}>
+          <p>
+            Displaying {startItem}–{endItem} of {sortedData.length} items
+          </p>
+        </div>
       </div>
     </div>
   );

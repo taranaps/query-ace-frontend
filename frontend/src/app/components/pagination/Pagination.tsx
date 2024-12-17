@@ -48,7 +48,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
     };
 
     return (
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-3">
             <div
                 className={`${currentPage === 1
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -64,7 +64,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
                 </button>
             </div>
 
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-2">
                 {renderPageNumbers().map((page, index) => (
                     page === "..." ? (
                         <span key={index} className="text-gray-600">...</span>

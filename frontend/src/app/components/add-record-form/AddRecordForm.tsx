@@ -112,14 +112,7 @@ const AddRecordForm = () => {
       </div>
 
       <div className={styles.downloadBox}>
-        <button type="button" className={styles.downloadBtn}>
-          Download Template
-          <img
-            src="/download.png"
-            alt="Download Template"
-            className={styles.buttonIcon}
-          />
-        </button>
+
         <div className={styles.buttonGroup}>
           <button type="button" className={styles.clearBtn} onClick={handleClear}>
             Clear

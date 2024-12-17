@@ -1,0 +1,32 @@
+.questionCard {
+    background-color: #f1f3fa;
+    padding: 12px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+  
+  .questionText {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+    flex: 1;
+  }
+  
+  .editableInput {
+    font-size: 14px;
+    padding: 6px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .cardActions {
+    display: flex;
+    gap: 8px;
+  }
+  
