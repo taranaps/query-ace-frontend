@@ -11,6 +11,7 @@ const createJestConfig = nextJest({
 })
 
 
+
 const config: Config = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
@@ -41,7 +42,11 @@ const config: Config = {
   // Indicates which provider should be used to instrument code for coverage
   coverageProvider: 'v8',
   testEnvironment: 'jsdom',
+  moduleNameMapper: {
+    '^@app/(.*)$': '<rootDir>/src/app/$1', // Adjust path according to your project structure
+  },
 
+  
 
   // A list of reporter names that Jest uses when writing coverage reports
   // coverageReporters: [
@@ -145,8 +150,9 @@ const config: Config = {
   // setupFiles: [],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  // setupFilesAfterEnv: [],
-
+  
+  
+  
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,
 
