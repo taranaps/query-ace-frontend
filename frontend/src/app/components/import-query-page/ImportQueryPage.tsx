@@ -102,9 +102,11 @@ const ImportQueryPage = () => {
               createdBy={card.createdBy}
               createdAt={card.createdAt}
               description={card.description}
+              deleteOn={true}
+              editOn={true}
+              copyOn={false}
               onDelete={handleDelete}
               onEdit={handleEdit}
-              onCopy={handleCopy}
             />
           ))
         ) : (

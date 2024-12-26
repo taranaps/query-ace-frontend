@@ -3,7 +3,7 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
-    padding: 16px;
+    padding: 24px;
     gap: 12px;
 }
 
@@ -13,7 +13,25 @@
     align-items: center;
 }
 
+.header h6 {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.header p {
+    font-size: 12px;
+    color: #B5B7C0;
+}
+
+.middleBody{
+    flex: 1;
+    width: 100%;
+    height: 100%;
+}
+
 .questionsContainer {
+    height: 100%;
+    width: 100%;
     flex: 1;
     overflow-y: auto;
     display: flex;
@@ -21,11 +39,34 @@
     gap: 12px;
 }
 
-.progressContainer {
-    margin-bottom: 16px;
+.questionsImage {
+    height: 100%;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.noAnswer{
+.questionsContainer img {
+    width: 280px;
+}
+
+.progressContainer {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.progressContainer p {
+    font-size: 12px;
+    color: #B5B7C0;
+}
+
+.noAnswer {
     height: 100%;
     width: 100%;
     display: flex;
@@ -57,19 +98,109 @@
 
 .footer {
     display: flex;
-    justify-content: flex-end;
-    padding: 12px;
+    justify-content: space-between;
+    padding: 0 12px;
     gap: 12px;
-    border-top: 1px solid #ddd;
 }
 
-.answersForm{
+.footerLeft{
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.footer a,
+.footer p {
+    font-size: 12px;
+    margin: 0;
+}
+
+.answersForm {
     background-color: #f1f3fa;
     border-radius: 4px;
 }
 
-.answersFormDiv{
+.answersFormDiv {
     display: flex;
     flex-direction: column;
     gap: 12px;
+}
+
+.searchBar {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+    justify-content: end;
+    width: 100%;
+}
+
+.searchBar p {
+    font-size: 12px;
+    color: #B5B7C0;
+}
+
+.searchBar .searchArea {
+    width: 12rem;
+    outline: none;
+    border: none;
+    background-color: #F9FBFF;
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+.question p {
+    font-size: 16px;
+}
+
+.ProgressBar {
+    flex: 1;
+    width: 100%;
+    height: 14px;
+    border-radius: 8px;
+    background-color: #e0e0e0;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative; /* For inner shadow and bar positioning */
+    overflow: hidden; /* Ensure rounded corners are visible */
+    
+
+    --progress-color: #4caf50;
+}
+
+.ProgressBar .bar {
+    height: 100%; /* Full height of the track */
+    width: 0%; /* Start with no progress */
+    background-color: var(--progress-color); /* Use the progress color */
+    border-radius: 5px; /* Make it rounded */
+    transition: width 0.3s ease; /* Smooth animation on progress change */
+}
+
+.customTableContainer{
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    box-shadow: none;
+    overflow-y: auto;
+}
+
+.customTable{
+    width: 100%;
+    box-shadow: none;
+}
+
+.customTableRow {
+    box-shadow: none;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 16px;
+    background-color: #ffffff;
+    margin: 8px 0;
+    border-radius: 8px;
+}
+
+.customTableRow p {
+    margin: 4px 0;
 }

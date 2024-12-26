@@ -1,4 +1,3 @@
-// src/app/pages/manage-accounts/page.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -8,7 +7,7 @@ import TableWrapper from "../../components/table/Table";
 import Pagination from "../../components/pagination/Pagination";
 import AddAdminPopup from "../../components/add-admin-popup/AddAdminPopup";
 
-import styles from "./ManageAccountsPage.module.css"
+import styles from "./ManageAccountsPage.module.css";
 
 const initialData: {
     name: string;
@@ -40,7 +39,7 @@ const ManageAccountsPage: React.FC = () => {
     const [sortOrder, setSortOrder] = useState<"newest" | "earliest">("newest");
     const [openPopup, setOpenPopup] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
+    const itemsPerPage = 8;
 
     const handleToggleStatus = (email: string, newStatus: boolean) => {
         const updatedData = data.map((item) => {
@@ -77,57 +76,49 @@ const ManageAccountsPage: React.FC = () => {
     );
 
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+    const startItem = (currentPage - 1) * itemsPerPage + 1;
+    const endItem = Math.min(currentPage * itemsPerPage, sortedData.length);
 
     return (
-        <div className="bg-white p-6 space-y-8 h-full flex-grow">
+        <div className={styles.container}>
             {/* First Section: Title, Search, Sort Filter */}
-            <div className="flex">
-                <h1 className="text-black text-[22px] font-semibold flex-grow">All Accounts</h1>
-                <div className="flex space-x-2">
+            <div className={styles.header}>
+                <h1 className={styles.title}>All Accounts</h1>
+                <div className={styles.searchSortContainer}>
                     <SearchBar
                         onChange={handleSearchChange}
-                        sx={{
-                            width: "216px",
-                            height: "40px",
-                        }} />
+                    />
                     <SortFilterButton
                         sortOrder={sortOrder}
-                        onSortChange={(newOrder: "newest" | "earliest") => setSortOrder(newOrder)}
-                        sx={{
-                            width: "216px",
-                            height: "40px",
-                            borderRadius: "10px", 
-                            marginLeft: 0,
-                        }} />
+                        onSortChange={(newOrder) => setSortOrder(newOrder)}
+                    />
                 </div>
             </div>
             {/* Second Section: Table */}
-            <div>
+            <div className={styles.tableData}>
                 <TableWrapper
                     data={paginatedData}
                     onToggleStatus={(email, newStatus) => handleToggleStatus(email, newStatus)}
-                    sx={{
-                        border: "none",
-                        "& .MuiTableCell-root": {
-                            fontSize: "14px",
-                            color: "#B5B7C0",
-                        },
-                    }}
-                    headerClassName="text-[#B5B7C0] font-medium text-[14px]"
-                    rowClassName="text-[#292D32] font-medium text-[14px]"
+                    headerClassName={styles.tableHeader}
+                    rowClassName={styles.tableRow}
                 />
             </div>
             {/* Third Section: Pagination and Add Account */}
-            <div className="flex justify-between">
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                />
-                <button
-                    className="bg-[#3070A4] text-white px-6 py-2 rounded-lg h-[44px] w-[150px] text-sm"
-                    onClick={handleAddAccount}
-                >
+            <div className={styles.footer}>
+                <div className={styles.paginationContainer}>
+
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
+                    <div className={styles.itemRange}>
+                        <p>
+                            Displaying {startItem}–{endItem} of {sortedData.length} accounts
+                        </p>
+                    </div>
+                </div>
+                <button className={styles.addAccountButton} onClick={handleAddAccount}>
                     + Add Account
                 </button>
             </div>

@@ -1,0 +1,58 @@
+.lottieIcon {
+    width: auto;
+    height: 24px;
+    padding: none;
+    margin: none;
+}
+
+.lottieButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    position: relative; 
+}
+
+.actionButton {
+    display: flex;
+    align-items: center;
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    color: #555;
+    border-radius: 4px;
+    transition: all 0.3s ease, color 0.3s ease;
+}
+
+.lottieButton:hover {
+    transition: all 0.3s ease, color 0.3s ease;
+}
+
+.buttonLabelContainer {
+    position: absolute;
+    bottom: 100%; 
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    padding: 5px 10px;
+    background-color: rgba(0, 0, 0, 0.8); 
+    color: white; 
+    border-radius: 5px; 
+    white-space: nowrap;
+    opacity: 0; 
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 10; 
+}
+
+.lottieButton:hover .buttonLabelContainer {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-10px);
+}
+
+.buttonLabel {
+    font-size: 0.9em;
+    color: #fff;
+    display: inline-block;
+}

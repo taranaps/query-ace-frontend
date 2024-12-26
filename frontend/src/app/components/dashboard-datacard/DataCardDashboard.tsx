@@ -1,8 +1,21 @@
 "use client";
 
 import React, { useState } from "react";
-import Button from "../button/Button";
+import LottieIconButton from "../lottie-animated-button/LottieIconButton"; // Import the LottieIconButton component
 import styles from "./datacard.module.css";
+
+// Import Lottie animations
+// import copyAnimation from "/assets/animatedIcons/edit.json";
+// import saveAnimation from "/assets/animatedIcons/edit.json";
+// import cancelAnimation from "/assets/animatedIcons/edit.json";
+// import editAnimation from "/assets/animatedIcons/edit.json";
+// import deleteAnimation from "/assets/animatedIcons/edit.json";
+
+import copyAnimation from "../../../../public/assets/animatedIcons/copy.json"
+import saveAnimation from "../../../../public/assets/animatedIcons/save.json"
+import cancelAnimation from "../../../../public/assets/animatedIcons/Close.json"
+import editAnimation from "../../../../public/assets/animatedIcons/editv2.json"
+import deleteAnimation from "../../../../public/assets/animatedIcons/delete.json"
 
 interface DataCardProps {
   id: number;
@@ -11,9 +24,11 @@ interface DataCardProps {
   createdBy: string;
   createdAt: string;
   description: string;
-  onDelete: (id: number) => void;
+  editOn: boolean;
+  deleteOn: boolean;
+  copyOn: boolean;
   onEdit: (id: number, newText: string, newDescription: string) => void;
-  onCopy: (text: string) => void;
+  onDelete: (id: number) => void;
 }
 
 const DataCardDashboard: React.FC<DataCardProps> = ({
@@ -23,9 +38,11 @@ const DataCardDashboard: React.FC<DataCardProps> = ({
   createdBy,
   createdAt,
   description,
-  onDelete,
+  editOn,
+  deleteOn,
+  copyOn,
   onEdit,
-  onCopy,
+  onDelete,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -36,18 +53,29 @@ const DataCardDashboard: React.FC<DataCardProps> = ({
   const handleCopy = () => {
     navigator.clipboard.writeText(editableText);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000); // Reset copied state after 2 seconds
+    setTimeout(() => setCopied(false), 2000);
   };
 
   // Handle Save Changes
   const handleSave = () => {
     setIsEditing(false);
-    onEdit(id, editableText, editableDescription); // Save new values
+    onEdit(id, editableText, editableDescription);
+  };
+
+  // Handle Edit
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  // Handle Cancel Edit
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditableText(text);
+    setEditableDescription(description);
   };
 
   return (
     <div className={styles.dataCard}>
-      {/* Editable Text and Description */}
       {isEditing ? (
         <div>
           <input
@@ -69,43 +97,49 @@ const DataCardDashboard: React.FC<DataCardProps> = ({
         </div>
       )}
 
-      {/* Footer */}
       <div className={styles.dataCardFooter}>
         <div className={styles.dataCardDetails}>
           <span>Customer: {customer}</span> | <span>Created By: {createdBy}</span> |{" "}
           <span>Date: {createdAt}</span>
         </div>
         <div className={styles.dataCardActions}>
-          {/* Delete Button */}
-          <Button
-            backgroundColor="#D64545"
-            label=""
-            onClick={() => onDelete(id)}
-            rightIconPath="/assets/icons/delete-white-small.png"
-          />
-          {/* Edit/Save Button */}
-          {isEditing ? (
-            <Button
-              backgroundColor="#6C9A8B"
-              label="Save"
-              onClick={handleSave}
-              rightIconPath="/assets/icons/save-white-small.png"
-            />
-          ) : (
-            <Button
-              backgroundColor="#6C9A8B"
-              label=""
-              onClick={() => setIsEditing(true)}
-              rightIconPath="/assets/icons/edit-white-small.png"
-            />
-          )}
-          {/* Copy Button */}
-          <Button
-            backgroundColor={copied ? "#4CAF50" : "#567899"} // Change color when copied
-            label={copied ? "Copied!" : ""}
-            onClick={handleCopy}
-            rightIconPath={copied ? "" : "/assets/icons/copy-white-small.png"} // Hide icon when copied
-          />
+          <div className={styles.dataCardActionButtons}>
+            {copyOn && (
+              <LottieIconButton
+                animationData={copyAnimation}
+                label="Copy"
+                onClick={handleCopy}
+              />
+            )}
+            {editOn &&
+              (isEditing ? (
+                <>
+                  <LottieIconButton
+                    animationData={saveAnimation}
+                    label="Save"
+                    onClick={handleSave}
+                  />
+                  <LottieIconButton
+                    animationData={cancelAnimation}
+                    label="Cancel"
+                    onClick={handleCancelEdit}
+                  />
+                </>
+              ) : (
+                <LottieIconButton
+                  animationData={editAnimation}
+                  label="Edit"
+                  onClick={handleEdit}
+                />
+              ))}
+            {deleteOn && (
+              <LottieIconButton
+                animationData={deleteAnimation}
+                label="Delete"
+                onClick={() => onDelete(id)}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -81,11 +81,18 @@ header {
   padding-left: 30px; /* Space for the vertical line */
 }
 
+.log-date{
+  color: #686565;
+  margin-top: 20px;
+  border-bottom: #686565 1px solid;
+}
+
 .log-item {
   position: relative;
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+  margin-left: 40px;
 }
 
 

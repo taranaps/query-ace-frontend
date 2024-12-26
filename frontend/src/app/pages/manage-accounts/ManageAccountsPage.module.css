@@ -1,33 +1,88 @@
-html, body {
-    overflow: hidden; 
+/* General container styles */
+.container {
+    background-color: white;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    height: 100%;
+    flex-grow: 1;
 }
 
-/* .tableContainer {
-    margin-top: 24px; 
-    box-shadow: none;
-    background-color: #ffffff; 
-    border: 1px solid #e0e0e0;
-    border-radius: 8px; 
-    overflow: hidden; 
-} */
+/* First Section: Title, Search, Sort Filter */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
-/* .paginationContainer {
-    margin-top: 16px; 
-} */
+.title {
+    color: black;
+    font-size: 22px;
+    font-weight: 600;
+    flex-grow: 1;
+}
 
-/* .manageAccountsContainer {
+.searchSortContainer {
+    display: flex;
+    gap: 8px;
+}
+
+.searchBar {
+    width: 216px;
+    height: 40px;
+}
+
+.sortFilterButton {
+    width: 216px;
+    height: 40px;
+    border-radius: 10px;
+    margin-left: 0;
+}
+
+.tableData{
+    flex: 1;
+}
+
+.tableHeader {
+    color: #b5b7c0;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.tableRow {
+    color: #292d32;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* Third Section: Pagination and Add Account */
+.footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-} */
+}
 
-/* .buttonsContainer {
+.addAccountButton {
+    background-color: #3070a4;
+    color: white;
+    padding: 8px 24px;
+    border-radius: 8px;
+    height: 44px;
+    width: 150px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+.paginationContainer{
+    padding: 12px;
     display: flex;
-    gap: 16px; 
-} */
+    align-items: center;
+    gap: 1rem;
+  }
 
-/* .buttonElement {
-    width: 200px;
-    height: 40px;
-} */
-
+  .itemRange{
+    font-size: 12px;
+    color: #9a9898;
+  }

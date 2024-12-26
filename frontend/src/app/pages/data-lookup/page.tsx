@@ -111,7 +111,9 @@ export default function QueryLookup() {
             customer={item.customer}
             createdAt={item.createdAt}
             createdBy={item.createdBy}
-            onCopy={handleCopy}
+            editOn={true}
+            deleteOn={true}
+            copyOn={true}
             onEdit={handleEdit}
             onDelete={handleDelete}
           />
