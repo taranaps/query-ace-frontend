@@ -1,57 +1,67 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { systemLogs, adminList } from "@/app/components/Data/system-log";
-// import styles from "./Components/filter.module.css";
 import Filter from "@/app/components/filter/filter";
-import "./page.css";
-
+import styles from "./systemLog.module.css";
 
 const SystemLog: React.FC = () => {
   const [filteredLogs, setFilteredLogs] = useState(systemLogs);
+  const [visibleIndexes, setVisibleIndexes] = useState<number[]>([]);
 
-  const handleFilterChange = (selectedAdmins: string[]) => {
-    if (selectedAdmins.length === 0) {
-      setFilteredLogs(systemLogs); // Reset to all logs if no filters
-    } else {
-      setFilteredLogs(
-        systemLogs.filter((log) => selectedAdmins.includes(log.user))
-      );
-    }
-  };
+  const logs = [
+    { date: "2024-12-25", text: "User Arun Kumar added Manoj Kumar as Admin" },
+    { date: "2024-12-24", text: "Sreehari Narayanan edited query C001" },
+    { date: "2024-12-23", text: "Parvathy Eeshwar removed Arun Mathew from Admin" },
+    { date: "2024-12-23", text: "Parvathy Eeshwar removed Arun Mathew from Admin" },
+    { date: "2024-12-23", text: "Parvathy Eeshwar removed Arun Mathew from Admin" },
+    { date: "2024-12-23", text: "Parvathy Eeshwar removed Arun Mathew from Admin" },
+    { date: "2024-12-23", text: "Parvathy Eeshwar removed Arun Mathew from Admin" },
+  ];
+
+  useEffect(() => {
+    let index = 0;
+
+    // We will add a slight delay to each interval
+    const interval = setInterval(() => {
+      setVisibleIndexes((prev) => {
+        const newVisibleIndexes = [...prev, index];
+        console.log("Visible Indexes:", newVisibleIndexes); // Debugging visible indexes
+        return newVisibleIndexes;
+      });
+      index++;
+      if (index >= logs.length) clearInterval(interval);
+    }, 300); // Increased delay to 300ms between each item
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, [logs.length]); // Dependency on `logs.length` to handle dynamic log length
 
   return (
-    <div className="container">
-      <div className="sidebar">
-        {/* Sidebar navigation (optional) */}
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.headerLeft}>
+          <h6>System Log</h6>
+          <p>Actions done by admins</p>
+        </div>
+        <div className={styles.headerRight}>
+          <Filter admins={adminList} onFilterChange={() => {}} />
+        </div>
       </div>
 
-      <div className="content">
-        <header>
-          <h1>System Log</h1>
-          <Filter admins={adminList} onFilterChange={handleFilterChange} />
-        </header>
-
-        <div className="logs">
-          {filteredLogs.map((log, index) => (
-            <div className="log-item" key={index}>
-              <span className="time">{log.time}</span>
-              <div className="circle"></div>
-              <div>
-                <span className="user">&nbsp; &nbsp;{log.user}</span>
-                <span className="action">
-                  {log.action === "Edited" ? (
-                    <a href="#">{log.action}</a>
-                  ) : (
-                    <>{log.action}</>
-                  )}
-                </span>
-                <span className="details">{log.details} &nbsp;</span>
-                <span className="actionTypes">{log.actionTypes}</span>
-              </div>
-            </div>
-          ))}
-        </div>
+      <div className={styles.content}>
+        {logs.map((log, index) => (
+          <div
+            key={index}
+            className={`${styles.logItem} ${
+              visibleIndexes.includes(index) ? styles.visible : ""
+            }`}
+          >
+            <span className={styles.date}>{log.date}</span>
+            <div className={styles.circle}></div>
+            <span className={styles.text}>{log.text}</span>
+            {index < logs.length - 1 && <div className={styles.line}></div>}
+          </div>
+        ))}
       </div>
     </div>
   );
