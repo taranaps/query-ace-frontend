@@ -11,7 +11,7 @@ import styles from "./datacard.module.css";
 // import editAnimation from "/assets/animatedIcons/edit.json";
 // import deleteAnimation from "/assets/animatedIcons/edit.json";
 
-import copyAnimation from "../../../../public/assets/animatedIcons/copy.json"
+import copyAnimation from "../../../../public/assets/animatedIcons/copyv3.json"
 import saveAnimation from "../../../../public/assets/animatedIcons/save.json"
 import cancelAnimation from "../../../../public/assets/animatedIcons/Close.json"
 import editAnimation from "../../../../public/assets/animatedIcons/editv2.json"
@@ -77,7 +77,7 @@ const DataCardDashboard: React.FC<DataCardProps> = ({
   return (
     <div className={styles.dataCard}>
       {isEditing ? (
-        <div>
+        <div className={styles.dataCardTop}>
           <input
             type="text"
             value={editableText}
@@ -91,7 +91,7 @@ const DataCardDashboard: React.FC<DataCardProps> = ({
           />
         </div>
       ) : (
-        <div>
+        <div className={styles.dataCardTop}>
           <p className={styles.dataCardText}>{editableText}</p>
           <p className={styles.dataCardDescription}>{editableDescription}</p>
         </div>

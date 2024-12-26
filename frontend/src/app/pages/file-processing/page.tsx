@@ -142,19 +142,17 @@ const FileProcessingPage: React.FC = () => {
                         </div>
                         <div className={styles.headerRight}>
                             <label htmlFor="fileInput">
-                                <Button variant="contained" color="primary">
-                                    Import
+                                <Button variant="contained" component="span">
+                                    Import File
                                 </Button>
+                                <input
+                                    id="fileInput"
+                                    type="file"
+                                    hidden
+                                    accept=".xlsx, .xls"
+                                    onChange={handleFileChange}
+                                />
                             </label>
-                            <input
-                                id="fileInput"
-                                type="file"
-                                // hidden
-                                accept=".xlsx, .xls"
-                                onChange={handleFileChange}
-                            />
-
-
                         </div>
                     </div>
 
