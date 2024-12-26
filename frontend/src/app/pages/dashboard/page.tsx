@@ -108,9 +108,11 @@ const Dashboard: React.FC = () => {
                 createdBy={data.createdBy}
                 createdAt={data.createdAt}
                 description={data.description}
+                deleteOn={true}
+                editOn={true}
+                copyOn={true}
                 onDelete={handleDelete}
                 onEdit={handleEdit}
-                onCopy={handleCopy}
               />
             ))
           ) : (

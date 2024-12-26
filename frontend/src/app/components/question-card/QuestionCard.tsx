@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Button from "../button/Button";
+import CustomButton from "../custom-button/CustomButton";
 import styles from "./questioncard.module.css";
 
 interface QuestionCardProps {
@@ -39,14 +39,14 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ id, text, onDelete, onEdit 
       <div className={styles.cardActions}>
         {/* Edit/Save Button */}
         {isEditing ? (
-          <Button
+          <CustomButton
             backgroundColor="#6C9A8B"
-            label="Save"
+            label=""
             onClick={handleSave}
             rightIconPath="/assets/icons/save-white-small.png"
           />
         ) : (
-          <Button
+          <CustomButton
             backgroundColor="#6C9A8B"
             label=""
             onClick={() => setIsEditing(true)}
@@ -55,9 +55,9 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ id, text, onDelete, onEdit 
         )}
 
         {/* Delete Button */}
-        <Button
+        <CustomButton
           backgroundColor="#D64545"
-          label=""
+          label="Delete"
           onClick={() => onDelete(id)}
           rightIconPath="/assets/icons/delete-white-small.png"
         />

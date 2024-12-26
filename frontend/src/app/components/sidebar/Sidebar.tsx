@@ -19,7 +19,6 @@ const Sidebar = React.memo(() => {
         { navigationPath: '/file-processing', iconPath: '/assets/icons/file-processing-icon.svg', label: 'File Processing' },
         { navigationPath: '/manage-accounts', iconPath: '/assets/icons/manage-accounts-icon.svg', label: 'Manage Accounts' },
         { navigationPath: '/data-lookup', iconPath: '/assets/icons/data-lookup-icon.svg', label: 'Data Lookup' },
-        { navigationPath: '/insights', iconPath: '/assets/icons/insights-icon.svg', label: 'Insights' },
         { navigationPath: '/system-log', iconPath: '/assets/icons/system-log-icon.svg', label: 'System Log' },
     ];
 
@@ -77,7 +76,7 @@ const Sidebar = React.memo(() => {
                     onClick={() => navigateTo('/logout', navItems.length)}
                 >
                     <img
-                        src="/asstes/icons/logout-icon.svg"
+                        src="/assets/icons/logout-icon.svg"
                         alt=""
                         className={styles['sidebar-nav-item-icon']}
                     />

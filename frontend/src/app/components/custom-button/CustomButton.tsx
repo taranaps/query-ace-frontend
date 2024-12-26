@@ -11,7 +11,7 @@ interface ButtonProps {
   label: string;
 }
 
-const Button: React.FC<ButtonProps> = ({
+const CustomButton: React.FC<ButtonProps> = ({
   leftIconPath,
   rightIconPath,
   backgroundColor,
@@ -35,4 +35,4 @@ const Button: React.FC<ButtonProps> = ({
   );
 };
 
-export default Button;
+export default CustomButton;
