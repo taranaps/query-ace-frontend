@@ -6,6 +6,7 @@ import { systemLogs, adminList } from "@/app/components/Data/system-log";
 import Filter from "@/app/components/filter/filter";
 import "./page.css";
 
+
 const SystemLog: React.FC = () => {
   const [filteredLogs, setFilteredLogs] = useState(systemLogs);
 

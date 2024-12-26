@@ -1,0 +1,38 @@
+.dataCard {
+    background-color: #F1F3FA;
+    padding: 12px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+  
+  .dataCardText {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  
+  .dataCardDescription {
+    font-size: 14px;
+    color: #4a4a4a;
+  }
+  
+  .dataCardFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #9e9e9e;
+  }
+  
+  .dataCardDetails {
+    display: flex;
+    gap: 4px;
+  }
+  
+  .dataCardActions {
+    display: flex;
+    gap: 8px;
+  }
+  

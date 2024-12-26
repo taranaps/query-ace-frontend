@@ -1,16 +1,28 @@
 /* Container for page */
 
+.container{
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
 
+.whiteBox{
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
 
 
 
 /* Navbar container style */
 .navBar {
-    display: flex;
-    border-bottom: 1px solid #ddd;
+    display: flex;   
     background-color: white; 
-    width: 800px;
-    /* Make navbar white so it's attached to the white box */
+    width: 100%;
     width: 100%;
    
 }
@@ -18,6 +30,9 @@
 
 /* Tab style for navigation */
 .navTab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex: 1;
     padding: 10px;
     background-color: #f0f0f0;
@@ -28,8 +43,8 @@
     font-size: 16px;
     transition: 0.3s;
     position: relative;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
     
 }
 
@@ -37,7 +52,7 @@
 /* Active tab style */
 .navTab.active {
     background-color: white;
-    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1); /* Raised effect for active tab */
+    /* Raised effect for active tab */
     transform: translateY(-5px); /* Raised effect */
 }
 
@@ -53,6 +68,11 @@
 .content {
     padding: 20px;
     font-size: 16px;
+    width: 100%;
+    height: 100%;;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 
@@ -61,6 +81,9 @@
     font-size: 18px;
     font-weight: bold;
     text-align: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
     
 }
 

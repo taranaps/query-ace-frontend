@@ -20,8 +20,8 @@ interface TableWrapperProps {
     }[];
     onToggleStatus: (email: string, newStatus: boolean) => void;
     sx?: object;
-    headerClassName?: string; // Add headerClassName
-    rowClassName?: string;    // Add rowClassName
+    headerClassName?: string; 
+    rowClassName?: string;   
 }
 
 const TableWrapper: React.FC<TableWrapperProps> = ({
@@ -35,11 +35,11 @@ const TableWrapper: React.FC<TableWrapperProps> = ({
         <TableContainer
             sx={{
                 ...sx,
-                border: "none",         // Removes border around table
-                boxShadow: "none",      // Removes box shadow
+                border: "none",         
+                boxShadow: "none",      
                 "& .MuiTableCell-root": {
-                    // border: "none",    // Removes cell borders
-                    padding: "8px",     // Adjust padding if needed
+                    
+                    padding: "8px",     
                 },
             }}
         >
@@ -56,7 +56,7 @@ const TableWrapper: React.FC<TableWrapperProps> = ({
                 <TableBody>
                     {data.map((row) => (
                         <TableRow
-                            key={`${row.name}-${row.timestamp}`} // Ensure unique key for each row
+                            key={`${row.name}-${row.timestamp}`} 
                             name={row.name}
                             email={row.email}
                             location={row.location}
@@ -64,8 +64,8 @@ const TableWrapper: React.FC<TableWrapperProps> = ({
                             isActive={row.isActive}
                             rowClassName={rowClassName}
                             onToggle={(newStatus) => {
-                                console.log(`Email: ${row.email}, Toggle to: ${newStatus}`); // Debug
-                                onToggleStatus(row.email, newStatus); // Pass email instead of index
+                                console.log(`Email: ${row.email}, Toggle to: ${newStatus}`); 
+                                onToggleStatus(row.email, newStatus); 
                             }}
                         />
                     ))}

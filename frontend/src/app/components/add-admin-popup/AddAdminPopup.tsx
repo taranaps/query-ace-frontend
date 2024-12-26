@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import Textfield from "../text-field/TextField"; // Adjust the path to your custom Textfield component
 
 interface AddAdminPopupProps {
     onClose: () => void;
@@ -12,9 +13,8 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ onClose }) => {
         location: "",
     });
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        setFormData({ ...formData, [name]: value });
+    const handleInputChange = (field: string, value: string) => {
+        setFormData({ ...formData, [field]: value });
     };
 
     const handleCreate = () => {
@@ -31,39 +31,35 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ onClose }) => {
             <DialogTitle>Add Admin</DialogTitle>
             <DialogContent>
                 <Box display="flex" flexDirection="column" gap={2}>
-                    <TextField
-                        name="fullName"
+                    <Textfield
                         label="Full Name"
-                        variant="outlined"
-                        fullWidth
+                        placeholder="Enter full name"
                         value={formData.fullName}
-                        onChange={handleInputChange}
+                        onChange={(value) => handleInputChange("fullName", value)}
                     />
-                    <TextField
-                        name="email"
+                    <Textfield
                         label="Email"
-                        variant="outlined"
-                        fullWidth
+                        placeholder="Enter email"
                         value={formData.email}
-                        onChange={handleInputChange}
+                        onChange={(value) => handleInputChange("email", value)}
                     />
-                    <TextField
-                        name="location"
+                    <Textfield
                         label="Location"
-                        variant="outlined"
-                        fullWidth
+                        placeholder="Enter location"
                         value={formData.location}
-                        onChange={handleInputChange}
+                        onChange={(value) => handleInputChange("location", value)}
                     />
                 </Box>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} variant="outlined" color="secondary">
-                    Cancel
-                </Button>
-                <Button onClick={handleCreate} variant="contained" color="success">
-                    Create
-                </Button>
+                <Box display="flex" gap={1} justifyContent="flex-start">
+                    <Button onClick={onClose} variant="outlined" color="secondary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleCreate} variant="contained" color="success">
+                        Create
+                    </Button>
+                </Box>
             </DialogActions>
         </Dialog>
     );
