@@ -1,0 +1,60 @@
+.popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popupContent {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.popupHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.popupDetails {
+    margin-bottom: 16px;
+}
+
+.answerList {
+    list-style: none;
+    padding: 0;
+}
+
+.answerItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    background: #f9f9f9;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.answerItem p {
+    margin: 0;
+}
+
+.answerItem button {
+    margin-left: 8px;
+}
+
+
+.answerContainer {
+    height: 40vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}

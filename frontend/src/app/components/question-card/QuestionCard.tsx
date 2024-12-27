@@ -4,6 +4,12 @@ import React, { useState } from "react";
 import CustomButton from "../custom-button/CustomButton";
 import styles from "./questioncard.module.css";
 
+import editAnimation from "../../../../public/assets/animatedIcons/editv2.json";
+import deleteAnimation from "../../../../public/assets/animatedIcons/delete.json";
+import saveAnimation from "../../../../public/assets/animatedIcons/save.json";
+import cancelAnimation from "../../../../public/assets/animatedIcons/Close.json";
+import LottieIconButton from "../lottie-animated-button/LottieIconButton";
+
 interface QuestionCardProps {
   id: number;
   text: string;
@@ -12,13 +18,25 @@ interface QuestionCardProps {
 }
 
 const QuestionCard: React.FC<QuestionCardProps> = ({ id, text, onDelete, onEdit }) => {
+
   const [isEditing, setIsEditing] = useState(false);
-  const [editableText, setEditableText] = useState(text);
+  const [editableQuestion, setEditableQuestion] = useState(text);
 
   // Handle Save Changes
   const handleSave = () => {
     setIsEditing(false);
-    onEdit(id, editableText); // Save the updated text
+    onEdit(id, editableQuestion);
+  };
+
+  // Handle Edit
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  // Handle Cancel Edit
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditableQuestion(text);
   };
 
   return (
@@ -27,40 +45,43 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ id, text, onDelete, onEdit 
       {isEditing ? (
         <input
           type="text"
-          value={editableText}
-          onChange={(e) => setEditableText(e.target.value)}
+          value={editableQuestion}
+          onChange={(e) => setEditableQuestion(e.target.value)}
           className={styles.editableInput}
         />
       ) : (
-        <p className={styles.questionText}>{editableText}</p>
+        <p className={styles.questionText}>{editableQuestion}</p>
       )}
 
       {/* Actions (Edit/Save and Delete Buttons) */}
       <div className={styles.cardActions}>
-        {/* Edit/Save Button */}
-        {isEditing ? (
-          <CustomButton
-            backgroundColor="#6C9A8B"
-            label=""
-            onClick={handleSave}
-            rightIconPath="/assets/icons/save-white-small.png"
+        <div className={styles.dataCardActionButtons}>
+          {isEditing ? (
+            <>
+              <LottieIconButton
+                animationData={saveAnimation}
+                label="Save"
+                onClick={handleSave}
+              />
+              <LottieIconButton
+                animationData={cancelAnimation}
+                label="Cancel"
+                onClick={handleCancelEdit}
+              />
+            </>
+          ) : (
+            <LottieIconButton
+              animationData={editAnimation}
+              label="Edit"
+              onClick={handleEdit}
+            />
+          )}
+          <LottieIconButton
+            animationData={deleteAnimation}
+            label="Delete"
+            onClick={() => onDelete(id)}
           />
-        ) : (
-          <CustomButton
-            backgroundColor="#6C9A8B"
-            label=""
-            onClick={() => setIsEditing(true)}
-            rightIconPath="/assets/icons/edit-white-small.png"
-          />
-        )}
-
-        {/* Delete Button */}
-        <CustomButton
-          backgroundColor="#D64545"
-          label="Delete"
-          onClick={() => onDelete(id)}
-          rightIconPath="/assets/icons/delete-white-small.png"
-        />
+        </div>
       </div>
     </div>
   );

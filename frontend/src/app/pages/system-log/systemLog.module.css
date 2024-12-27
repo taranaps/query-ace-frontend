@@ -105,3 +105,7 @@
 .logItem.visible .line {
   opacity: 1;
 }
+
+.spaceAfterCircle{
+  width: 24px;
+}
