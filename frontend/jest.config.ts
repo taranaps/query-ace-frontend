@@ -10,6 +10,7 @@ const createJestConfig = nextJest({
   dir: './',
 });
 
+
 const config: Config = {
   // All imported modules in your tests should be mocked automatically (optional)
   // automock: false,
@@ -42,6 +43,9 @@ const config: Config = {
 
   // Test environment (set to 'jsdom' for browser-like testing)
   testEnvironment: 'jsdom',
+  moduleNameMapper: {
+    '^@app/(.*)$': '<rootDir>/src/app/$1', // Adjust path according to your project structure
+  },
 
   // Configure Jest to use the matchers from @testing-library/jest-dom
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],

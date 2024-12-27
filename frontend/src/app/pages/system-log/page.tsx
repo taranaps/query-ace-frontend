@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { systemLogs, adminList } from "@/app/components/Data/system-log";
+import { systemLogs, adminList} from "../../components/Data/system-log";
 import Filter from "@/app/components/filter/filter";
 import styles from "./systemLog.module.css";
 
