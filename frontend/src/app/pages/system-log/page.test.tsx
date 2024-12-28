@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+                                                                                                                                                                                                                                        import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import SystemLog from './page'; // Replace with the actual import path of your component
 
 describe('SystemLog Component', () => {
