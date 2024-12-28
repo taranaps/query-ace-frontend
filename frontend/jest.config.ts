@@ -46,7 +46,7 @@ const config: Config = {
     '^@app/(.*)$': '<rootDir>/src/app/$1', // Adjust path according to your project structure
   },
 
-  
+
 
   // A list of reporter names that Jest uses when writing coverage reports
   // coverageReporters: [
