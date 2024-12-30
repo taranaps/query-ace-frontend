@@ -15,10 +15,9 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ id, text, onDelete, onEdit 
   const [isEditing, setIsEditing] = useState(false);
   const [editableText, setEditableText] = useState(text);
 
-  // Handle Save Changes
   const handleSave = () => {
     setIsEditing(false);
-    onEdit(id, editableText); // Save the updated text
+    onEdit(id, editableText); 
   };
 
   return (

@@ -1,4 +1,3 @@
-/* placeholder.css */
 .container {
   display: flex;
   flex-direction: column;
@@ -10,7 +9,7 @@
   background-color: #ffffff;
   height: auto;
   padding: 20px;
-  margin-top: 30px; /* Adjusts spacing below the header */
+  margin-top: 30px; 
 }
 
 .clipboard_img {

@@ -5,10 +5,8 @@ import DataCardDashboard from '@/app/components/dashboard-datacard/DataCardDashb
 import styles from './dashboard.module.css';
 
 const Dashboard: React.FC = () => {
-  // State for search query
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // Data Cards
   const dataCards = [
     {
       id: 1,
@@ -52,7 +50,6 @@ const Dashboard: React.FC = () => {
     },
   ];
 
-  // Filter data based on the search query
   const filteredDataCards = searchQuery
     ? dataCards.filter((data) => {
         const lowerCaseQuery = searchQuery.toLowerCase();
@@ -64,14 +61,12 @@ const Dashboard: React.FC = () => {
           data.description.toLowerCase().includes(lowerCaseQuery)
         );
       })
-    : []; // If searchQuery is empty, no data cards will be shown
+    : []; 
 
-  // Handle search input change
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
-  // Handle delete, edit, and copy actions
   const handleDelete = (id: number) => console.log(`Delete card with id: ${id}`);
   const handleEdit = (id: number) => console.log(`Edit card with id: ${id}`);
   const handleCopy = (text: string) => console.log(`Copied text: ${text}`);
@@ -116,7 +111,6 @@ const Dashboard: React.FC = () => {
               />
             ))
           ) : (
-            // Show message or image when no data matches the search query
             searchQuery !== '' && (
               <div className={styles['image-placeholder']}>
                 <img src="/assets/images/dashboard-clipboard.png" alt="No Results" />
