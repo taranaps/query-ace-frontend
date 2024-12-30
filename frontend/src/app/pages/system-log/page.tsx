@@ -22,19 +22,18 @@ const SystemLog: React.FC = () => {
   useEffect(() => {
     let index = 0;
 
-    // We will add a slight delay to each interval
     const interval = setInterval(() => {
       setVisibleIndexes((prev) => {
         const newVisibleIndexes = [...prev, index];
-        console.log("Visible Indexes:", newVisibleIndexes); // Debugging visible indexes
+        console.log("Visible Indexes:", newVisibleIndexes); 
         return newVisibleIndexes;
       });
       index++;
       if (index >= logs.length) clearInterval(interval);
-    }, 300); // Increased delay to 300ms between each item
+    }, 300); 
 
-    return () => clearInterval(interval); // Cleanup interval on component unmount
-  }, [logs.length]); // Dependency on `logs.length` to handle dynamic log length
+    return () => clearInterval(interval);
+  }, [logs.length]); 
 
   return (
     <div className={styles.container}>

@@ -35,14 +35,14 @@ const LoginPage: React.FC = () => {
             const data = await response.json();
 
             if (response.ok) {
-                login(data.data); // Assuming the token is returned in 'data'
+                login(data.data); 
                 alert('Logged in Successfully!');
-                router.push('/dashboard'); // Redirect to dashboard
+                router.push('/dashboard'); 
             } else {
                 alert(`Error: ${data.message}`);
             }
         } catch (error) {
-            console.error('Login Error:', error); // Log the error for debugging
+            console.error('Login Error:', error); 
             alert('An error occurred. Please try again.');
         }
     };
