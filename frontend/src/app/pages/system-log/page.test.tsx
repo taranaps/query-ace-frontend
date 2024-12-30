@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import SystemLog from './page'; // Replace with the actual import path of your component
+import SystemLog from './page'; 
 
 describe('SystemLog Component', () => {
   test('filters logs based on selected admin', async () => {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
-import Textfield from "../text-field/TextField"; // Adjust the path to your custom Textfield component
+import Textfield from "../text-field/TextField"; 
 
 interface AddAdminPopupProps {
     onClose: () => void;
@@ -19,8 +19,8 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ onClose }) => {
 
     const handleCreate = () => {
         if (formData.fullName && formData.email && formData.location) {
-            console.log("New Admin Created:", formData); // Replace this with actual logic
-            onClose(); // Close popup after creating the account
+            console.log("New Admin Created:", formData); 
+            onClose(); 
         } else {
             alert("Please fill all fields before creating an account.");
         }
