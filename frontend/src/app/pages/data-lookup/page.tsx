@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import DataCardWithQuestions from "@/app/components/datacard-with-question/dataCardWithQuestion";
+import DataCardDashboard from "@/app/components/dashboard-datacard/DataCardDashboard"; // Import the correct DataCardDashboard
 import Pagination from "@/app/components/pagination/Pagination";
 import styles from "./datalookup.module.css";
 import DataPopup from "@/app/components/data-popup/DataPopup";
 import fetchQueriesQuestions from "@/app/api/questioncard/fetchQueriesQuestions";
 import fetchQueryWithAnswers from "@/app/api/questioncard/fetchQueryAnswers";
+
 export default function QueryLookup() {
   const [data, setData] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -32,7 +33,6 @@ export default function QueryLookup() {
     fetchData();
   }, []);
 
-  // Paginate data
   const paginatedData = data.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -49,9 +49,7 @@ export default function QueryLookup() {
     setIsPopupOpen(true);
 
     try {
-
-
-      const fetchedData = await fetchQueryWithAnswers(1);
+      const fetchedData = await fetchQueryWithAnswers(item.id);
       if (fetchedData && fetchedData.answers) {
         setAnswers(fetchedData.answers);
       } else {
@@ -66,7 +64,7 @@ export default function QueryLookup() {
 
   return (
     <div className={styles.dataLookupContainer}>
-      {/* Header */}
+
       <div className={styles.headerRow}>
         <h2 className={styles.headerTitle}>Query Lookup</h2>
       </div>
@@ -74,25 +72,25 @@ export default function QueryLookup() {
       {/* Data Display */}
       <div className={styles.dataItems}>
         {paginatedData.map((item, index) => (
-          <DataCardWithQuestions
-            key={item?.id || index} // Use a unique ID if available
+          <DataCardDashboard
+            key={item.id}
+            id={item.id}
             question={item.question || "No question provided"}
+            answer={item.answer || "No answer provided"}
+            customer={item.customer || "Unknown"} 
             createdBy={item.usersUsername || "Unknown"}
-            tags={(item.tags || []).map(
-              (tag: any) => `${tag.tagGroup || "Group"}: ${tag.tagName || "Tag"}`
-            )} // Ensure tags is an array of strings
-            id={item?.id || index}
-            onEdit={() => { /* Add edit functionality if required */ }}
-            copyOn={true}
-            editOn={true}
-            deleteOn={true}
+            createdAt={item.createdAt || "Unknown"}
+            tags={(item.tags || [])}
+            editOn={true} 
+            deleteOn={true} 
+            copyOn={true} 
+            onEdit={(id, newQuestion, newAnswer) => { console.log(id, newQuestion, newAnswer); }}
             onDelete={() => handleDelete(index)}
-            onClick={() => handleCardClick(item)} // Handle card click
+            onClick={() => handleCardClick(item)}
           />
         ))}
       </div>
 
-      {/* Pagination */}
       <div className={styles.paginationContainer}>
         <Pagination
           currentPage={currentPage}
@@ -107,18 +105,20 @@ export default function QueryLookup() {
         </div>
       </div>
 
-      {/* Popup */}
       {isPopupOpen && selectedItem && (
         <DataPopup
           data={{
             ...selectedItem,
-            answers: answers, // Pass the fetched answers to the popup
-            tags: selectedItem.tags || [], // Provide a default empty array for tags
+            answers: answers,
+            tags: selectedItem.tags || [],
           }}
           onClose={() => {
             setIsPopupOpen(false);
-            setAnswers([]); // Clear answers when popup closes
+            setSelectedItem(null);
+            setAnswers([]);
           }}
+          onDelete={() => { }}
+          onEdit={() => { }}
         />
       )}
     </div>

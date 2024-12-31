@@ -1,4 +1,9 @@
-export default async function postQueryWithAnswers(data: any) {
+import QuestionData from "@/app/components/interface/query/queryQuestionInterface";
+
+
+export default async function postQueryWithoutAnswers(
+  questionData: QuestionData[],
+) {
   const url = 'http://localhost:8080/api/v1/queryapplication/queries';
 
   try {
@@ -7,14 +12,14 @@ export default async function postQueryWithAnswers(data: any) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(questionData),
     });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    return await response.json(); // Return the response body if needed
+    return await response.json();
   } catch (error) {
     throw new Error(`Failed to post data`);
   }

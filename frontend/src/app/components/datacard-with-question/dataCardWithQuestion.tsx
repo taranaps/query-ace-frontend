@@ -71,6 +71,7 @@ const DataCardWithQuestions: React.FC<DataCardProps> = ({
         <div
             className={styles.dataCard}
             onClick={onClick}
+
         >
             {isEditing ? (
                 <div className={styles.dataCardTop}>
