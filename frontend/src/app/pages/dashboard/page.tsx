@@ -50,8 +50,6 @@ const Dashboard: React.FC = () => {
     },
   ];
 
-  // constants/tags.js
-
   const TAGS = [
     {
       tagName: "Technology",
@@ -68,9 +66,6 @@ const Dashboard: React.FC = () => {
 
   ];
 
-
-
-  // Filter data based on the search query
   const filteredDataCards = searchQuery
     ? dataCards.filter((data) => {
       const lowerCaseQuery = searchQuery.toLowerCase();

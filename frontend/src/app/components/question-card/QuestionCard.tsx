@@ -22,18 +22,15 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ id, text, onDelete, onEdit 
   const [isEditing, setIsEditing] = useState(false);
   const [editableQuestion, setEditableQuestion] = useState(text);
 
-  // Handle Save Changes
   const handleSave = () => {
     setIsEditing(false);
     onEdit(id, editableQuestion);
   };
 
-  // Handle Edit
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  // Handle Cancel Edit
   const handleCancelEdit = () => {
     setIsEditing(false);
     setEditableQuestion(text);
@@ -41,7 +38,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ id, text, onDelete, onEdit 
 
   return (
     <div className={styles.questionCard}>
-      {/* Editable Text */}
+
       {isEditing ? (
         <input
           type="text"
@@ -53,7 +50,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ id, text, onDelete, onEdit 
         <p className={styles.questionText}>{editableQuestion}</p>
       )}
 
-      {/* Actions (Edit/Save and Delete Buttons) */}
+
       <div className={styles.cardActions}>
         <div className={styles.dataCardActionButtons}>
           {isEditing ? (

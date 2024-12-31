@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import LottieIconButton from "../lottie-animated-button/LottieIconButton"; // Import the LottieIconButton component
+import LottieIconButton from "../lottie-animated-button/LottieIconButton"; 
 import styles from "./datacard.module.css";
 
 import copyAnimation from "../../../../public/assets/animatedIcons/copyv3.json";
@@ -30,7 +30,7 @@ const MAX_QUESTION_WORDS = 20;
 const MAX_ANSWER_WORDS = 40;
 
 const truncateText = (text: string | undefined, limit: number): string => {
-  if (!text) return ""; // Return an empty string if text is undefined or null
+  if (!text) return ""; 
   const words = text.split(" ");
   return words.length > limit ? `${words.slice(0, limit).join(" ")}...` : text;
 };
@@ -51,6 +51,7 @@ const DataCardDashboard: React.FC<DataCardProps> = ({
   onClick
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+
   const [editableQuestion, setEditableQuestion] = useState(question);
   const [editableAnswer, setEditableAnswer] = useState(answer);
 

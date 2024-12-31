@@ -32,7 +32,7 @@ const FileProcessingPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<"import" | "questions" | "result">("import");
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: string }>({});
-    const [searchQuery, setSearchQuery] = useState<string>(""); // State for search query
+    const [searchQuery, setSearchQuery] = useState<string>(""); 
 
     const dummyAnswers = [
         "Corporate culture refers to the shared values, beliefs, and practices that define an organization.",

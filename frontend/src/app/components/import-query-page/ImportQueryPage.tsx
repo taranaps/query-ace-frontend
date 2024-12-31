@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import * as XLSX from 'xlsx'; // Import the xlsx library
+
+import * as XLSX from 'xlsx'; 
 import row from 'xlsx'
 import { Box, Button, Typography } from '@mui/material';
 import DataCardDashboard from '../dashboard-datacard/DataCardDashboard';
@@ -21,7 +22,6 @@ const ImportQueryPage = () => {
   const [dataCards, setDataCards] = useState<DataCard[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  // Handle file change (Excel file upload)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
     setFile(selectedFile);
@@ -35,21 +35,22 @@ const ImportQueryPage = () => {
         const worksheet = workbook.Sheets[firstSheetName];
 
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-        // Define the type for a row in the Excel sheet
+       
         type ExcelRow = (string | number | undefined)[];
+
 
         const processedData: DataCard[] = (jsonData as ExcelRow[]).slice(1).map((row, index) => ({
           id: index + 1,
-          text: String(row[0] || 'No Question'), // Convert to string
-          customer: String(row[2] || 'Unknown Company'), // Convert to string
-          createdBy: 'System', // Default value
-          createdAt: new Date().toISOString().split('T')[0], // Current date
-          description: String(row[1] || 'No Response'), // Convert to string
+          text: String(row[0] || 'No Question'),
+          customer: String(row[2] || 'Unknown Company'), 
+          createdBy: 'System', 
+          createdAt: new Date().toISOString().split('T')[0], 
+          description: String(row[1] || 'No Response'), 
         }));
 
 
         setDataCards(processedData);
-        setError(null); // Clear any previous errors
+        setError(null); 
       };
 
       reader.onerror = () => {
@@ -60,30 +61,25 @@ const ImportQueryPage = () => {
     }
   };
 
-  // Handle delete action for a card
   const handleDelete = (id: number) => {
     setDataCards((prev) => prev.filter((card) => card.id !== id));
   };
 
-  // Handle edit action for a card
   const handleEdit = (id: number) => {
     alert(`Edit card with ID: ${id}`);
   };
 
-  // Handle copy action for a card
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
     alert(`Copied: ${text}`);
   };
 
-  // Clear uploaded file and data
   const handleClear = () => {
     setFile(null);
     setDataCards([]);
     setError(null);
   };
 
-  // Handle save action
   const handleSave = () => {
     alert('Data successfully saved!');
   };
