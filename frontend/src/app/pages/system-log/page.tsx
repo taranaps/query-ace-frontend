@@ -20,20 +20,24 @@ const SystemLog: React.FC = () => {
   ];
 
   useEffect(() => {
-    let index = 0;
 
     const interval = setInterval(() => {
       setVisibleIndexes((prev) => {
-        const newVisibleIndexes = [...prev, index];
-        console.log("Visible Indexes:", newVisibleIndexes); 
+        const nextIndex = prev.length; 
+        if (nextIndex >= logs.length) {
+          clearInterval(interval); 
+          console.log("Cleared interval at index:", nextIndex);
+          return prev;
+        }
+        const newVisibleIndexes = [...prev, nextIndex];
+        console.log("Previous visibleIndexes:", prev);
+        console.log("New visibleIndexes after adding index:", newVisibleIndexes);
         return newVisibleIndexes;
       });
-      index++;
-      if (index >= logs.length) clearInterval(interval);
-    }, 300); 
+    }, 100);
 
-    return () => clearInterval(interval);
-  }, [logs.length]); 
+    return () => clearInterval(interval); 
+  }, [logs.length]);
 
   return (
     <div className={styles.container}>
@@ -43,7 +47,7 @@ const SystemLog: React.FC = () => {
           <p>Actions done by admins</p>
         </div>
         <div className={styles.headerRight}>
-          <Filter admins={adminList} onFilterChange={() => {}} />
+          <Filter admins={adminList} onFilterChange={() => { }} />
         </div>
       </div>
 
@@ -51,12 +55,12 @@ const SystemLog: React.FC = () => {
         {logs.map((log, index) => (
           <div
             key={index}
-            className={`${styles.logItem} ${
-              visibleIndexes.includes(index) ? styles.visible : ""
-            }`}
+            className={`${styles.logItem} ${visibleIndexes.includes(index) ? styles.visible : ""
+              }`}
           >
             <span className={styles.date}>{log.date}</span>
             <div className={styles.circle}></div>
+            <div className={styles.spaceAfterCircle}></div>
             <span className={styles.text}>{log.text}</span>
             {index < logs.length - 1 && <div className={styles.line}></div>}
           </div>

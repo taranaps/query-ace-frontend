@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState } from "react";
 import SearchBar from "../../components/search-bar/SearchBar";
@@ -6,6 +6,7 @@ import SortFilterButton from "../../components/sort-filter-button/SortFilterButt
 import TableWrapper from "../../components/table/Table";
 import Pagination from "../../components/pagination/Pagination";
 import AddAdminPopup from "../../components/add-admin-popup/AddAdminPopup";
+import AdminTogglePopup from "../../components/admin-toggle-popup/AdminTogglePopup";
 
 import styles from "./ManageAccountsPage.module.css";
 
@@ -37,23 +38,37 @@ const ManageAccountsPage: React.FC = () => {
     const [data, setData] = useState(initialData);
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState<"newest" | "earliest">("newest");
-    const [openPopup, setOpenPopup] = useState(false);
+    const [openAddPopup, setOpenAddPopup] = useState(false);
+    const [openTogglePopup, setOpenTogglePopup] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
+
     const itemsPerPage = 8;
 
-    const handleToggleStatus = (email: string, newStatus: boolean) => {
-        const updatedData = data.map((item) => {
-            if (item.email === email) {
-                const updatedStatus: "Active" | "Inactive" = newStatus ? "Active" : "Inactive";
-                return { ...item, isActive: newStatus, status: updatedStatus };
-            }
-            return item;
-        });
-        setData(updatedData);
+    const handleToggleStatus = (email: string) => {
+        setSelectedEmail(email);
+        setOpenTogglePopup(true);
     };
 
-    const handleAddAccount = () => setOpenPopup(true);
-    const handleClosePopup = () => setOpenPopup(false);
+    const confirmToggleStatus = () => {
+        if (selectedEmail) {
+            const updatedData = data.map((item) => {
+                if (item.email === selectedEmail) {
+                    const updatedStatus: "Active" | "Inactive" = !item.isActive ? "Active" : "Inactive";
+                    return { ...item, isActive: !item.isActive, status: updatedStatus };
+                }
+                return item;
+            });
+            setData(updatedData);
+        }
+        setOpenTogglePopup(false);
+        setSelectedEmail(null);
+    };
+
+    const handleAddAccount = () => setOpenAddPopup(true);
+    const handleCloseAddPopup = () => setOpenAddPopup(false);
+    const handleCloseTogglePopup = () => setOpenTogglePopup(false);
+
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value);
     const handlePageChange = (page: number) => setCurrentPage(page);
 
@@ -81,32 +96,29 @@ const ManageAccountsPage: React.FC = () => {
 
     return (
         <div className={styles.container}>
-            {/* First Section: Title, Search, Sort Filter */}
+
             <div className={styles.header}>
                 <h1 className={styles.title}>All Accounts</h1>
                 <div className={styles.searchSortContainer}>
-                    <SearchBar
-                        onChange={handleSearchChange}
-                    />
+                    <SearchBar onChange={handleSearchChange} />
                     <SortFilterButton
                         sortOrder={sortOrder}
                         onSortChange={(newOrder) => setSortOrder(newOrder)}
                     />
                 </div>
             </div>
-            {/* Second Section: Table */}
+
             <div className={styles.tableData}>
                 <TableWrapper
                     data={paginatedData}
-                    onToggleStatus={(email, newStatus) => handleToggleStatus(email, newStatus)}
+                    onToggleStatus={(email) => handleToggleStatus(email)}
                     headerClassName={styles.tableHeader}
                     rowClassName={styles.tableRow}
                 />
             </div>
-            {/* Third Section: Pagination and Add Account */}
+
             <div className={styles.footer}>
                 <div className={styles.paginationContainer}>
-
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}
@@ -122,8 +134,13 @@ const ManageAccountsPage: React.FC = () => {
                     + Add Account
                 </button>
             </div>
-            {/* Popup */}
-            {openPopup && <AddAdminPopup onClose={handleClosePopup} />}
+            {openAddPopup && <AddAdminPopup onClose={handleCloseAddPopup} />}
+            {openTogglePopup && (
+                <AdminTogglePopup
+                    onConfirm={confirmToggleStatus}
+                    onClose={handleCloseTogglePopup}
+                />
+            )}
         </div>
     );
 };

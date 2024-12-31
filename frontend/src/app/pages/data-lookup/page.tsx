@@ -1,142 +1,126 @@
 'use client';
 
-import { useState } from "react";
-import DataCardDashboard from "@/app/components/dashboard-datacard/DataCardDashboard";
-import FilterDropdown from "@/app/components/lookup-filterdropdown/FilterDropDown";
+import { useState, useEffect } from "react";
+import DataCardDashboard from "@/app/components/dashboard-datacard/DataCardDashboard"; // Import the correct DataCardDashboard
 import Pagination from "@/app/components/pagination/Pagination";
 import styles from "./datalookup.module.css";
-
-const dummyData = Array.from({ length: 50 }, (_, i) => ({
-  id: i + 1,
-  customer: ["Accenture", "Microsoft", "Google", "TCS"][i % 4],
-  createdBy: ["John Doe", "Jane Smith", "Alice Brown", "Bob Johnson"][i % 4],
-  createdAt: new Date(Date.now() - i * 86400000).toISOString().split("T")[0],
-  text: `Query ${i + 1} from ${["Accenture", "Microsoft", "Google", "TCS"][i % 4]}`,
-  description: `This is a detailed description of Query ${i + 1}.`,
-}));
+import DataPopup from "@/app/components/data-popup/DataPopup";
+import fetchQueriesQuestions from "@/app/api/questioncard/fetchQueriesQuestions";
+import fetchQueryWithAnswers from "@/app/api/questioncard/fetchQueryAnswers";
 
 export default function QueryLookup() {
-  const [data, setData] = useState(dummyData);
-  const [sortBy, setSortBy] = useState<string>("newest");
-  const [selectedCustomers, setSelectedCustomers] = useState<string[]>([]);
-  const [selectedCreators, setSelectedCreators] = useState<string[]>([]);
+  const [data, setData] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [answers, setAnswers] = useState<any[]>([]); // Store answers separately
+  const itemsPerPage = 10; // Items per page
 
-  const itemsPerPage = 10; // Number of items per page
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await fetchQueriesQuestions();
+        if (Array.isArray(result)) {
+          setData(result);
+        } else {
+          console.error("Invalid data format:", result);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
-  const filteredData = data.filter(
-    (item) =>
-      (selectedCustomers.length === 0 ||
-        selectedCustomers.includes(item.customer)) &&
-      (selectedCreators.length === 0 || selectedCreators.includes(item.createdBy))
-  );
+    fetchData();
+  }, []);
 
-  const sortedData = [...filteredData].sort((a, b) => {
-    if (sortBy === "newest") {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    } else if (sortBy === "oldest") {
-      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    }
-    return 0;
-  });
-
-  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
-
-  // Paginate the data
-  const paginatedData = sortedData.slice(
+  const paginatedData = data.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  const handleDelete = (id: number) => {
-    setData((prevData) => prevData.filter((item) => item.id !== id));
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  const handleDelete = (index: number) => {
+    setData((prevData) => prevData.filter((_, i) => i !== index));
   };
 
-  const handleEdit = (id: number) => {
-    const newText = prompt("Edit the text for this item:");
-    if (newText) {
-      setData((prevData) =>
-        prevData.map((item) =>
-          item.id === id ? { ...item, text: newText } : item
-        )
-      );
+  const handleCardClick = async (item: any) => {
+    setSelectedItem(item);
+    setIsPopupOpen(true);
+
+    try {
+      const fetchedData = await fetchQueryWithAnswers(item.id);
+      if (fetchedData && fetchedData.answers) {
+        setAnswers(fetchedData.answers);
+      } else {
+        console.warn("No answers found for this query.");
+        setAnswers([]);
+      }
+    } catch (error) {
+      console.error("Error fetching answers:", error);
+      setAnswers([]);
     }
   };
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-  };
-
-  // Calculate item range
-  const startItem = (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(currentPage * itemsPerPage, sortedData.length);
-
   return (
     <div className={styles.dataLookupContainer}>
-      {/* Header Row */}
+
       <div className={styles.headerRow}>
         <h2 className={styles.headerTitle}>Query Lookup</h2>
-        <div className={styles.filterContainer}>
-          <FilterDropdown
-            label="Filter by Customer"
-            options={["Accenture", "Microsoft", "Google", "TCS"]}
-            selectedOptions={selectedCustomers}
-            onChange={(selected) => setSelectedCustomers(selected)}
-          />
-          <FilterDropdown
-            label="Filter by Creator"
-            options={["John Doe", "Jane Smith", "Alice Brown", "Bob Johnson"]}
-            selectedOptions={selectedCreators}
-            onChange={(selected) => setSelectedCreators(selected)}
-          />
-          <select
-            className={styles.sortDropdown}
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="newest">Sort by Newest</option>
-            <option value="oldest">Sort by Oldest</option>
-          </select>
-        </div>
       </div>
 
-      {/* Data Content */}
+      {/* Data Display */}
       <div className={styles.dataItems}>
-        {paginatedData.map((item) => (
+        {paginatedData.map((item, index) => (
           <DataCardDashboard
             key={item.id}
             id={item.id}
-            text={item.text}
-            description={item.description}
-            customer={item.customer}
-            createdAt={item.createdAt}
-            createdBy={item.createdBy}
-            editOn={true}
-            deleteOn={true}
-            copyOn={true}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
+            question={item.question || "No question provided"}
+            answer={item.answer || "No answer provided"}
+            customer={item.customer || "Unknown"} 
+            createdBy={item.usersUsername || "Unknown"}
+            createdAt={item.createdAt || "Unknown"}
+            tags={(item.tags || [])}
+            editOn={true} 
+            deleteOn={true} 
+            copyOn={true} 
+            onEdit={(id, newQuestion, newAnswer) => { console.log(id, newQuestion, newAnswer); }}
+            onDelete={() => handleDelete(index)}
+            onClick={() => handleCardClick(item)}
           />
         ))}
       </div>
 
-
-
-      {/* Pagination */}
       <div className={styles.paginationContainer}>
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={setCurrentPage}
         />
-
-        {/* Display Item Range */}
         <div className={styles.itemRange}>
           <p>
-            Displaying {startItem}–{endItem} of {sortedData.length} items
+            Displaying {(currentPage - 1) * itemsPerPage + 1}–
+            {Math.min(currentPage * itemsPerPage, data.length)} of {data.length} items
           </p>
         </div>
       </div>
+
+      {isPopupOpen && selectedItem && (
+        <DataPopup
+          data={{
+            ...selectedItem,
+            answers: answers,
+            tags: selectedItem.tags || [],
+          }}
+          onClose={() => {
+            setIsPopupOpen(false);
+            setSelectedItem(null);
+            setAnswers([]);
+          }}
+          onDelete={() => { }}
+          onEdit={() => { }}
+        />
+      )}
     </div>
   );
 }

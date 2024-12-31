@@ -156,7 +156,6 @@ const FileProcessingPage: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Questions List */}
                     <div className={styles.middleBody}>
                         <div className={styles.questionsContainer}>
                             {questions.length === 0 ? (
@@ -177,7 +176,6 @@ const FileProcessingPage: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Footer */}
                     <div className={styles.footer}>
                         <div className={styles.footerLeft}>
                             <p>Having trouble with importing excel ?</p>
