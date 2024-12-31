@@ -1,0 +1,48 @@
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { jwtDecode } from 'jwt-decode';
+
+interface DecodedToken {
+    sub: string;
+    roles: string[];
+    exp: number;
+}
+
+export function middleware(request: NextRequest) {
+    const { pathname } = request.nextUrl;
+
+    // Public routes
+    if (pathname.startsWith('/login') || pathname.startsWith('/register') || pathname.startsWith('/api/auth')) {
+        return NextResponse.next();
+    }
+
+    const authHeader = request.headers.get('Authorization');
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    try {
+        const decoded: DecodedToken = jwtDecode(token);
+        const currentTime = Date.now() / 1000;
+
+        if (decoded.exp < currentTime) {
+            return NextResponse.redirect(new URL('/login', request.url));
+        }
+
+        // Role-based redirection
+        if (pathname.startsWith('/super-admin') && !decoded.roles.includes('SUPER_ADMIN')) {
+            return NextResponse.redirect(new URL('/dashboard', request.url));
+        }
+    } catch (error) {
+        console.error('Middleware error:', error); // Log the error
+        return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    return NextResponse.next();
+}
+
+export const config = {
+    matcher: ['/super-admin/:path*', '/dashboard/:path*', '/questions/:path*', '/answers/:path*'],
+};

@@ -2,6 +2,7 @@
 "use client";
 import './globals.css';
 import { ThemeProvider } from '@mui/material/styles';
+import { AuthProvider } from '@/context/AuthContext';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme/theme';
 import MainLayout from '../app/components/main-layout/MainLayout';
@@ -13,9 +14,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (<html lang="en">
     <body>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {!pagesWithoutLayout.includes(pathname) && (<MainLayout>{children}</MainLayout>)}
-        {pagesWithoutLayout.includes(pathname) && <>{children}</>}        </ThemeProvider>
+        <AuthProvider>
+          <CssBaseline />
+          {!pagesWithoutLayout.includes(pathname) && (<MainLayout>{children}</MainLayout>)}
+          {pagesWithoutLayout.includes(pathname) && <>{children}</>}
+        </AuthProvider>
+      </ThemeProvider>
     </body>
   </html>
   );
