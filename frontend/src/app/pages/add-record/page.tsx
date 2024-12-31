@@ -1,4 +1,3 @@
-// pages/add.tsx
 import React from 'react';
 import AddRecordForm from '../../components/add-record-form/AddRecordForm';
 import NavigationTabs from '@/app/components/navigation-tabs/NavigationTabs';

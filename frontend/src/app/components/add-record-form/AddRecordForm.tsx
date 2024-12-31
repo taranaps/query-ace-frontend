@@ -25,12 +25,12 @@ const AddRecordForm = () => {
 
 
   const handleAddAnswer = () => {
-    setAnswers([...answers, '']); // Add a new empty string to answers array
+    setAnswers([...answers, '']); 
   };
 
 
   const handleRemoveAnswer = (index: number) => {
-    const updatedAnswers = answers.filter((_, i) => i !== index); // Remove answer at the given index
+    const updatedAnswers = answers.filter((_, i) => i !== index); 
     setAnswers(updatedAnswers);
   };
 
