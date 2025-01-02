@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import DataCardDashboard from "@/app/components/dashboard-datacard/DataCardDashboard"; // Import the correct DataCardDashboard
+import DataCardDashboard from "@/app/components/dashboard-datacard/DataCardDashboard"; 
 import Pagination from "@/app/components/pagination/Pagination";
 import styles from "./datalookup.module.css";
 import DataPopup from "@/app/components/data-popup/DataPopup";
@@ -13,8 +13,8 @@ export default function QueryLookup() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [answers, setAnswers] = useState<any[]>([]); // Store answers separately
-  const itemsPerPage = 10; // Items per page
+  const [answers, setAnswers] = useState<any[]>([]);
+  const itemsPerPage = 10; 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,7 +69,6 @@ export default function QueryLookup() {
         <h2 className={styles.headerTitle}>Query Lookup</h2>
       </div>
 
-      {/* Data Display */}
       <div className={styles.dataItems}>
         {paginatedData.map((item, index) => (
           <DataCardDashboard
