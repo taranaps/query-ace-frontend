@@ -11,22 +11,13 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    // const { firstName, email, location, username, password, userRole } = body;
 
     try {
-        const response = await fetch(`http://localhost:8080/admin/toggle-status/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/admin/toggle-status/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            // body: JSON.stringify({
-            //     firstName,
-            //     email,
-            //     location,
-            //     username,
-            //     password,
-            //     userRole,
-            // }),
         });
 
         const data = await response.json();
