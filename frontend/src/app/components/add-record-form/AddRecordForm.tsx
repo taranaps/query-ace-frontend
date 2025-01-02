@@ -40,7 +40,9 @@ const AddRecordForm = () => {
 
   const handleAddAnswer = () => handleChange('answers', [...formData.answers, '']);
 
+
   const handleRemoveAnswer = (index: number) => handleChange('answers', formData.answers.filter((_, i) => i !== index));
+
 
   const handleAnswerChange = (value: string, index: number) => handleChange(
     'answers',
@@ -66,7 +68,7 @@ const AddRecordForm = () => {
     const questionData: QuestionData[] = [
       {
         question,
-        userId: 1, // Replace with actual user ID
+        userId: 1, 
         tags: tags.map((tag) => ({
           tagName: tag.tag,
           tagGroupName: tag.group,

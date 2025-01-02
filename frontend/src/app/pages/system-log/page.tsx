@@ -20,11 +20,12 @@ const SystemLog: React.FC = () => {
   ];
 
   useEffect(() => {
+
     const interval = setInterval(() => {
       setVisibleIndexes((prev) => {
-        const nextIndex = prev.length; // Use the current length of visibleIndexes
+        const nextIndex = prev.length; 
         if (nextIndex >= logs.length) {
-          clearInterval(interval); // Stop the interval when all logs are visible
+          clearInterval(interval); 
           console.log("Cleared interval at index:", nextIndex);
           return prev;
         }
@@ -35,9 +36,8 @@ const SystemLog: React.FC = () => {
       });
     }, 100);
 
-    return () => clearInterval(interval); // Cleanup interval
+    return () => clearInterval(interval); 
   }, [logs.length]);
-
 
   return (
     <div className={styles.container}>

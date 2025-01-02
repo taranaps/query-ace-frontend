@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import * as XLSX from 'xlsx'; // Import the xlsx library
+
+import * as XLSX from 'xlsx'; 
 import row from 'xlsx'
 import { Button, Typography } from '@mui/material';
 import styles from './ImportQueryPage.module.css';
@@ -114,7 +115,6 @@ const ImportQueryPage = () => {
       reader.readAsArrayBuffer(selectedFile);
     }
   };
-
 
   const handleClear = () => {
     setFile(null);

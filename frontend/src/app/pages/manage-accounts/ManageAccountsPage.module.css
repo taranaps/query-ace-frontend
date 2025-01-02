@@ -1,4 +1,3 @@
-/* General container styles */
 .container {
     background-color: white;
     padding: 24px;
@@ -9,7 +8,6 @@
     flex-grow: 1;
 }
 
-/* First Section: Title, Search, Sort Filter */
 .header {
     display: flex;
     align-items: center;
@@ -56,7 +54,6 @@
     font-size: 14px;
 }
 
-/* Third Section: Pagination and Add Account */
 .footer {
     display: flex;
     justify-content: space-between;

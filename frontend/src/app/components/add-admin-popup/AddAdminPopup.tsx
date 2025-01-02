@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import {
     Box,
     Button,
@@ -46,8 +47,10 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ onClose }) => {
 
     const handleCreate = () => {
         if (formData.fullName && formData.email && formData.location) {
+
             console.log("New Admin Created:", formData);
             onClose();
+
         } else {
             alert("Please fill all fields before creating an account.");
         }
