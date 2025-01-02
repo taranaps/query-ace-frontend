@@ -1,9 +1,9 @@
-import AnswerData from "@/app/components/interface/query/queryAnswerInterface";
-import QuestionData from "@/app/components/interface/query/queryQuestionInterface";
+import QueryAnswerInterface from "@/app/interface/query/postQueryAnswerInterface";
+import QueryQuestionInetface from "@/app/interface/query/postQueryQuestionInterface";
 
 export default async function postQueryWithAnswers(
-  questionData: QuestionData[],
-  answersData: AnswerData[]
+  questionData: QueryQuestionInetface[],
+  answersData: QueryAnswerInterface[]
 ) {
   const baseUrl = 'http://localhost:8080/api/v1/queryapplication/queries';
 
@@ -32,8 +32,8 @@ export default async function postQueryWithAnswers(
 
 
       const answersWithQueryId = answersData.map((answer) => ({
-        ...answer,      // Spread the answer fields
-        queryId,        // Add the queryId here
+        ...answer,
+        queryId,
       }));
 
       const answersResponse = await fetch(answersUrl, {
