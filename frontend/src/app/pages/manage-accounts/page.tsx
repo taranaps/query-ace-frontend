@@ -28,6 +28,8 @@ const ManageAccountsPage: React.FC = () => {
             try {
                 const response = await fetch("/api/admin/users")
                 const result = await response.json();
+                console.log(result);
+                
                 if (Array.isArray(result)) {
                     setUserData(result);
                 } else {

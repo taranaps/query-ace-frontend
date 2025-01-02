@@ -6,7 +6,7 @@ export async function POST(request: Request) {
     console.log("body-------",body);
 
     try {
-        const response = await fetch(`http://localhost:8080/admin/create`, {
+        const response = await fetch(`${API_BASE_URL}/admin/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

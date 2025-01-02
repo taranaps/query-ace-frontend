@@ -4,7 +4,7 @@ import { API_BASE_URL } from '@/config/apiConfig';
 
 export async function GET(request: Request) {
     try {
-        const response = await fetch(`http://localhost:8080/admin/users`);
+        const response = await fetch(`${API_BASE_URL}/admin/users`);
 
         const data = await response.json();
 
