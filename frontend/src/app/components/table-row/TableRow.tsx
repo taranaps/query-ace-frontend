@@ -6,7 +6,7 @@ interface TableRowProps {
     name: string;
     email: string;
     location: string;
-    status: "Active" | "Inactive";
+    status: "ACTIVE" | "INACTIVE";
     isActive: boolean;
     rowClassName?: string;
     onToggle: (newStatus: boolean) => void;
@@ -35,7 +35,7 @@ const TableRow: React.FC<TableRowProps> = ({
             <TableCell>
                 <span
                     className={`inline-flex items-center justify-center w-[80px] h-[30px] text-sm font-semibold rounded-lg 
-                        ${status === "Active"
+                        ${status === "ACTIVE"
                             ? "bg-green-100 text-green-700"
                             : "bg-red-100 text-red-700"
                         }`}
@@ -44,7 +44,7 @@ const TableRow: React.FC<TableRowProps> = ({
                 </span>
             </TableCell>
             <TableCell>
-                <SlidingToggle checked={isActive} onChange={onToggle} />
+                <SlidingToggle checked={status === "ACTIVE"} onChange={onToggle} />
             </TableCell>
         </MuiTableRow>
     );
