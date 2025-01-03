@@ -90,3 +90,241 @@
     width: 12rem;
     height: auto;
 }
+
+.dashboardContainer {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #f8f9fa, #f1f3f5);
+    display: flex;
+  }
+  
+  .dashboardMain {
+    flex: 1;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 24px;
+  }
+  
+  .dashboardLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 600px;
+  }
+  
+  .chartContainer1 {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin-top: 120px;
+  }
+  .chartContainer2 {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin-top: 20px;
+    height: 1200px;
+  }
+  .chartTitle {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #4a5568;
+  }
+  
+  .chartContent {
+    height: 160px;
+  }
+  
+  .pieLegend {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+    gap: 8px;
+  }
+  
+  .legendItem {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .legendColor {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  
+  .legendText {
+    font-size: 12px;
+    color: #4a5568;
+  }
+  
+  .dashboardRight {
+    
+    display: flex;
+    flex-direction: column;
+    /* gap: 2px; */
+  }
+  
+  .metricsContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    width: 1100px;
+  }
+  
+  .metricCard {
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+    color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .metricCard:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Enlarge effect on selection */
+  .metricSelected {
+    transform: scale(2.5); /* Enlarge */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+  }
+  .metricValue {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .metricLabel {
+    font-size: 14px;
+    opacity: 0.8;
+  }
+  
+  .metricOrange {
+    background: linear-gradient(to right, #fbbf24, #f97316);
+  }
+  
+  .metricYellow {
+    background: linear-gradient(to right, #fde047, #facc15);
+  }
+  
+  .metricGreen {
+    background: linear-gradient(to right, #34d399, #10b981);
+  }
+  
+  .searchBarContainer {
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .searchBar {
+    width: 100%;
+    padding: 12px;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+  }
+  
+  .trendingQueriesContainer {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+  }
+  
+  .trendingTitle {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #4a5568;
+  }
+  
+  .tabsContainer {
+    display: flex;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 16px;
+  }
+  
+  .tabButton {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  
+  .tabActive {
+    color: #2563eb;
+    border-color: #2563eb;
+  }
+  
+  .tabInactive {
+    color: #718096;
+  }
+  
+  .queriesContent {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .queryItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
+    background: #f9fafb;
+    transition: background 0.2s ease;
+  }
+  
+  .queryItem:hover {
+    background: #edf2f7;
+  }
+  
+  .queryInfo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .queryIcon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #fed7d7;
+    color: #e53e3e;
+  }
+  
+  .queryTitle {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2d3748;
+  }
+  
+  .queryDate {
+    font-size: 12px;
+    color: #a0aec0;
+  }
+  
+  .queryViews {
+    font-size: 14px;
+    font-weight: 600;
+    color: #48bb78;
+  }
+
+  
