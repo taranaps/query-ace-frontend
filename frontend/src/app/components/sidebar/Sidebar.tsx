@@ -46,8 +46,8 @@ const Sidebar = React.memo(() => {
         <aside className={styles.sidebar}>
             <div className={styles['sidebar-top']}>
                 <div className={styles['sidebar-logo']}>
-                    <div className={styles['sidebar-logo-image']}>A</div>
-                    <div className={styles['sidebar-logo-text']}>ACE Queries</div>
+                    <div className={styles['sidebar-logo-image']}>Q</div>
+                    <div className={styles['sidebar-logo-text']}>Query Desk</div>
                 </div>
             </div>
 

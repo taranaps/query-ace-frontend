@@ -12,8 +12,8 @@ import AddTagPopup from '../add-tag-popup/AddTagPopup';
 import styles from './AddRecordForm.module.css';
 import fetchAllTagDetails from '@/app/api/tags/fetchAllTagDetails';
 import postQueryWithAnswers from '@/app/api/queries/postQueryWithAnswers';
-import QuestionData from '../interface/query/queryQuestionInterface';
-import AnswerData from '../interface/query/queryAnswerInterface';
+import PostQueryQuestionInetface from '@/app/interface/query/postQueryQuestionInterface';
+import PostQueryAnswerInterface from '@/app/interface/query/postQueryAnswerInterface';
 
 const AddRecordForm = () => {
   const [formData, setFormData] = useState({
@@ -65,7 +65,7 @@ const AddRecordForm = () => {
       return;
     }
   
-    const questionData: QuestionData[] = [
+    const questionData: PostQueryQuestionInetface[] = [
       {
         question,
         userId: 1, 
@@ -76,7 +76,7 @@ const AddRecordForm = () => {
       },
     ];
   
-    const answersData: AnswerData[] = answers.map((answer) => ({
+    const answersData: PostQueryAnswerInterface[] = answers.map((answer) => ({
       answer,
       userId: 1, 
     }));
