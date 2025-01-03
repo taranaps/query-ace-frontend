@@ -37,10 +37,10 @@ const Dashboard = () => {
   ];
 
   const pieChartData = [
-    { name: 'Label 1', value: 48.8 },
-    { name: 'Label 2', value: 24.3 },
-    { name: 'Label 3', value: 14.6 },
-    { name: 'Label 4', value: 12.3 },
+    { name: 'Accenture', value: 48.8 },
+    { name: 'Harley', value: 24.3 },
+    { name: 'Allianz', value: 14.6 },
+    { name: 'SIG', value: 12.3 },
   ];
 
   const COLORS = ['#6366f1', '#a5b4fc', '#818cf8', '#c7d2fe'];
@@ -147,6 +147,7 @@ const Dashboard = () => {
           {/* Bar Chart */}
           <div className={styles.chartContainer1}>
             <h2 className={styles.chartTitle}>User Activity</h2>
+            <h1 className={styles.chartTitle}>User 1</h1>
             <div className={styles.chartContent}>
               <Bar data={barData} options={barOptions} />
             </div>
