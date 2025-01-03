@@ -20,6 +20,7 @@
   align-items: center;
   gap: 12px;
   overflow-y: auto;
+  max-height: 73vh;
 }
 
 .previewBox {
@@ -96,4 +97,35 @@
 .buttonIcon {
   width: 16px;
   height: 16px;
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 12px;
+  gap: 12px;
+}
+
+.footerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.footer a,
+.footer p {
+  font-size: 12px;
+  margin: 0;
+}
+
+.footer a {
+  cursor: pointer;
+}
+
+.footerRight {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
 }

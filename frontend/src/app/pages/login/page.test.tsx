@@ -1,72 +1,97 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import LoginPage from "./page"; // Adjust the import path as necessary
-import '@testing-library/jest-dom';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { AuthContext } from '@/context/AuthContext';
+import LoginPage from './page';
+import { useRouter } from 'next/navigation';
+import '@testing-library/jest-dom'; 
 
 
+jest.mock('next/navigation', () => ({
+    useRouter: jest.fn(),
+}));
 
-describe("LoginPage Component", () => {
-  test("renders login page with email and password fields", () => {
-    render(<LoginPage />);
+beforeAll(() => {
+    global.alert = jest.fn(); 
+});
 
-    // Check if email input is rendered
-    const emailInput = screen.getByPlaceholderText(/Enter your email/i);
-    expect(emailInput).toBeInTheDocument();
+describe('LoginPage', () => {
+    const mockLogin = jest.fn();
+    const mockLogout = jest.fn();
+    const mockPush = jest.fn();
+    const mockToken = 'fakeToken';
 
-    // Check if password input is rendered
-    const passwordInput = screen.getByPlaceholderText(/Enter your password/i);
-    expect(passwordInput).toBeInTheDocument();
+    beforeEach(() => {
+        (useRouter as jest.Mock).mockReturnValue({
+            push: mockPush,
+        });
 
-    // Check if the login button is rendered
-    const loginButton = screen.getByRole("button", { name: /login/i });
-    expect(loginButton).toBeInTheDocument();
+        render(
+            <AuthContext.Provider value={{ login: mockLogin, logout: mockLogout, token: mockToken }}>
+                <LoginPage />
+            </AuthContext.Provider>
+        );
+    });
 
-    // Check if the forgot password link is rendered
-    const forgotPasswordLink = screen.getByText(/Forgot Password\?/i);
-    expect(forgotPasswordLink).toBeInTheDocument();
-  });
+    test('renders login form correctly', () => {
+        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+        expect(screen.getByText(/forgot password/i)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
+    });
 
-  test("handles email and password input changes", () => {
-    render(<LoginPage />);
+    test('handles form submission and redirects on success', async () => {
+        global.fetch = jest.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({ data: { token: 'fakeToken' } }),
+        });
 
-    const emailInput = screen.getByPlaceholderText(/Enter your email/i);
-    const passwordInput = screen.getByPlaceholderText(/Enter your password/i);
+        fireEvent.change(screen.getByLabelText(/email/i), {
+            target: { value: 'test@example.com' },
+        });
 
-    // Simulate typing into the email input
-    fireEvent.change(emailInput, { target: { value: "test@example.com" } });
-    expect(emailInput).toHaveValue("test@example.com");
+        fireEvent.change(screen.getByLabelText(/password/i), {
+            target: { value: 'password123' },
+        });
 
-    // Simulate typing into the password input
-    fireEvent.change(passwordInput, { target: { value: "password123" } });
-    expect(passwordInput).toHaveValue("password123");
-  });
+        fireEvent.click(screen.getByRole('button', { name: /login/i }));
 
-  test("submits the form successfully", () => {
-    render(<LoginPage />);
+        await waitFor(() => expect(mockLogin).toHaveBeenCalledWith({ token: 'fakeToken' }));
+        expect(mockPush).toHaveBeenCalledWith('/dashboard');
+    });
 
-    const emailInput = screen.getByPlaceholderText(/Enter your email/i);
-    const passwordInput = screen.getByPlaceholderText(/Enter your password/i);
-    const loginButton = screen.getByRole("button", { name: /login/i });
+    test('shows an alert if login fails', async () => {
+        global.fetch = jest.fn().mockResolvedValue({
+            ok: false,
+            json: async () => ({ message: 'Invalid credentials' }),
+        });
 
-    // Mock the console.log
-    const consoleSpy = jest.spyOn(console, "log").mockImplementation();
+        fireEvent.change(screen.getByLabelText(/email/i), {
+            target: { value: 'test@example.com' },
+        });
 
-    // Simulate user input
-    fireEvent.change(emailInput, { target: { value: "test@example.com" } });
-    fireEvent.change(passwordInput, { target: { value: "password123" } });
+        fireEvent.change(screen.getByLabelText(/password/i), {
+            target: { value: 'wrongPassword' },
+        });
 
-    // Simulate form submission
-    fireEvent.click(loginButton);
+        fireEvent.click(screen.getByRole('button', { name: /login/i }));
 
-    // Check if console.log was called with correct arguments
-    expect(consoleSpy).toHaveBeenCalledWith(
-      "Email:",
-      "test@example.com",
-      "Password:",
-      "password123"
-    );
+        await waitFor(() => expect(global.alert).toHaveBeenCalledWith('Error: Invalid credentials'));
+    });
 
-    // Cleanup console mock
-    consoleSpy.mockRestore();
-  });
+    test('handles error if fetch fails', async () => {
+        global.fetch = jest.fn().mockRejectedValue(new Error('Network error'));
+
+        fireEvent.change(screen.getByLabelText(/email/i), {
+            target: { value: 'test@example.com' },
+        });
+
+        fireEvent.change(screen.getByLabelText(/password/i), {
+            target: { value: 'password123' },
+        });
+
+        fireEvent.click(screen.getByRole('button', { name: /login/i }));
+
+        await waitFor(() =>
+            expect(global.alert).toHaveBeenCalledWith('An error occurred. Please try again.')
+        );
+    });
 });

@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import * as XLSX from 'xlsx'; // Import the xlsx library
+
+import * as XLSX from 'xlsx'; 
+import row from 'xlsx'
 import { Box, Button, Typography } from '@mui/material';
 import DataCardDashboard from '../dashboard-datacard/DataCardDashboard';
 import styles from './ImportQueryPage.module.css';
@@ -20,7 +22,6 @@ const ImportQueryPage = () => {
   const [dataCards, setDataCards] = useState<DataCard[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  // Handle file change (Excel file upload)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
     setFile(selectedFile);
@@ -33,21 +34,23 @@ const ImportQueryPage = () => {
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
 
-        // Convert sheet data to JSON
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+       
+        type ExcelRow = (string | number | undefined)[];
 
-        // Process and map the JSON data to the DataCard format
-        const processedData: DataCard[] = jsonData.slice(1).map((row, index) => ({
+
+        const processedData: DataCard[] = (jsonData as ExcelRow[]).slice(1).map((row, index) => ({
           id: index + 1,
-          text: row[0] || 'No Question',
-          customer: row[2] || 'Unknown Company',
-          createdBy: 'System', // Example default value
-          createdAt: new Date().toISOString().split('T')[0], // Current date
-          description: row[1] || 'No Response',
+          text: String(row[0] || 'No Question'),
+          customer: String(row[2] || 'Unknown Company'), 
+          createdBy: 'System', 
+          createdAt: new Date().toISOString().split('T')[0], 
+          description: String(row[1] || 'No Response'), 
         }));
 
+
         setDataCards(processedData);
-        setError(null); // Clear any previous errors
+        setError(null); 
       };
 
       reader.onerror = () => {
@@ -58,38 +61,31 @@ const ImportQueryPage = () => {
     }
   };
 
-  // Handle delete action for a card
   const handleDelete = (id: number) => {
     setDataCards((prev) => prev.filter((card) => card.id !== id));
   };
 
-  // Handle edit action for a card
   const handleEdit = (id: number) => {
     alert(`Edit card with ID: ${id}`);
   };
 
-  // Handle copy action for a card
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
     alert(`Copied: ${text}`);
   };
 
-  // Clear uploaded file and data
   const handleClear = () => {
     setFile(null);
     setDataCards([]);
     setError(null);
   };
 
-  // Handle save action
   const handleSave = () => {
     alert('Data successfully saved!');
   };
 
   return (
     <div className={styles.container}>
-      {/* Buttons Section */}
-
 
       <div className={styles.dataCardsContainer}>
         {dataCards.length > 0 ? (
@@ -97,11 +93,12 @@ const ImportQueryPage = () => {
             <DataCardDashboard
               key={card.id}
               id={card.id}
-              text={card.text}
+              question={card.text}
               customer={card.customer}
               createdBy={card.createdBy}
               createdAt={card.createdAt}
-              description={card.description}
+              answer={card.description}
+              tags={[{ tagName: "sss", tagGroupName: "sdad" }]}
               deleteOn={true}
               editOn={true}
               copyOn={false}
@@ -119,38 +116,45 @@ const ImportQueryPage = () => {
           </div>
         )}
       </div>
-      <div className={styles.buttonBox}>
-        <Button
-          variant="contained"
-          color={dataCards.length > 0 ? 'success' : 'info'}
-          className={styles.selectButton}
-          sx={{ textTransform: 'none' }}
-          onClick={() =>
-            dataCards.length > 0
-              ? handleSave()
-              : document.getElementById('fileInput')?.click()
-          }
-        >
-          {dataCards.length > 0 ? 'Save Data' : 'Import File'}
-          <input
-            id="fileInput"
-            type="file"
-            hidden
-            accept=".xlsx, .xls"
-            onChange={handleFileChange}
-          />
-        </Button>
+      <div className={styles.footer}>
+        <div className={styles.footerLeft}>
+          <p>Having trouble with importing excel ?</p>
+          <a href='/assets/templates/Import Query Template.xlsx' >Download Template</a>
+        </div>
 
-        <Button
-          variant="contained"
-          color="secondary"
-          className={styles.clearButton}
-          sx={{ textTransform: 'none', marginLeft: '10px' }}
-          onClick={handleClear}
-          disabled={!file && dataCards.length === 0}
-        >
-          Clear
-        </Button>
+        <div className={styles.footerRight}>
+          <Button
+            variant="contained"
+            color="secondary"
+            className={styles.clearButton}
+            sx={{ textTransform: 'none', marginLeft: '10px' }}
+            onClick={handleClear}
+            disabled={!file && dataCards.length === 0}
+          >
+            Clear
+          </Button>
+
+          <Button
+            variant="contained"
+            color={dataCards.length > 0 ? 'success' : 'info'}
+            className={styles.selectButton}
+            sx={{ textTransform: 'none' }}
+            onClick={() =>
+              dataCards.length > 0
+                ? handleSave()
+                : document.getElementById('fileInput')?.click()
+            }
+          >
+            {dataCards.length > 0 ? 'Save Data' : 'Import File'}
+            <input
+              id="fileInput"
+              type="file"
+              hidden
+              accept=".xlsx, .xls"
+              onChange={handleFileChange}
+            />
+          </Button>
+        </div>
 
         {error && (
           <Typography color="error" className={styles.errorMessage}>

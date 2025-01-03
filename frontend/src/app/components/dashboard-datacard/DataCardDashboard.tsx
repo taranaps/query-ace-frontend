@@ -1,116 +1,147 @@
 "use client";
 
 import React, { useState } from "react";
-import LottieIconButton from "../lottie-animated-button/LottieIconButton"; // Import the LottieIconButton component
+import LottieIconButton from "../lottie-animated-button/LottieIconButton"; 
 import styles from "./datacard.module.css";
 
-// Import Lottie animations
-// import copyAnimation from "/assets/animatedIcons/edit.json";
-// import saveAnimation from "/assets/animatedIcons/edit.json";
-// import cancelAnimation from "/assets/animatedIcons/edit.json";
-// import editAnimation from "/assets/animatedIcons/edit.json";
-// import deleteAnimation from "/assets/animatedIcons/edit.json";
-
-import copyAnimation from "../../../../public/assets/animatedIcons/copyv3.json"
-import saveAnimation from "../../../../public/assets/animatedIcons/save.json"
-import cancelAnimation from "../../../../public/assets/animatedIcons/Close.json"
-import editAnimation from "../../../../public/assets/animatedIcons/editv2.json"
-import deleteAnimation from "../../../../public/assets/animatedIcons/delete.json"
+import copyAnimation from "../../../../public/assets/animatedIcons/copyv3.json";
+import saveAnimation from "../../../../public/assets/animatedIcons/save.json";
+import cancelAnimation from "../../../../public/assets/animatedIcons/Close.json";
+import editAnimation from "../../../../public/assets/animatedIcons/editv2.json";
+import deleteAnimation from "../../../../public/assets/animatedIcons/delete.json";
 
 interface DataCardProps {
   id: number;
-  text: string;
+  question: string;
+  answer: string;
   customer: string;
   createdBy: string;
   createdAt: string;
-  description: string;
+  tags: { tagName: string; tagGroupName: string }[];
   editOn: boolean;
   deleteOn: boolean;
   copyOn: boolean;
-  onEdit: (id: number, newText: string, newDescription: string) => void;
+  onEdit: (id: number, newQuestion: string, newAnswer: string) => void;
   onDelete: (id: number) => void;
+  onClick?: () => Promise<void>;
 }
+
+const MAX_QUESTION_WORDS = 20;
+const MAX_ANSWER_WORDS = 40;
+
+const truncateText = (text: string | undefined, limit: number): string => {
+  if (!text) return ""; 
+  const words = text.split(" ");
+  return words.length > limit ? `${words.slice(0, limit).join(" ")}...` : text;
+};
 
 const DataCardDashboard: React.FC<DataCardProps> = ({
   id,
-  text,
+  question,
+  answer,
   customer,
   createdBy,
   createdAt,
-  description,
+  tags,
   editOn,
   deleteOn,
   copyOn,
   onEdit,
   onDelete,
+  onClick
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [editableText, setEditableText] = useState(text);
-  const [editableDescription, setEditableDescription] = useState(description);
 
-  // Handle Copy to Clipboard
-  const handleCopy = () => {
-    navigator.clipboard.writeText(editableText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const [editableQuestion, setEditableQuestion] = useState(question);
+  const [editableAnswer, setEditableAnswer] = useState(answer);
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    alert("Copied to clipboard!");
   };
 
-  // Handle Save Changes
   const handleSave = () => {
     setIsEditing(false);
-    onEdit(id, editableText, editableDescription);
+    onEdit(id, editableQuestion, editableAnswer);
   };
 
-  // Handle Edit
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  // Handle Cancel Edit
   const handleCancelEdit = () => {
     setIsEditing(false);
-    setEditableText(text);
-    setEditableDescription(description);
+    setEditableQuestion(question);
+    setEditableAnswer(answer);
   };
 
   return (
-    <div className={styles.dataCard}>
-      {isEditing ? (
-        <div className={styles.dataCardTop}>
-          <input
-            type="text"
-            value={editableText}
-            onChange={(e) => setEditableText(e.target.value)}
-            className={styles.editableInput}
-          />
-          <textarea
-            value={editableDescription}
-            onChange={(e) => setEditableDescription(e.target.value)}
-            className={styles.editableTextarea}
-          />
-        </div>
-      ) : (
-        <div className={styles.dataCardTop}>
-          <p className={styles.dataCardText}>{editableText}</p>
-          <p className={styles.dataCardDescription}>{editableDescription}</p>
-        </div>
-      )}
+    <div
+      className={styles.dataCard}
+      onClick={onClick ? onClick : undefined}
+    >
+      <div className={styles.dataCardTop}>
+        {isEditing ? (
+          <div className={styles.dataCardQuestionAndAnswerContainer}>
+            <input
+              type="text"
+              value={editableQuestion}
+              onChange={(e) => setEditableQuestion(e.target.value)}
+              className={styles.dataCardQuestion}
+            />
+            <input
+              type="text"
+              value={editableAnswer}
+              onChange={(e) => setEditableAnswer(e.target.value)}
+              className={styles.dataCardAnswer}
+            />
+          </div>
+        ) : (
+          <div className={styles.dataCardQuestionAndAnswerContainer}>
+            <p className={styles.dataCardQuestion}>
+              Question : {truncateText(question, MAX_QUESTION_WORDS)}
+            </p>
+            <div className={styles.dataCardAnswerContainer}>
+              <p className={styles.dataCardAnswer}>
+                {truncateText(answer, MAX_ANSWER_WORDS)}
+              </p>
+              {!isEditing && copyOn && (
+                <div className={styles.copyButton}>
+                  <LottieIconButton
+                    animationData={copyAnimation}
+                    label="Copy Answer"
+                    onClick={() => handleCopy(answer)}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className={styles.dataCardTags}>
+        {tags.map((tag, index) => (
+          <div
+            key={index}
+            className={styles.tag}
+          >
+            <div className={styles.tagGroup}>
+              {tag.tagGroupName}
+            </div>
+            <div className={styles.tagName}>
+              {tag.tagName}
+            </div>
+          </div>
+        ))}
+      </div>
 
       <div className={styles.dataCardFooter}>
         <div className={styles.dataCardDetails}>
           <span>Customer: {customer}</span> | <span>Created By: {createdBy}</span> |{" "}
           <span>Date: {createdAt}</span>
         </div>
-        <div className={styles.dataCardActions}>
-          <div className={styles.dataCardActionButtons}>
-            {copyOn && (
-              <LottieIconButton
-                animationData={copyAnimation}
-                label="Copy"
-                onClick={handleCopy}
-              />
-            )}
+        <div className={styles.dataCardActionButtons}>
+          <div className={styles.dataCardActions}>
             {editOn &&
               (isEditing ? (
                 <>
@@ -142,6 +173,8 @@ const DataCardDashboard: React.FC<DataCardProps> = ({
           </div>
         </div>
       </div>
+
+
     </div>
   );
 };

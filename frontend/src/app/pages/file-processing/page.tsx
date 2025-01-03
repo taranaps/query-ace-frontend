@@ -32,7 +32,7 @@ const FileProcessingPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<"import" | "questions" | "result">("import");
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: string }>({});
-    const [searchQuery, setSearchQuery] = useState<string>(""); // State for search query
+    const [searchQuery, setSearchQuery] = useState<string>(""); 
 
     const dummyAnswers = [
         "Corporate culture refers to the shared values, beliefs, and practices that define an organization.",
@@ -156,7 +156,6 @@ const FileProcessingPage: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Questions List */}
                     <div className={styles.middleBody}>
                         <div className={styles.questionsContainer}>
                             {questions.length === 0 ? (
@@ -177,7 +176,6 @@ const FileProcessingPage: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Footer */}
                     <div className={styles.footer}>
                         <div className={styles.footerLeft}>
                             <p>Having trouble with importing excel ?</p>
