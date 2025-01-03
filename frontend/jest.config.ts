@@ -22,10 +22,16 @@ const config: Config = {
   // Test environment (set to 'jsdom' for browser-like testing)
   testEnvironment: 'jsdom',
   moduleNameMapper: {
-    '^@app/(.*)$': '<rootDir>/src/app/$1', 
+    '^@/(.*)$': '<rootDir>/src/$1',
+ 
+  },
+  transform: {
+    '^.+\\.tsx?$': 'ts-jest',
   },
 
-
+      
+      
+  
   
 };
 

@@ -10,12 +10,6 @@ interface AddAdminPopupProps {
 
 const AdminTogglePopup: React.FC<AddAdminPopupProps> = ({ onClose, onConfirm }) => {
 
-
-    const handleCreate = () => {
-        console.log("Account Disabled");
-        onClose();
-    };
-
     return (
         <Dialog
             open

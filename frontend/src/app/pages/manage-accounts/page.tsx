@@ -1,41 +1,19 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SearchBar from "../../components/search-bar/SearchBar";
 import SortFilterButton from "../../components/sort-filter-button/SortFilterButton";
 import TableWrapper from "../../components/table/Table";
 import Pagination from "../../components/pagination/Pagination";
 import AddAdminPopup from "../../components/add-admin-popup/AddAdminPopup";
 import AdminTogglePopup from "../../components/admin-toggle-popup/AdminTogglePopup";
+import { fetchUserInterface } from "@/app/interface/user/fetchUserInterface";
 
 import styles from "./ManageAccountsPage.module.css";
 
-const initialData: {
-    name: string;
-    email: string;
-    location: string;
-    status: "Active" | "Inactive";
-    isActive: boolean;
-    timestamp: Date;
-}[] = [
-        { name: "Jane Cooper", email: "jane@microsoft.com", location: "Kochi", status: "Active", isActive: true, timestamp: new Date("2023-12-01T10:00:00") },
-        { name: "Floyd Miles", email: "floyd@yahoo.com", location: "Trivandrum", status: "Inactive", isActive: false, timestamp: new Date("2023-11-28T15:00:00") },
-        { name: "Ronald Richards", email: "ronald@adobe.com", location: "Bangalore", status: "Inactive", isActive: false, timestamp: new Date("2023-12-02T08:30:00") },
-        { name: "Marvin McKinney", email: "marvin@tesla.com", location: "Trivandrum", status: "Active", isActive: true, timestamp: new Date("2023-11-30T12:00:00") },
-        { name: "Esther Howard", email: "esther@facebook.com", location: "Mumbai", status: "Active", isActive: true, timestamp: new Date("2023-12-01T09:00:00") },
-        { name: "Cody Fisher", email: "cody@google.com", location: "Chennai", status: "Inactive", isActive: false, timestamp: new Date("2023-11-29T14:00:00") },
-        { name: "Savannah Nguyen", email: "savannah@amazon.com", location: "Delhi", status: "Active", isActive: true, timestamp: new Date("2023-12-03T11:30:00") },
-        { name: "Dianne Russell", email: "dianne@uber.com", location: "Hyderabad", status: "Inactive", isActive: false, timestamp: new Date("2023-12-02T10:45:00") },
-        { name: "Jacob Jones", email: "jacob@apple.com", location: "Kolkata", status: "Active", isActive: true, timestamp: new Date("2023-11-30T13:15:00") },
-        { name: "Kristin Watson", email: "kristin@netflix.com", location: "Pune", status: "Inactive", isActive: false, timestamp: new Date("2023-12-03T08:15:00") },
-        { name: "Michael Scott", email: "michael@dundermifflin.com", location: "Scranton", status: "Active", isActive: true, timestamp: new Date("2023-12-01T16:00:00") },
-        { name: "Pam Beesly", email: "pam@dundermifflin.com", location: "Scranton", status: "Active", isActive: true, timestamp: new Date("2023-12-02T17:30:00") },
-        { name: "Jim Halpert", email: "jim@dundermifflin.com", location: "Scranton", status: "Active", isActive: true, timestamp: new Date("2023-12-02T18:45:00") },
-        { name: "Dwight Schrute", email: "dwight@dundermifflin.com", location: "Scranton", status: "Inactive", isActive: false, timestamp: new Date("2023-12-03T19:15:00") },
-    ];
-
 const ManageAccountsPage: React.FC = () => {
-    const [data, setData] = useState(initialData);
+
+    const [userData, setUserData] = useState<fetchUserInterface[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState<"newest" | "earliest">("newest");
     const [openAddPopup, setOpenAddPopup] = useState(false);
@@ -45,24 +23,110 @@ const ManageAccountsPage: React.FC = () => {
 
     const itemsPerPage = 8;
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch("/api/admin/users")
+                const result = await response.json();
+                console.log(result);
+                
+                if (Array.isArray(result)) {
+                    setUserData(result);
+                } else {
+                    console.error('Fetched data is not an array:', result);
+                }
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     const handleToggleStatus = (email: string) => {
         setSelectedEmail(email);
         setOpenTogglePopup(true);
     };
 
-    const confirmToggleStatus = () => {
+    const confirmToggleStatus = async () => {
         if (selectedEmail) {
-            const updatedData = data.map((item) => {
-                if (item.email === selectedEmail) {
-                    const updatedStatus: "Active" | "Inactive" = !item.isActive ? "Active" : "Inactive";
-                    return { ...item, isActive: !item.isActive, status: updatedStatus };
+            const userToUpdate = userData.find((item) => item.email === selectedEmail);
+
+            if (userToUpdate) {
+                const updatedStatus: "ACTIVE" | "INACTIVE" = !userToUpdate.isActive ? "ACTIVE" : "INACTIVE";
+
+                try {
+                    const url = `/api/admin/toggle-status/${userToUpdate.id}`.trim();
+
+                    console.log(url);
+
+
+                    const response = await fetch(url, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            isActive: !userToUpdate.isActive,
+                            status: updatedStatus,
+                        }),
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        const updatedData = userData.map((item) =>
+                            item.email === selectedEmail ? { ...item, isActive: !item.isActive, status: updatedStatus } : item
+                        );
+                        setUserData(updatedData);
+                    } else {
+                        console.error('Failed to update user status', result);
+                    }
+                } catch (error) {
+                    console.error('Error updating user status:', error);
                 }
-                return item;
-            });
-            setData(updatedData);
+            }
         }
+
         setOpenTogglePopup(false);
         setSelectedEmail(null);
+    };
+
+    const handleAddAdmin = async (adminData: {
+        firstName: string;
+        email: string;
+        location: string;
+        username: string;
+        password: string;
+        userRole: "SUPER_ADMIN" | "ADMIN";
+    }) => {
+        try {
+            const url = `/api/admin/create`;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(adminData),
+            });
+
+            console.log(JSON.stringify(adminData));
+            
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('New admin created successfully:', result);
+                setOpenAddPopup(false);
+            } else {
+                const errorResult = await response.json();
+                console.error('Failed to create admin:', errorResult);
+                alert(`Error: ${errorResult.message || 'Failed to create admin.'}`);
+            }
+        } catch (error) {
+            console.error('Error creating admin:', error);
+            alert('An unexpected error occurred while creating the admin.');
+        }
     };
 
     const handleAddAccount = () => setOpenAddPopup(true);
@@ -72,15 +136,15 @@ const ManageAccountsPage: React.FC = () => {
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value);
     const handlePageChange = (page: number) => setCurrentPage(page);
 
-    const sortedData = [...data].sort((a, b) =>
-        sortOrder === "newest"
-            ? b.timestamp.getTime() - a.timestamp.getTime()
-            : a.timestamp.getTime() - b.timestamp.getTime()
-    );
+    const sortedData = [...userData].sort((a, b) => {
+        const timestampA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+        const timestampB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+        return sortOrder === "newest" ? timestampB - timestampA : timestampA - timestampB;
+    });
 
     const filteredData = sortedData.filter(
         (item) =>
-            item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
             item.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
             item.location.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -96,7 +160,6 @@ const ManageAccountsPage: React.FC = () => {
 
     return (
         <div className={styles.container}>
-
             <div className={styles.header}>
                 <h1 className={styles.title}>All Accounts</h1>
                 <div className={styles.searchSortContainer}>
@@ -126,7 +189,7 @@ const ManageAccountsPage: React.FC = () => {
                     />
                     <div className={styles.itemRange}>
                         <p>
-                            Displaying {startItem}–{endItem} of {sortedData.length} accounts
+                            Displaying {startItem}–{endItem} of {filteredData.length} accounts
                         </p>
                     </div>
                 </div>
@@ -134,7 +197,9 @@ const ManageAccountsPage: React.FC = () => {
                     + Add Account
                 </button>
             </div>
-            {openAddPopup && <AddAdminPopup onClose={handleCloseAddPopup} />}
+            {openAddPopup && <AddAdminPopup
+                onConfirm={handleAddAdmin}
+                onClose={handleCloseAddPopup} />}
             {openTogglePopup && (
                 <AdminTogglePopup
                     onConfirm={confirmToggleStatus}

@@ -7,13 +7,15 @@ interface TextfieldProps {
   placeholder?: string;
   value?: string;
   onChange?: (value: string) => void;
+  type?: string;
 }
 
-const Textfield: React.FC<TextfieldProps> = ({ 
-  label, 
-  placeholder, 
-  value, 
-  onChange 
+const Textfield: React.FC<TextfieldProps> = ({
+  label,
+  placeholder,
+  value,
+  onChange,
+  type = 'text'
 }) => {
   const [inputValue, setInputValue] = useState(value || '');
 
@@ -27,13 +29,13 @@ const Textfield: React.FC<TextfieldProps> = ({
   return (
     <div>
       {label && <label htmlFor="input">{label}</label>}
-      <input 
-        type="text" 
-        id="input" 
-        className={styles.inputField} 
-        placeholder={placeholder} 
-        value={inputValue} 
-        onChange={handleChange} 
+      <input
+        type={type}
+        id="input"
+        className={styles.inputField}
+        placeholder={placeholder}
+        value={inputValue}
+        onChange={handleChange}
       />
     </div>
   );

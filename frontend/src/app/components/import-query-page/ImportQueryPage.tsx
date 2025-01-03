@@ -4,22 +4,17 @@ import React, { useState } from 'react';
 
 import * as XLSX from 'xlsx'; 
 import row from 'xlsx'
-import { Box, Button, Typography } from '@mui/material';
-import DataCardDashboard from '../dashboard-datacard/DataCardDashboard';
+import { Button, Typography } from '@mui/material';
 import styles from './ImportQueryPage.module.css';
-
-interface DataCard {
-  id: number;
-  text: string;
-  customer: string;
-  createdBy: string;
-  createdAt: string;
-  description: string;
-}
+import DataCardDashboard from '../dashboard-datacard/DataCardDashboard';
+import PostQueryQuestionInetface from '@/app/interface/query/postQueryQuestionInterface';
+import PostQueryAnswerInterface from '@/app/interface/query/postQueryAnswerInterface';
+import QueryTagInterface from '@/app/interface/query/queryTagInterface';
 
 const ImportQueryPage = () => {
   const [file, setFile] = useState<File | null>(null);
-  const [dataCards, setDataCards] = useState<DataCard[]>([]);
+  const [questions, setQuestions] = useState<PostQueryQuestionInetface[]>([]);
+  const [answers, setAnswers] = useState<PostQueryAnswerInterface[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,28 +24,88 @@ const ImportQueryPage = () => {
     if (selectedFile) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        const data = new Uint8Array(event.target?.result as ArrayBuffer);
+        const result = event.target?.result as ArrayBuffer; // Explicitly cast to ArrayBuffer
+        const data = new Uint8Array(result);
         const workbook = XLSX.read(data, { type: 'array' });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
 
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-       
-        type ExcelRow = (string | number | undefined)[];
+        // Handle merged cells
+        const mergedCells = worksheet['!merges'] || [];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as Array<(string | number)[]>;
 
+        // Process merged cells
+        mergedCells.forEach((merge) => {
+          const start = merge.s;
+          const end = merge.e;
+          const value = jsonData[start.r]?.[start.c];  // Check for undefined
 
-        const processedData: DataCard[] = (jsonData as ExcelRow[]).slice(1).map((row, index) => ({
-          id: index + 1,
-          text: String(row[0] || 'No Question'),
-          customer: String(row[2] || 'Unknown Company'), 
-          createdBy: 'System', 
-          createdAt: new Date().toISOString().split('T')[0], 
-          description: String(row[1] || 'No Response'), 
-        }));
+          if (value !== undefined) {
+            for (let R = start.r; R <= end.r; R++) {
+              for (let C = start.c; C <= end.c; C++) {
+                if (R !== start.r || C !== start.c) {
+                  jsonData[R][C] = value;
+                }
+              }
+            }
+          }
+        });
 
+        // Filter non-empty rows
+        const nonEmptyRows = jsonData.filter((row) =>
+          Array.isArray(row) &&
+          row.some((cell: string | number) => {
+            // Ensure the cell is neither undefined, null, an empty string, nor just spaces
+            return cell !== undefined && cell !== null && String(cell).trim() !== '';
+          })
+        );
 
-        setDataCards(processedData);
-        setError(null); 
+        // Use the non-empty rows directly (don't flatten)
+        const rows: (string | number)[][] = nonEmptyRows;
+
+        const processedQuestions: PostQueryQuestionInetface[] = [];
+        const processedAnswers: PostQueryAnswerInterface[] = [];
+
+        let lastCategory = '';
+        let lastCompany = '';
+
+        // Iterate over the rows (which are arrays themselves)
+        rows.slice(1).forEach((row, index) => {
+          const question = row[0] ? String(row[0]) : 'No Question';
+          const response = row[1] ? String(row[1]) : 'No Response';
+
+          // Propagate `Category` and `Company` values if empty
+          if (row[2]) {
+            lastCategory = String(row[2]);
+          }
+          if (row[3]) {
+            lastCompany = String(row[3]);
+          }
+
+          const tags: QueryTagInterface[] = [];
+          if (lastCategory) {
+            tags.push({ tagGroupName: 'Category', tagName: lastCategory });
+          }
+          if (lastCompany) {
+            tags.push({ tagGroupName: 'Company', tagName: lastCompany });
+          }
+
+          processedQuestions.push({
+            question,
+            userId: 0, // Replace with actual user ID if available
+            tags,
+          });
+
+          processedAnswers.push({
+            answer: response,
+            userId: 0, // Replace with actual user ID if available
+            queryId: index + 1, // Replace with actual query ID if available
+          });
+        });
+
+        setQuestions(processedQuestions);
+        setAnswers(processedAnswers);
+        setError(null);
       };
 
       reader.onerror = () => {
@@ -61,49 +116,43 @@ const ImportQueryPage = () => {
     }
   };
 
-  const handleDelete = (id: number) => {
-    setDataCards((prev) => prev.filter((card) => card.id !== id));
-  };
-
-  const handleEdit = (id: number) => {
-    alert(`Edit card with ID: ${id}`);
-  };
-
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    alert(`Copied: ${text}`);
-  };
-
   const handleClear = () => {
     setFile(null);
-    setDataCards([]);
+    setQuestions([]);
+    setAnswers([]);
     setError(null);
   };
 
   const handleSave = () => {
+    console.log('Questions:', questions);
+    console.log('Answers:', answers);
     alert('Data successfully saved!');
+  };
+
+  const handleDelete = (id: number) => {
+    setQuestions((prev) => prev.filter((_, index) => index !== id));
+    setAnswers((prev) => prev.filter((_, index) => index !== id));
   };
 
   return (
     <div className={styles.container}>
-
       <div className={styles.dataCardsContainer}>
-        {dataCards.length > 0 ? (
-          dataCards.map((card) => (
+        {questions.length > 0 ? (
+          questions.map((question, index) => (
             <DataCardDashboard
-              key={card.id}
-              id={card.id}
-              question={card.text}
-              customer={card.customer}
-              createdBy={card.createdBy}
-              createdAt={card.createdAt}
-              answer={card.description}
-              tags={[{ tagName: "sss", tagGroupName: "sdad" }]}
+              key={index}
+              id={index + 1}
+              question={question.question}
+              customer={question.tags.find((tag) => tag.tagGroupName === 'Company')?.tagName || ''}
+              createdBy="System"
+              createdAt={new Date().toISOString().split('T')[0]}
+              answer={answers[index]?.answer || 'No Answer'}
+              tags={question.tags}
               deleteOn={true}
-              editOn={true}
-              copyOn={false}
-              onDelete={handleDelete}
-              onEdit={handleEdit}
+              editOn={false}
+              copyOn={true}
+              onDelete={() => handleDelete(index)}
+              onEdit={() => { }}
             />
           ))
         ) : (
@@ -118,8 +167,8 @@ const ImportQueryPage = () => {
       </div>
       <div className={styles.footer}>
         <div className={styles.footerLeft}>
-          <p>Having trouble with importing excel ?</p>
-          <a href='/assets/templates/Import Query Template.xlsx' >Download Template</a>
+          <p>Having trouble with importing excel?</p>
+          <a href="/assets/templates/Import Query Template.xlsx">Download Template</a>
         </div>
 
         <div className={styles.footerRight}>
@@ -129,23 +178,23 @@ const ImportQueryPage = () => {
             className={styles.clearButton}
             sx={{ textTransform: 'none', marginLeft: '10px' }}
             onClick={handleClear}
-            disabled={!file && dataCards.length === 0}
+            disabled={!file && questions.length === 0}
           >
             Clear
           </Button>
 
           <Button
             variant="contained"
-            color={dataCards.length > 0 ? 'success' : 'info'}
+            color={questions.length > 0 ? 'success' : 'info'}
             className={styles.selectButton}
             sx={{ textTransform: 'none' }}
             onClick={() =>
-              dataCards.length > 0
+              questions.length > 0
                 ? handleSave()
                 : document.getElementById('fileInput')?.click()
             }
           >
-            {dataCards.length > 0 ? 'Save Data' : 'Import File'}
+            {questions.length > 0 ? 'Save Data' : 'Import File'}
             <input
               id="fileInput"
               type="file"
