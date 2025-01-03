@@ -21,10 +21,16 @@ const config: Config = {
   coverageProvider: 'v8',
   testEnvironment: 'jsdom',
   moduleNameMapper: {
-    '^@app/(.*)$': '<rootDir>/src/app/$1', 
+    '^@/(.*)$': '<rootDir>/src/$1',
+ 
+  },
+  transform: {
+    '^.+\\.tsx?$': 'ts-jest',
   },
 
-
+      
+      
+  
   
 };
 
