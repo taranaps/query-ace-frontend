@@ -1,14 +1,50 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 import DataCardDashboard from '@/app/components/dashboard-datacard/DataCardDashboard';
 import styles from './dashboard.module.css';
 import searchQueryResult from '@/app/interface/query/searchQueryResult';
 import fetchQueryUsingKeyword from '@/app/api/queries/fetchQueryUsingKeyword';
+import DataPopup from "@/app/components/data-popup/DataPopup";
+import fetchQueryWithAnswers from "@/app/api/questioncard/fetchQueryAnswers";
+
 
 const Dashboard: React.FC = () => {
+
+  const { user } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user || user.status === 'INACTIVE') {
+      router.push('/pages/login');
+    }
+  }, [user, router]);
+
   const [searchKeyword, setSearchQuery] = useState<string>('');
   const [searchResults, setSearchResults] = useState<searchQueryResult[]>([]);
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [answers, setAnswers] = useState<any[]>([]);
+
+  const handleCardClick = async (item: any) => {
+    setSelectedItem(item);
+    setIsPopupOpen(true);
+
+    try {
+      const fetchedData = await fetchQueryWithAnswers(item.id);
+      if (fetchedData && fetchedData.answers) {
+        setAnswers(fetchedData.answers);
+      } else {
+        console.warn("No answers found for this query.");
+        setAnswers([]);
+      }
+    } catch (error) {
+      console.error("Error fetching answers:", error);
+      setAnswers([]);
+    }
+  };
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -31,6 +67,10 @@ const Dashboard: React.FC = () => {
   const handleDelete = (id: number) => console.log(`Delete card with id: ${id}`);
   const handleEdit = (id: number) => console.log(`Edit card with id: ${id}`);
 
+  if (!user) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className={styles.dashboard}>
       <div className={styles['dashboard-search-bar']}>
@@ -43,15 +83,19 @@ const Dashboard: React.FC = () => {
         />
         <img src="/assets/icons/search-grey-icon.png" alt="Search" />
       </div>
+
       <div className={styles['dashboard-body']}>
         <div className={styles['dashboard-content']}>
-          {searchKeyword === '' && (
+          {searchKeyword === '' ? (
             <div className={styles['image-placeholder']}>
               <img src="/assets/images/dashboard-clipboard.png" alt="No Results" />
             </div>
-          )}
-
-          {searchResults.length > 0 ? (
+          ) : searchResults.length === 0 ? (
+            <div className={styles['image-placeholder']}>
+              <p>No answers found</p><br />
+              <a onClick={() => router.push('/pages/add-record')}>Add new data?</a>
+            </div>
+          ) : (
             searchResults.map((result) => (
               <DataCardDashboard
                 key={result.id}
@@ -67,18 +111,31 @@ const Dashboard: React.FC = () => {
                 copyOn={true}
                 onDelete={handleDelete}
                 onEdit={handleEdit}
+                onClick={() => handleCardClick(result)}
               />
             ))
-          ) : (
-            searchKeyword !== '' && (
-              <div className={styles['image-placeholder']}>
-                <img src="/assets/images/dashboard-clipboard.png" alt="No Results" />
-              </div>
-            )
           )}
         </div>
       </div>
-    </div>
+      {
+        isPopupOpen && selectedItem && (
+          <DataPopup
+            data={{
+              ...selectedItem,
+              answers: answers,
+              tags: selectedItem.tags || [],
+            }}
+            onClose={() => {
+              setIsPopupOpen(false);
+              setSelectedItem(null);
+              setAnswers([]);
+            }}
+            onDelete={() => { }}
+            onEdit={() => { }}
+          />
+        )
+      }
+    </div >
   );
 };
 
