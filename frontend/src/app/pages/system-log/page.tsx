@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { systemLogs, adminList} from "../../components/Data/system-log";
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import { systemLogs, adminList } from "../../components/Data/system-log";
 import Filter from "@/app/components/filter/filter";
 import styles from "./systemLog.module.css";
 
@@ -19,13 +21,22 @@ const SystemLog: React.FC = () => {
     { date: "2024-12-23", text: "Parvathy Eeshwar removed Arun Mathew from Admin" },
   ];
 
+  const { user } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user || user.status === 'INACTIVE') {
+      router.push('/pages/login');
+    }
+  }, [user, router]);
+
   useEffect(() => {
 
     const interval = setInterval(() => {
       setVisibleIndexes((prev) => {
-        const nextIndex = prev.length; 
+        const nextIndex = prev.length;
         if (nextIndex >= logs.length) {
-          clearInterval(interval); 
+          clearInterval(interval);
           console.log("Cleared interval at index:", nextIndex);
           return prev;
         }
@@ -36,7 +47,7 @@ const SystemLog: React.FC = () => {
       });
     }, 100);
 
-    return () => clearInterval(interval); 
+    return () => clearInterval(interval);
   }, [logs.length]);
 
   return (

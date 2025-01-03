@@ -1,59 +1,70 @@
 'use client'; // This ensures the code runs only on the client side
 
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface AuthContextProps {
-    token: string | null;
-    login: (token: string) => void;
+    user: any;
+    login: (userData: any) => void;
     logout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
-    token: null,
-    login: () => {},
-    logout: () => {}
+    user: null,
+    login: () => { },
+    logout: () => { },
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [token, setToken] = useState<string | null>(null);
-    const [isMounted, setIsMounted] = useState(false); // to track mounting state
+    const [user, setUser] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true); // Track if loading is happening
     const router = useRouter();
 
-    // Run only on the client-side (after mount)
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
-
-    // Use `useEffect` to check for token in localStorage
-    useEffect(() => {
-        if (isMounted) {
-            const savedToken = localStorage.getItem('token');
-            if (savedToken) {
-                setToken(savedToken);
-            }
+    // Function to initialize user from localStorage
+    const initializeUser = () => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser)); // If user data exists, set it in state
+        } else {
+            setUser(null); // Otherwise, set user to null
+            router.push('/pages/login'); // Redirect to login if no user found
         }
-    }, [isMounted]);
-
-    const login = (newToken: string) => {
-        setToken(newToken);
-        localStorage.setItem('token', newToken);
     };
 
+    useEffect(() => {
+        initializeUser(); // Initialize user check on mount
+        setIsLoading(false); // After the check, stop loading
+    }, []); // Empty dependency array ensures this runs once on mount
+
+    // Function to login and store user data in localStorage
+    const login = (userData: any) => {
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData)); // Store user data in localStorage
+    };
+
+    // Function to logout and clear session data
     const logout = () => {
-        setToken(null);
-        localStorage.removeItem('token');
-        router.push('/login'); // router usage after mounting
+        setUser(null); // Clear user data from state
+        localStorage.removeItem('user'); // Remove user data from localStorage
+        router.push('/pages/login'); // Redirect to login page
     };
 
-    // Don't render anything until mounted
-    if (!isMounted) {
-        return null;
+    // Prevent rendering until user data is initialized
+    if (isLoading) {
+        return null; // Prevent rendering until the loading is complete
     }
 
     return (
-        <AuthContext.Provider value={{ token, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
+};
+
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
 };

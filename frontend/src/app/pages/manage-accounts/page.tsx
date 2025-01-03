@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 import SearchBar from "../../components/search-bar/SearchBar";
 import SortFilterButton from "../../components/sort-filter-button/SortFilterButton";
 import TableWrapper from "../../components/table/Table";
@@ -23,13 +25,24 @@ const ManageAccountsPage: React.FC = () => {
 
     const itemsPerPage = 8;
 
+    const { user } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!user || user.status === 'INACTIVE') {
+            router.push('/pages/login');
+        } else if (user.roles[0]?.roleName !== 'SUPER_ADMIN') {
+            router.back();
+        }
+    }, [user, router]);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch("/api/admin/users")
                 const result = await response.json();
                 console.log(result);
-                
+
                 if (Array.isArray(result)) {
                     setUserData(result);
                 } else {
@@ -112,7 +125,7 @@ const ManageAccountsPage: React.FC = () => {
             });
 
             console.log(JSON.stringify(adminData));
-            
+
 
             if (response.ok) {
                 const result = await response.json();
