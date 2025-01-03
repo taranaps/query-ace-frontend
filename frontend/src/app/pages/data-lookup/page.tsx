@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import DataCardDashboard from "@/app/components/dashboard-datacard/DataCardDashboard"; 
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import DataCardDashboard from "@/app/components/dashboard-datacard/DataCardDashboard";
 import Pagination from "@/app/components/pagination/Pagination";
 import styles from "./datalookup.module.css";
 import DataPopup from "@/app/components/data-popup/DataPopup";
@@ -14,7 +16,16 @@ export default function QueryLookup() {
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [answers, setAnswers] = useState<any[]>([]);
-  const itemsPerPage = 10; 
+  const itemsPerPage = 10;
+
+  const { user } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user || user.status === 'INACTIVE') {
+      router.push('/pages/login');
+    }
+  }, [user, router]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,13 +87,13 @@ export default function QueryLookup() {
             id={item.id}
             question={item.question || "No question provided"}
             answer={item.answer || "No answer provided"}
-            customer={item.customer || "Unknown"} 
+            customer={item.customer || "Unknown"}
             createdBy={item.usersUsername || "Unknown"}
             createdAt={item.createdAt || "Unknown"}
             tags={(item.tags || [])}
-            editOn={true} 
-            deleteOn={true} 
-            copyOn={true} 
+            editOn={true}
+            deleteOn={true}
+            copyOn={true}
             onEdit={(id, newQuestion, newAnswer) => { console.log(id, newQuestion, newAnswer); }}
             onDelete={() => handleDelete(index)}
             onClick={() => handleCardClick(item)}

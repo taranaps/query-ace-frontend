@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 import * as XLSX from "xlsx";
 import {
     Typography,
@@ -32,7 +34,15 @@ const FileProcessingPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<"import" | "questions" | "result">("import");
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: string }>({});
-    const [searchQuery, setSearchQuery] = useState<string>(""); 
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const { user } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!user || user.status === 'INACTIVE') {
+            router.push('/pages/login');
+        }
+    }, [user, router]);
 
     const dummyAnswers = [
         "Corporate culture refers to the shared values, beliefs, and practices that define an organization.",

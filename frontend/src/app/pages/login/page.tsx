@@ -35,14 +35,14 @@ const LoginPage: React.FC = () => {
             const data = await response.json();
 
             if (response.ok) {
-                login(data.data); 
+                login(data);                
                 alert('Logged in Successfully!');
-                router.push('/dashboard'); 
+                router.push('/pages/dashboard');
             } else {
                 alert(`Error: ${data.message}`);
             }
         } catch (error) {
-            console.error('Login Error:', error); 
+            console.error('Login Error:', error);
             alert('An error occurred. Please try again.');
         }
     };
