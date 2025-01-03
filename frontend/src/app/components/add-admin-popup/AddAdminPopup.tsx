@@ -7,13 +7,9 @@ import {
     MenuItem,
     Select,
     InputLabel,
-    FormControl
 } from "@mui/material";
  import Textfield from "../text-field/TextField";
-    FormControl,
-    Button,
-} from "@mui/material";
-import Textfield from "../text-field/TextField";
+ import   {FormControl,Button} from "@mui/material";
 
 import styles from "./AddAdminPopup.module.css";
 
