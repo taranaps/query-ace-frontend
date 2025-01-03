@@ -1,11 +1,10 @@
 
 import type { Config } from 'jest';
 import nextJest from 'next/jest.js';
- 
+
 const createJestConfig = nextJest({
   dir: './',
-})
-
+});
 
 
 const config: Config = {
@@ -19,6 +18,8 @@ const config: Config = {
 
 
   coverageProvider: 'v8',
+
+  // Test environment (set to 'jsdom' for browser-like testing)
   testEnvironment: 'jsdom',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
@@ -34,4 +35,4 @@ const config: Config = {
   
 };
 
-export default createJestConfig(config)
+export default createJestConfig(config);
