@@ -22,9 +22,12 @@ interface AddAdminPopupProps {
         password: string;
         userRole: "SUPER_ADMIN" | "ADMIN";
     }) => void;
+    closePopup: () => void;
+    passwordOn?: boolean
 }
 
-const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ header, onClose, onConfirm }) => {
+const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ header, onClose, onConfirm, closePopup, passwordOn = true }) => {
+
     const [formData, setFormData] = useState<{
         firstName: string;
         email: string;
@@ -58,7 +61,7 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ header, onClose, onConfir
             setLoading(true);
             await onConfirm(formData);
             setLoading(false);
-
+            closePopup();
         } else {
             alert("Please fill all fields before creating an account.");
         }
@@ -89,12 +92,14 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ header, onClose, onConfir
                                     value={formData.username}
                                     onChange={(value) => handleInputChange("username", value)}
                                 />
-                                <Textfield
-                                    type="password"
-                                    placeholder="Password"
-                                    value={formData.password}
-                                    onChange={(value) => handleInputChange("password", value)}
-                                />
+                                {passwordOn &&
+                                    <Textfield
+                                        type="password"
+                                        placeholder="Password"
+                                        value={formData.password}
+                                        onChange={(value) => handleInputChange("password", value)}
+                                    />
+                                }
                             </div>
                         </DialogContent>
                         <DialogActions>
@@ -113,7 +118,7 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ header, onClose, onConfir
                                     variant="contained"
                                     color="success"
                                 >
-                                    Create
+                                    Confirm
                                 </Button>
                             </div>
                         </DialogActions>
