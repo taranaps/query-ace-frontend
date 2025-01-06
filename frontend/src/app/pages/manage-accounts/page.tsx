@@ -13,6 +13,7 @@ import { fetchUserInterface } from "@/app/interface/user/fetchUserInterface";
 
 import styles from "./ManageAccountsPage.module.css";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
+import { handleAddAdmin } from "@/app/util/admin/adminFunctionalities";
 
 const ManageAccountsPage: React.FC = () => {
     const [userData, setUserData] = useState<fetchUserInterface[]>([]);
@@ -23,7 +24,7 @@ const ManageAccountsPage: React.FC = () => {
     const [openTogglePopup, setOpenTogglePopup] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true); // Add loading state
+    const [isLoading, setIsLoading] = useState(true);
 
     const itemsPerPage = 8;
 
@@ -53,7 +54,7 @@ const ManageAccountsPage: React.FC = () => {
             } catch (error) {
                 console.error("Error fetching users:", error);
             } finally {
-                setIsLoading(false); // Set loading to false after data is fetched
+                setIsLoading(false);
             }
         };
 
@@ -108,44 +109,9 @@ const ManageAccountsPage: React.FC = () => {
         setSelectedEmail(null);
     };
 
-    const handleAddAdmin = async (adminData: {
-        firstName: string;
-        email: string;
-        location: string;
-        username: string;
-        password: string;
-        userRole: "SUPER_ADMIN" | "ADMIN";
-    }) => {
-        try {
-            const url = `/api/admin/create`;
-
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(adminData),
-            });
-
-            console.log(JSON.stringify(adminData));
-
-            if (response.ok) {
-                const result = await response.json();
-                console.log('New admin created successfully:', result);
-                setOpenAddPopup(false);
-            } else {
-                const errorResult = await response.json();
-                console.error('Failed to create admin:', errorResult);
-                alert(`Error: ${errorResult.message || 'Failed to create admin.'}`);
-            }
-        } catch (error) {
-            console.error('Error creating admin:', error);
-            alert('An unexpected error occurred while creating the admin.');
-        }
-    };
-
     const handleAddAccount = () => setOpenAddPopup(true);
     const handleEditAccount = () => setOpenEditPopup(true);
+
     const handleCloseAddPopup = () => {
         setOpenAddPopup(false);
         setOpenEditPopup(false);
@@ -228,6 +194,8 @@ const ManageAccountsPage: React.FC = () => {
                     header="Add Admin"
                     onConfirm={handleAddAdmin}
                     onClose={handleCloseAddPopup}
+                    closePopup={handleCloseAddPopup}
+                    passwordOn={true}
                 />}
 
             {openEditPopup &&
@@ -235,7 +203,8 @@ const ManageAccountsPage: React.FC = () => {
                     header="Edit Admin"
                     onConfirm={handleEditAccount}
                     onClose={handleCloseAddPopup}
-
+                    closePopup={handleCloseAddPopup}
+                    passwordOn={false}
                 />}
             {openTogglePopup && (
                 <AdminTogglePopup onConfirm={confirmToggleStatus} onClose={handleCloseTogglePopup} />
