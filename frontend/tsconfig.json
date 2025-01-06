@@ -33,7 +33,6 @@
       "@testing-library/jest-dom",
       "node"
     ],
-    "baseUrl": "."
   },
   "include": [
     "next-env.d.ts",
