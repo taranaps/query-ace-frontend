@@ -12,16 +12,18 @@ import AdminTogglePopup from "../../components/admin-toggle-popup/AdminTogglePop
 import { fetchUserInterface } from "@/app/interface/user/fetchUserInterface";
 
 import styles from "./ManageAccountsPage.module.css";
+import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
 
 const ManageAccountsPage: React.FC = () => {
-
     const [userData, setUserData] = useState<fetchUserInterface[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState<"newest" | "earliest">("newest");
     const [openAddPopup, setOpenAddPopup] = useState(false);
+    const [openEditPopup, setOpenEditPopup] = useState(false);
     const [openTogglePopup, setOpenTogglePopup] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true); // Add loading state
 
     const itemsPerPage = 8;
 
@@ -39,7 +41,7 @@ const ManageAccountsPage: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch("/api/admin/users")
+                const response = await fetch("/api/admin/users");
                 const result = await response.json();
                 console.log(result);
 
@@ -50,6 +52,8 @@ const ManageAccountsPage: React.FC = () => {
                 }
             } catch (error) {
                 console.error("Error fetching users:", error);
+            } finally {
+                setIsLoading(false); // Set loading to false after data is fetched
             }
         };
 
@@ -72,7 +76,6 @@ const ManageAccountsPage: React.FC = () => {
                     const url = `/api/admin/toggle-status/${userToUpdate.id}`.trim();
 
                     console.log(url);
-
 
                     const response = await fetch(url, {
                         method: 'PUT',
@@ -126,7 +129,6 @@ const ManageAccountsPage: React.FC = () => {
 
             console.log(JSON.stringify(adminData));
 
-
             if (response.ok) {
                 const result = await response.json();
                 console.log('New admin created successfully:', result);
@@ -143,7 +145,11 @@ const ManageAccountsPage: React.FC = () => {
     };
 
     const handleAddAccount = () => setOpenAddPopup(true);
-    const handleCloseAddPopup = () => setOpenAddPopup(false);
+    const handleEditAccount = () => setOpenEditPopup(true);
+    const handleCloseAddPopup = () => {
+        setOpenAddPopup(false);
+        setOpenEditPopup(false);
+    }
     const handleCloseTogglePopup = () => setOpenTogglePopup(false);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value);
@@ -185,12 +191,19 @@ const ManageAccountsPage: React.FC = () => {
             </div>
 
             <div className={styles.tableData}>
-                <TableWrapper
-                    data={paginatedData}
-                    onToggleStatus={(email) => handleToggleStatus(email)}
-                    headerClassName={styles.tableHeader}
-                    rowClassName={styles.tableRow}
-                />
+                {isLoading ? (
+                    <div className={styles.loaderContainer}>
+                        <LottieLoader size={"180px"} />
+                    </div>
+                ) : (
+                    <TableWrapper
+                        data={paginatedData}
+                        onToggleStatus={(email) => handleToggleStatus(email)}
+                        onEditAdmin={handleEditAccount}
+                        headerClassName={styles.tableHeader}
+                        rowClassName={styles.tableRow}
+                    />
+                )}
             </div>
 
             <div className={styles.footer}>
@@ -210,14 +223,22 @@ const ManageAccountsPage: React.FC = () => {
                     + Add Account
                 </button>
             </div>
-            {openAddPopup && <AddAdminPopup
-                onConfirm={handleAddAdmin}
-                onClose={handleCloseAddPopup} />}
+            {openAddPopup &&
+                <AddAdminPopup
+                    header="Add Admin"
+                    onConfirm={handleAddAdmin}
+                    onClose={handleCloseAddPopup}
+                />}
+
+            {openEditPopup &&
+                <AddAdminPopup
+                    header="Edit Admin"
+                    onConfirm={handleEditAccount}
+                    onClose={handleCloseAddPopup}
+
+                />}
             {openTogglePopup && (
-                <AdminTogglePopup
-                    onConfirm={confirmToggleStatus}
-                    onClose={handleCloseTogglePopup}
-                />
+                <AdminTogglePopup onConfirm={confirmToggleStatus} onClose={handleCloseTogglePopup} />
             )}
         </div>
     );

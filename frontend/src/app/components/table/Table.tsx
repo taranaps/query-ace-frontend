@@ -13,6 +13,7 @@ import { fetchUserInterface } from "@/app/interface/user/fetchUserInterface";
 interface TableWrapperProps {
     data: fetchUserInterface[];
     onToggleStatus: (email: string, newStatus: boolean) => void;
+    onEditAdmin: (id: number) => void;
     sx?: object;
     headerClassName?: string;
     rowClassName?: string;
@@ -21,13 +22,14 @@ interface TableWrapperProps {
 const TableWrapper: React.FC<TableWrapperProps> = ({
     data,
     onToggleStatus,
+    onEditAdmin,
     sx,
     headerClassName,
     rowClassName,
 }) => {
 
     console.log(data);
-    
+
     return (
         <TableContainer
             sx={{
@@ -45,7 +47,6 @@ const TableWrapper: React.FC<TableWrapperProps> = ({
                     <MuiTableRow className={headerClassName}>
                         <TableCell>Admin Name</TableCell>
                         <TableCell>Email</TableCell>
-                        <TableCell>Location</TableCell>
                         <TableCell>Status</TableCell>
                         <TableCell>Action</TableCell>
                     </MuiTableRow>
@@ -64,6 +65,7 @@ const TableWrapper: React.FC<TableWrapperProps> = ({
                                 console.log(`Email: ${row.email}, Toggle to: ${newStatus}`);
                                 onToggleStatus(row.email, newStatus);
                             }}
+                            onRowClick={() => { onEditAdmin(row.id) }}
                         />
                     ))}
                 </TableBody>

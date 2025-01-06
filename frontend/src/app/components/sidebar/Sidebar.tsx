@@ -16,10 +16,10 @@ const Sidebar = React.memo(() => {
 
     const navItems = [
         { navigationPath: '/dashboard', iconPath: '/assets/icons/home-icon.svg', label: 'Home' },
-        { navigationPath: '/add-record', iconPath: '/assets/icons/add-icon.svg', label: 'Add Record' },
-        { navigationPath: '/file-processing', iconPath: '/assets/icons/file-processing-icon.svg', label: 'File Processing' },
-        { navigationPath: '/data-lookup', iconPath: '/assets/icons/data-lookup-icon.svg', label: 'Data Lookup' },
-        { navigationPath: '/system-log', iconPath: '/assets/icons/system-log-icon.svg', label: 'System Log' },
+        { navigationPath: '/add-record', iconPath: '/assets/icons/add-icon.svg', label: 'Add Query' },
+        { navigationPath: '/file-processing', iconPath: '/assets/icons/file-processing-icon.svg', label: 'Generate Report' },
+        { navigationPath: '/data-lookup', iconPath: '/assets/icons/data-lookup-icon.svg', label: 'Query Lookup' },
+        { navigationPath: '/system-log', iconPath: '/assets/icons/system-log-icon.svg', label: 'System Logs' },
     ];
 
     if (user?.roles[0]?.roleName.includes('SUPER_ADMIN')) {
@@ -29,7 +29,6 @@ const Sidebar = React.memo(() => {
             label: 'Manage Accounts'
         });
     }
-
 
     useEffect(() => {
         const index = navItems.findIndex((item) => item.navigationPath === pathname);

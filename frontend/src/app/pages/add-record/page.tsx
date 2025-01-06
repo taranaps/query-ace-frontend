@@ -23,6 +23,6 @@ const AddRecordPage = () => {
       <NavigationTabs />
     </div>
   );
-};
+};  
 
 export default AddRecordPage;

@@ -7,7 +7,7 @@ import styles from "./lottiebutton.module.css";
 interface LottieIconButtonProps {
   animationData: object;
   label: string;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent) => void;
   disabled?: boolean;
 }
 
@@ -17,18 +17,18 @@ const LottieIconButton: React.FC<LottieIconButtonProps> = ({
   onClick,
   disabled = false,
 }) => {
-  const lottieRef = useRef<any>(null); 
+  const lottieRef = useRef<any>(null);
 
   const handleMouseEnter = () => {
     if (lottieRef.current) {
-      lottieRef.current.goToAndStop(0, true); 
+      lottieRef.current.goToAndStop(0, true);
       lottieRef.current.play();
     }
   };
 
   const handleMouseLeave = () => {
     if (lottieRef.current) {
-      lottieRef.current.stop(); 
+      lottieRef.current.stop();
     }
   };
 
@@ -42,9 +42,9 @@ const LottieIconButton: React.FC<LottieIconButtonProps> = ({
     >
       <Lottie
         animationData={animationData}
-        lottieRef={lottieRef} 
+        lottieRef={lottieRef}
         autoPlay={false}
-        loop={false} 
+        loop={false}
         className={styles.lottieIcon}
       />
       <div className={styles.buttonLabelContainer}>
