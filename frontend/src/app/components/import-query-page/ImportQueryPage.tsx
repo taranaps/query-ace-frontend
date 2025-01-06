@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-import * as XLSX from 'xlsx'; 
+import * as XLSX from 'xlsx';
 import row from 'xlsx'
 import { Button, Typography } from '@mui/material';
 import styles from './ImportQueryPage.module.css';
@@ -24,21 +24,21 @@ const ImportQueryPage = () => {
     if (selectedFile) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        const result = event.target?.result as ArrayBuffer; // Explicitly cast to ArrayBuffer
+        const result = event.target?.result as ArrayBuffer;
         const data = new Uint8Array(result);
         const workbook = XLSX.read(data, { type: 'array' });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
 
-        // Handle merged cells
+
         const mergedCells = worksheet['!merges'] || [];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as Array<(string | number)[]>;
 
-        // Process merged cells
+
         mergedCells.forEach((merge) => {
           const start = merge.s;
           const end = merge.e;
-          const value = jsonData[start.r]?.[start.c];  // Check for undefined
+          const value = jsonData[start.r]?.[start.c];
 
           if (value !== undefined) {
             for (let R = start.r; R <= end.r; R++) {
@@ -51,16 +51,13 @@ const ImportQueryPage = () => {
           }
         });
 
-        // Filter non-empty rows
         const nonEmptyRows = jsonData.filter((row) =>
           Array.isArray(row) &&
           row.some((cell: string | number) => {
-            // Ensure the cell is neither undefined, null, an empty string, nor just spaces
             return cell !== undefined && cell !== null && String(cell).trim() !== '';
           })
         );
 
-        // Use the non-empty rows directly (don't flatten)
         const rows: (string | number)[][] = nonEmptyRows;
 
         const processedQuestions: PostQueryQuestionInetface[] = [];
@@ -69,12 +66,10 @@ const ImportQueryPage = () => {
         let lastCategory = '';
         let lastCompany = '';
 
-        // Iterate over the rows (which are arrays themselves)
         rows.slice(1).forEach((row, index) => {
           const question = row[0] ? String(row[0]) : 'No Question';
           const response = row[1] ? String(row[1]) : 'No Response';
 
-          // Propagate `Category` and `Company` values if empty
           if (row[2]) {
             lastCategory = String(row[2]);
           }
@@ -92,14 +87,14 @@ const ImportQueryPage = () => {
 
           processedQuestions.push({
             question,
-            userId: 0, // Replace with actual user ID if available
+            userId: 0,
             tags,
           });
 
           processedAnswers.push({
             answer: response,
-            userId: 0, // Replace with actual user ID if available
-            queryId: index + 1, // Replace with actual query ID if available
+            userId: 0,
+            queryId: index + 1,
           });
         });
 
@@ -149,10 +144,7 @@ const ImportQueryPage = () => {
               answer={answers[index]?.answer || 'No Answer'}
               tags={question.tags}
               deleteOn={true}
-              editOn={false}
               copyOn={true}
-              onDelete={() => handleDelete(index)}
-              onEdit={() => { }}
             />
           ))
         ) : (
