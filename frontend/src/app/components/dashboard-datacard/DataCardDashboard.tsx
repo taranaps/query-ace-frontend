@@ -49,7 +49,6 @@ const DataCardDashboard: React.FC<DataCardProps> = ({
   copyOn,
   onClick
 }) => {
-  
   const handleCopy = async (id: number, text: string, event: React.MouseEvent) => {
     event.stopPropagation();
     await handleCopyQuery(id);

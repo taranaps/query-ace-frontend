@@ -54,7 +54,7 @@ const TableWrapper: React.FC<TableWrapperProps> = ({
                 <TableBody>
                     {data.map((row) => (
                         <TableRow
-                            key={`${row.id}-${row.timestamp}`}
+                            key={`${row.id}-${row.createdAt}`}
                             name={row.firstName}
                             email={row.email}
                             location={row.location}

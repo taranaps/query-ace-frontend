@@ -122,8 +122,8 @@ const ManageAccountsPage: React.FC = () => {
     const handlePageChange = (page: number) => setCurrentPage(page);
 
     const sortedData = [...userData].sort((a, b) => {
-        const timestampA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
-        const timestampB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+        const timestampA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const timestampB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
         return sortOrder === "newest" ? timestampB - timestampA : timestampA - timestampB;
     });
 
