@@ -9,6 +9,9 @@ import styles from "./datalookup.module.css";
 import DataPopup from "@/app/components/data-popup/DataPopup";
 import fetchQueriesQuestions from "@/app/api/questioncard/fetchQueriesQuestions";
 import fetchQueryWithAnswers from "@/app/api/questioncard/fetchQueryAnswers";
+import { handleCopyQuery } from "@/app/util/query/queryFunctionalities";
+import Lottie from 'lottie-react'; // Import Lottie
+import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
 
 export default function QueryLookup() {
   const [data, setData] = useState<any[]>([]);
@@ -16,6 +19,7 @@ export default function QueryLookup() {
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [answers, setAnswers] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const itemsPerPage = 10;
 
   const { user } = useAuth();
@@ -38,6 +42,8 @@ export default function QueryLookup() {
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -75,31 +81,33 @@ export default function QueryLookup() {
 
   return (
     <div className={styles.dataLookupContainer}>
-
       <div className={styles.headerRow}>
         <h2 className={styles.headerTitle}>Query Lookup</h2>
       </div>
 
-      <div className={styles.dataItems}>
-        {paginatedData.map((item, index) => (
-          <DataCardDashboard
-            key={item.id}
-            id={item.id}
-            question={item.question || "No question provided"}
-            answer={item.answer || "No answer provided"}
-            customer={item.customer || "Unknown"}
-            createdBy={item.usersUsername || "Unknown"}
-            createdAt={item.createdAt || "Unknown"}
-            tags={(item.tags || [])}
-            editOn={true}
-            deleteOn={true}
-            copyOn={true}
-            onEdit={(id, newQuestion, newAnswer) => { console.log(id, newQuestion, newAnswer); }}
-            onDelete={() => handleDelete(index)}
-            onClick={() => handleCardClick(item)}
-          />
-        ))}
-      </div>
+      {loading ? (
+        <div className={styles.loaderContainer}>
+          <LottieLoader />
+        </div>
+      ) : (
+        <div className={styles.dataItems}>
+          {paginatedData.map((item, index) => (
+            <DataCardDashboard
+              key={item.id}
+              id={item.id}
+              question={item.question || "No question provided"}
+              answer={item.answer || "No answer provided"}
+              customer={item.customer || "Unknown"}
+              createdBy={item.usersUsername || "Unknown"}
+              createdAt={item.createdAt || "Unknown"}
+              tags={(item.tags || [])}
+              deleteOn={true}
+              copyOn={item.answer ? true : false}
+              onClick={() => handleCardClick(item)}
+            />
+          ))}
+        </div>
+      )}
 
       <div className={styles.paginationContainer}>
         <Pagination
@@ -127,8 +135,6 @@ export default function QueryLookup() {
             setSelectedItem(null);
             setAnswers([]);
           }}
-          onDelete={() => { }}
-          onEdit={() => { }}
         />
       )}
     </div>

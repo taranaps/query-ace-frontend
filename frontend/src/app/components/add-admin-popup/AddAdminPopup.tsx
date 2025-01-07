@@ -1,19 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
-    MenuItem,
-    Select,
-    InputLabel,
+    Button
 } from "@mui/material";
- import Textfield from "../text-field/TextField";
- import   {FormControl,Button} from "@mui/material";
+import Textfield from "../text-field/TextField";
 
 import styles from "./AddAdminPopup.module.css";
+import { LottieLoader } from "../lottie-loader/lottieLoader";
+
+
+interface AdminData {
+    id: number;
+    firstName: string;
+    email: string;
+    location: string;
+    username: string;
+    password: string;
+    userRole: "SUPER_ADMIN" | "ADMIN";
+}
+
 
 interface AddAdminPopupProps {
+    header: string,
     onClose: () => void;
     onConfirm: (adminData: {
         firstName: string;
@@ -21,11 +32,21 @@ interface AddAdminPopupProps {
         location: string;
         username: string;
         password: string;
-        userRole: "SUPER_ADMIN" | "ADMIN";
+        userRole: string;
     }) => void;
+    closePopup: () => void;
+    passwordOn?: boolean
+    adminData?: AdminData
 }
 
-const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ onClose, onConfirm }) => {
+const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ header, onClose, onConfirm, closePopup, passwordOn = true, adminData }) => {
+
+    useEffect(() => {
+        if (adminData) {
+            setFormData(adminData);
+        }
+    }, []);
+
     const [formData, setFormData] = useState<{
         firstName: string;
         email: string;
@@ -36,26 +57,19 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ onClose, onConfirm }) => 
     }>({
         firstName: "",
         email: "",
-        location: "",
+        location: "TRIVANDRUM",
         username: "",
         password: "",
-        userRole: "ADMIN", // Default user role
+        userRole: "ADMIN",
     });
-
-    const workLocations = [
-        { id: 1, name: "KOCHI" },
-        { id: 2, name: "TRIVANDRUM" },
-    ];
 
     const handleInputChange = (field: keyof typeof formData, value: string) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
-    const handleRoleChange = (value: "SUPER_ADMIN" | "ADMIN") => {
-        setFormData((prev) => ({ ...prev, userRole: value }));
-    };
+    const [loading, setLoading] = useState(false);
 
-    const handleCreate = () => {
+    const handleConfirm = async () => {
         if (
             formData.firstName &&
             formData.email &&
@@ -63,88 +77,72 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ onClose, onConfirm }) => 
             formData.username &&
             formData.password
         ) {
-            onConfirm(formData);
+            setLoading(true);
+            await onConfirm(formData);
+            setLoading(false);
+            closePopup();
         } else {
-            alert("Please fill all fields before creating an account.");
+            alert("Please fill all fields.");
         }
     };
 
     return (
         <Dialog open onClose={onClose} className={styles.addAdminPopUp}>
             <div className={styles.addAdminPopUpBody}>
-                <DialogTitle className={styles.addAdminPopUpHeader}>
-                    Add Admin
-                </DialogTitle>
-                <DialogContent>
-                    <div className={styles.addAdminPopUpFields}>
-                        <Textfield
-                            placeholder="Full name"
-                            value={formData.firstName}
-                            onChange={(value) => handleInputChange("firstName", value)}
-                        />
-                        <Textfield
-                            placeholder="Email"
-                            value={formData.email}
-                            onChange={(value) => handleInputChange("email", value)}
-                        />
-                        <FormControl fullWidth>
-                            <Select
-                                value={formData.location}
-                                onChange={(e) => handleInputChange("location", e.target.value)}
-                                displayEmpty
-                            >
-                                <MenuItem value="" disabled>
-                                    Select location
-                                </MenuItem>
-                                {workLocations.map((location) => (
-                                    <MenuItem key={location.id} value={location.name}>
-                                        {location.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <Textfield
-                            placeholder="Username"
-                            value={formData.username}
-                            onChange={(value) => handleInputChange("username", value)}
-                        />
-                        <Textfield
-                            type="password"
-                            placeholder="Password"
-                            value={formData.password}
-                            onChange={(value) => handleInputChange("password", value)}
-                        />
-                        <FormControl fullWidth>
-                            <Select
-                                value={formData.userRole}
-                                onChange={(e) => handleRoleChange(e.target.value as "SUPER_ADMIN" | "ADMIN")}
-                            >
-                                <MenuItem value="SUPER_ADMIN">SUPER_ADMIN</MenuItem>
-                                <MenuItem value="ADMIN">ADMIN</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </div>
-                </DialogContent>
-                <DialogActions>
-                    <div className={styles.addAdminPopUpFooter}>
-                        <Button
-                            className={`${styles.addAdminPopUpButton} ${styles.cancel}`}
-                            onClick={onClose}
-                            variant="outlined"
-                            color="secondary"
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            className={styles.addAdminPopUpButton}
-                            onClick={handleCreate}
-                            variant="contained"
-                            color="success"
-                        >
-                            Create
-                        </Button>
-                    </div>
-                </DialogActions>
+                {loading ? (<LottieLoader size={"180px"} />) : (
+                    <>
+                        <DialogTitle className={styles.addAdminPopUpHeader}>
+                            {header}
+                        </DialogTitle>
+                        <DialogContent>
+                            <div className={styles.addAdminPopUpFields}>
+                                <Textfield
+                                    placeholder="Full name"
+                                    value={formData.firstName}
+                                    onChange={(value) => handleInputChange("firstName", value)}
+                                />
+                                <Textfield
+                                    placeholder="Email"
+                                    value={formData.email}
+                                    onChange={(value) => handleInputChange("email", value)}
+                                />
+                                <Textfield
+                                    placeholder="Username"
+                                    value={formData.username}
+                                    onChange={(value) => handleInputChange("username", value)}
+                                />
+                                {passwordOn &&
+                                    <Textfield
+                                        type="password"
+                                        placeholder="Password"
+                                        value={formData.password}
+                                        onChange={(value) => handleInputChange("password", value)}
+                                    />
+                                }
+                            </div>
+                        </DialogContent>
+                        <DialogActions>
+                            <div className={styles.addAdminPopUpFooter}>
+                                <Button
+                                    className={`${styles.addAdminPopUpButton} ${styles.cancel}`}
+                                    onClick={onClose}
+                                    variant="outlined"
+                                    color="secondary"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    className={styles.addAdminPopUpButton}
+                                    onClick={handleConfirm}
+                                    variant="contained"
+                                    color="success"
+                                >
+                                    Confirm
+                                </Button>
+                            </div>
+                        </DialogActions>
+                    </>
+                )}
             </div>
         </Dialog>
     );

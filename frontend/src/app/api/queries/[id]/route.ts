@@ -32,3 +32,37 @@ export async function GET() {
         );
     }
 }
+export async function DELETE(request: Request) {
+    try {
+        const url = new URL(request.url);
+        const id = url.pathname.split('/').pop();
+
+        if (!id) {
+            return NextResponse.json({ message: 'ID is required' }, { status: 400 });
+        }
+
+        const response = await fetch(`${API_BASE_URL}/queries/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            return NextResponse.json(
+                { message: 'Query deleted successfully' },
+                { status: response.status }
+            );
+        }
+
+        return NextResponse.json(
+            { message: 'Failed to delete query' },
+            { status: response.status }
+        );
+    } catch (error: unknown) {
+        return NextResponse.json(
+            { message: 'An error occurred while processing the request' },
+            { status: 500 }
+        );
+    }
+}
