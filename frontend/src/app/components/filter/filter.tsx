@@ -1,9 +1,12 @@
+
+
 import React, { useState } from "react";
 import './filter.css';
 
 interface FilterProps {
+  label: string; 
   admins: string[];
-  onFilterChange: (selectedAdmins: string[]) => void;
+  onFilterChange: (selectedItems: string[]) => void;
 }
 
 const Filter: React.FC<FilterProps> = ({ admins, onFilterChange }) => {
@@ -17,8 +20,8 @@ const Filter: React.FC<FilterProps> = ({ admins, onFilterChange }) => {
 
   const handleSelect = (admin: string) => {
     const updatedSelection = selectedAdmins.includes(admin)
-      ? selectedAdmins.filter((a) => a !== admin) // Remove if selected
-      : [...selectedAdmins, admin]; // Add if not selected
+      ? selectedAdmins.filter((a) => a !== admin) 
+      : [...selectedAdmins, admin]; 
 
     setSelectedAdmins(updatedSelection);
     onFilterChange(updatedSelection);

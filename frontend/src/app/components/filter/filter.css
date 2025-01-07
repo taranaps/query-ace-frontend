@@ -1,5 +1,7 @@
 .filter-container {
     display: flex;
+    justify-content: flex-end;
+   
   }
   
   .filter-button {
@@ -10,6 +12,9 @@
     border-radius: 4px;
     cursor: pointer;
     color: #333;
+    margin-right: 20px;
+    gap:20px;
+  
   }
   
   .filter-button:hover {
