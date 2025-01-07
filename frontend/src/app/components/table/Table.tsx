@@ -13,7 +13,7 @@ import { fetchUserInterface } from "@/app/interface/user/fetchUserInterface";
 interface TableWrapperProps {
     data: fetchUserInterface[];
     onToggleStatus: (email: string, newStatus: boolean) => void;
-    onEditAdmin: (id: number) => void;
+    onEditAdmin: (id: number,firstName:string,email:string,username:string) => void;
     sx?: object;
     headerClassName?: string;
     rowClassName?: string;
@@ -59,13 +59,14 @@ const TableWrapper: React.FC<TableWrapperProps> = ({
                             email={row.email}
                             location={row.location}
                             status={row.status}
+                            username={row.username}
                             isActive={row.isActive}
                             rowClassName={rowClassName}
                             onToggle={(newStatus) => {
                                 console.log(`Email: ${row.email}, Toggle to: ${newStatus}`);
                                 onToggleStatus(row.email, newStatus);
                             }}
-                            onRowClick={() => { onEditAdmin(row.id) }}
+                            onRowClick={() => { onEditAdmin(row.id,row.firstName,row.email,row.username) }}
                         />
                     ))}
                 </TableBody>

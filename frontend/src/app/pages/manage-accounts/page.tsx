@@ -10,6 +10,7 @@ import Pagination from "../../components/pagination/Pagination";
 import AddAdminPopup from "../../components/add-admin-popup/AddAdminPopup";
 import AdminTogglePopup from "../../components/admin-toggle-popup/AdminTogglePopup";
 import { fetchUserInterface } from "@/app/interface/user/fetchUserInterface";
+import { handleSubmitEdit } from "@/app/util/admin/adminFunctionalities";
 
 import styles from "./ManageAccountsPage.module.css";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
@@ -25,6 +26,7 @@ const ManageAccountsPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [editUserDetails,setEditUserDetails] =useState<any>();
 
     const itemsPerPage = 8;
 
@@ -110,7 +112,14 @@ const ManageAccountsPage: React.FC = () => {
     };
 
     const handleAddAccount = () => setOpenAddPopup(true);
-    const handleEditAccount = () => setOpenEditPopup(true);
+    const handleEditAccount = (id: number,firstName:String,email:String,username:String) => {
+        const userToEdit = userData.find((user) => user.id === id);
+        if (userToEdit) {
+            setEditUserDetails(userToEdit); 
+            setOpenEditPopup(true);
+        }
+    };
+    
 
     const handleCloseAddPopup = () => {
         setOpenAddPopup(false);
@@ -198,14 +207,16 @@ const ManageAccountsPage: React.FC = () => {
                     passwordOn={true}
                 />}
 
-            {openEditPopup &&
-                <AddAdminPopup
-                    header="Edit Admin"
-                    onConfirm={handleEditAccount}
-                    onClose={handleCloseAddPopup}
-                    closePopup={handleCloseAddPopup}
-                    passwordOn={false}
-                />}
+                {openEditPopup && (
+                    <AddAdminPopup
+                        header="Edit Admin"
+                        onConfirm={handleSubmitEdit}
+                        onClose={handleCloseAddPopup}
+                        closePopup={handleCloseAddPopup}
+                        passwordOn={false}
+                        adminData={editUserDetails}  
+                    />
+                )}
             {openTogglePopup && (
                 <AdminTogglePopup onConfirm={confirmToggleStatus} onClose={handleCloseTogglePopup} />
             )}

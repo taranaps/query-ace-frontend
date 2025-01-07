@@ -4,57 +4,58 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    Button
+    Button,
 } from "@mui/material";
 import Textfield from "../text-field/TextField";
-
 import styles from "./AddAdminPopup.module.css";
 import { LottieLoader } from "../lottie-loader/lottieLoader";
 
-
-interface AdminData {
+export interface AdminData {
     id: number;
     firstName: string;
     email: string;
     location: string;
     username: string;
     password: string;
-    userRole: "SUPER_ADMIN" | "ADMIN";
+    userRole: string;
 }
 
-
 interface AddAdminPopupProps {
-    header: string,
+    header: string;
     onClose: () => void;
     onConfirm: (adminData: {
+        id: number,
         firstName: string;
         email: string;
         location: string;
         username: string;
         password: string;
         userRole: string;
-    }) => void;
+    }) => Promise<void>;
+
     closePopup: () => void;
-    passwordOn?: boolean
-    adminData?: AdminData
+    passwordOn?: boolean;
+    adminData?: AdminData;
 }
 
-const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ header, onClose, onConfirm, closePopup, passwordOn = true, adminData }) => {
-
-    useEffect(() => {
-        if (adminData) {
-            setFormData(adminData);
-        }
-    }, []);
-
+const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
+    header,
+    onClose,
+    onConfirm,
+    closePopup,
+    passwordOn = true,
+    adminData,
+}) => {
     const [formData, setFormData] = useState<{
+        id: number,
         firstName: string;
         email: string;
         location: string;
         username: string;
         password: string;
-        userRole: "SUPER_ADMIN" | "ADMIN";
+        userRole: string;
     }>({
+        id:0,
         firstName: "",
         email: "",
         location: "TRIVANDRUM",
@@ -63,6 +64,20 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ header, onClose, onConfir
         userRole: "ADMIN",
     });
 
+    useEffect(() => {
+        if (adminData) {
+            setFormData({
+                id:adminData.id,
+                firstName: adminData.firstName,
+                email: adminData.email,
+                location: adminData.location,
+                username: adminData.username,
+                password: "",
+                userRole: adminData.userRole,
+            });
+        }
+    }, [adminData]);
+
     const handleInputChange = (field: keyof typeof formData, value: string) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
@@ -70,13 +85,7 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ header, onClose, onConfir
     const [loading, setLoading] = useState(false);
 
     const handleConfirm = async () => {
-        if (
-            formData.firstName &&
-            formData.email &&
-            formData.location &&
-            formData.username &&
-            formData.password
-        ) {
+        if ((formData.id && formData.firstName && formData.email && formData.username) || (passwordOn && ((formData.firstName && formData.email && formData.username && formData.password)))) {
             setLoading(true);
             await onConfirm(formData);
             setLoading(false);
@@ -89,7 +98,9 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ header, onClose, onConfir
     return (
         <Dialog open onClose={onClose} className={styles.addAdminPopUp}>
             <div className={styles.addAdminPopUpBody}>
-                {loading ? (<LottieLoader size={"180px"} />) : (
+                {loading ? (
+                    <LottieLoader size={"180px"} />
+                ) : (
                     <>
                         <DialogTitle className={styles.addAdminPopUpHeader}>
                             {header}
@@ -111,14 +122,14 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({ header, onClose, onConfir
                                     value={formData.username}
                                     onChange={(value) => handleInputChange("username", value)}
                                 />
-                                {passwordOn &&
+                                {passwordOn && (
                                     <Textfield
                                         type="password"
                                         placeholder="Password"
                                         value={formData.password}
                                         onChange={(value) => handleInputChange("password", value)}
                                     />
-                                }
+                                )}
                             </div>
                         </DialogContent>
                         <DialogActions>

@@ -6,6 +6,7 @@ interface TableRowProps {
     name: string;
     email: string;
     location: string;
+    username:string;
     status: "ACTIVE" | "INACTIVE";
     isActive: boolean;
     rowClassName?: string;

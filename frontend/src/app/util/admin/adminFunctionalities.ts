@@ -1,6 +1,4 @@
-import { fetchUserInterface } from "@/app/interface/user/fetchUserInterface";
-
-
+import { AdminData } from "@/app/components/add-admin-popup/AddAdminPopup";
 
 export const handleAddAdmin = async (adminData: {
     firstName: string;
@@ -8,7 +6,7 @@ export const handleAddAdmin = async (adminData: {
     location: string;
     username: string;
     password: string;
-    userRole: "SUPER_ADMIN" | "ADMIN";
+    userRole: string;
 }) => {
     try {
         const url = `/api/admin/create`;
@@ -38,43 +36,38 @@ export const handleAddAdmin = async (adminData: {
     }
 };
 
-// Edit User Function
-export const handleSubmitEdit = async (
-    updatedUser: fetchUserInterface,
-    setUserData: React.Dispatch<React.SetStateAction<fetchUserInterface[]>>,
-    setOpenEditPopup: React.Dispatch<React.SetStateAction<boolean>>
-) => {
+export const handleSubmitEdit = async (adminData: AdminData): Promise<void> => {
+    if ( !adminData.id) {
+        console.error("Invalid admin data: ID is required.");
+        return;
+    }
+
     try {
-        console.log("Submitting update for user:", updatedUser);
+        console.log("Submitting admin data for edit:", adminData); 
 
-        const response = await fetch(`/api/admin/edit/${updatedUser.id}`, {
-            method: "PATCH",
+        const response = await fetch(`/api/admin/edit/${adminData.id}`, {
+            method: 'PATCH',
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify(updatedUser),
+            body: JSON.stringify(adminData), 
         });
-
-        console.log("Response status:", response.status);
-
-        const result = await response.json();
-        console.log("Response result:", result);
+        const responseBody = await response.json();
 
         if (response.ok) {
-            console.log("Update successful");
-            setUserData((prevData) =>
-                prevData.map((user) =>
-                    user.id === updatedUser.id ? updatedUser : user
-                )
-            );
-            setOpenEditPopup(false);
-            alert("User updated successfully!");
+            console.log("User updated successfully:", responseBody); 
         } else {
-            console.error("Failed to update user:", result);
-            alert("Failed to update user. Please try again.");
+            console.error("Failed to update user. Error:", responseBody); 
         }
-    } catch (error) {
-        console.error("Error updating user:", error);
-        alert("An unexpected error occurred while updating the user.");
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.error("Error updating user:", error.message); 
+        } else {
+            console.error("Unknown error occurred while updating user:", error); 
+        }
     }
 };
+
+
+
+
