@@ -85,13 +85,13 @@ export default function QueryLookup() {
         <h2 className={styles.headerTitle}>Query Lookup</h2>
       </div>
 
-      {loading ? (
-        <div className={styles.loaderContainer}>
-          <LottieLoader />
-        </div>
-      ) : (
-        <div className={styles.dataItems}>
-          {paginatedData.map((item, index) => (
+      <div className={styles.dataItems}>
+        {loading ? (
+          <div className={styles.loaderContainer}>
+            <LottieLoader size={"180px"}/>
+          </div>
+        ) : (
+          paginatedData.map((item) => (
             <DataCardDashboard
               key={item.id}
               id={item.id}
@@ -100,14 +100,14 @@ export default function QueryLookup() {
               customer={item.customer || "Unknown"}
               createdBy={item.usersUsername || "Unknown"}
               createdAt={item.createdAt || "Unknown"}
-              tags={(item.tags || [])}
+              tags={item.tags || []}
               deleteOn={true}
-              copyOn={item.answer ? true : false}
+              copyOn={Boolean(item.answer)}
               onClick={() => handleCardClick(item)}
             />
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
 
       <div className={styles.paginationContainer}>
         <Pagination

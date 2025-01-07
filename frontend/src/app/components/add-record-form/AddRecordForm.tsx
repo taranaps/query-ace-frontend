@@ -10,7 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddTagPopup from '../add-tag-popup/AddTagPopup';
 import styles from './AddRecordForm.module.css';
-import fetchAllTagDetails from '@/app/api/tags/fetchAllTagDetails';
+import fetchAllTagDetails from '@/app/api/tags/route.ts';
 import postQueryWithAnswers from '@/app/api/queries/postQueryWithAnswers';
 import PostQueryQuestionInetface from '@/app/interface/query/postQueryQuestionInterface';
 import PostQueryAnswerInterface from '@/app/interface/query/postQueryAnswerInterface';

@@ -1,0 +1,148 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DataCardDashboard Component matches snapshot 1`] = `
+<div>
+  <div
+    class="dataCard"
+  >
+    <div
+      class="dataCardTop"
+    >
+      <div
+        class="dataCardQuestionAndAnswerContainer"
+      >
+        <p
+          class="dataCardQuestion"
+        >
+          Question : 
+          What is the purpose of life?
+        </p>
+        <div
+          class="dataCardAnswerContainer"
+        >
+          <p
+            class="dataCardAnswer"
+          >
+            The purpose of life is to live fully and experience growth.
+          </p>
+          <div
+            class="copyButton"
+          >
+            <button
+              class="lottieButton "
+            >
+              <div
+                data-testid="lottie-animation"
+              />
+              <div
+                class="buttonLabelContainer"
+              >
+                <span
+                  class="buttonLabel"
+                >
+                  Copy Answer
+                </span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="dataCardTags"
+    >
+      <div
+        class="tag"
+      >
+        <div
+          class="tagGroup"
+        >
+          Category
+        </div>
+        <div
+          class="tagName"
+        >
+          Philosophy
+        </div>
+      </div>
+      <div
+        class="tag"
+      >
+        <div
+          class="tagGroup"
+        >
+          Genre
+        </div>
+        <div
+          class="tagName"
+        >
+          Existentialism
+        </div>
+      </div>
+    </div>
+    <div
+      class="dataCardFooter"
+    >
+      <div
+        class="dataCardDetails"
+      >
+        <span>
+          Customer: 
+          Customer A
+        </span>
+         | 
+        <span>
+          Created By: 
+          Admin
+        </span>
+         |
+         
+        <span>
+          Date: 
+          2025-01-01
+        </span>
+      </div>
+      <div
+        class="dataCardActionButtons"
+      >
+        <div
+          class="dataCardActions"
+        >
+          <button
+            class="lottieButton "
+          >
+            <div
+              data-testid="lottie-animation"
+            />
+            <div
+              class="buttonLabelContainer"
+            >
+              <span
+                class="buttonLabel"
+              >
+                Edit
+              </span>
+            </div>
+          </button>
+          <button
+            class="lottieButton "
+          >
+            <div
+              data-testid="lottie-animation"
+            />
+            <div
+              class="buttonLabelContainer"
+            >
+              <span
+                class="buttonLabel"
+              >
+                Delete
+              </span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
