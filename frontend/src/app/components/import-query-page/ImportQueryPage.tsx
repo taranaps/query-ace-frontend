@@ -1,11 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import { Button, Typography } from '@mui/material';
 import styles from './ImportQueryPage.module.css';
 import DataCardImport from '../dashboard-datacard copy/DataCardImport';
 import QueryTagInterface from '@/app/interface/query/queryTagInterface';
+import { handleAddNewBulkQueryAndAnswer } from '@/app/util/query/queryFunctionalities';
+import { useAuth } from '@/context/AuthContext';
+import fetchAllTagDetails from '@/app/api/tags/route.ts';
+import { handleAddNewTag } from '@/app/util/tags/tagFunctionalities';
 
 interface ProcessedDataType {
   question: string;
@@ -14,10 +18,31 @@ interface ProcessedDataType {
   answers: { answer: string; userId: number }[];
 }
 
+const CACHE_KEY = 'processedQuestions';
+const CACHE_TIMESTAMP_KEY = 'cacheTimestamp';
+
 const ImportQueryPage = () => {
+
+  const { user } = useAuth();
+
   const [file, setFile] = useState<File | null>(null);
   const [questions, setQuestions] = useState<ProcessedDataType[]>([]);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const cachedData = localStorage.getItem(CACHE_KEY);
+    const cachedTimestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY);
+
+    if (cachedData && cachedTimestamp) {
+      const parsedTimestamp = new Date(cachedTimestamp).getTime();
+      const currentTime = Date.now();
+      const twentyFourHours = 24 * 60 * 60 * 1000;
+
+      if (currentTime - parsedTimestamp < twentyFourHours) {
+        setQuestions(JSON.parse(cachedData));
+      }
+    }
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
@@ -54,8 +79,6 @@ const ImportQueryPage = () => {
         const rows: (string | number)[][] = nonEmptyRows;
 
         const processedData: ProcessedDataType[] = [];
-
-        let lastQuestionIndex = -1;
         let lastCategory = '';
         let lastCompany = '';
 
@@ -71,7 +94,6 @@ const ImportQueryPage = () => {
           }
 
           if (question) {
-            // New question
             const tags: QueryTagInterface[] = [];
             if (lastCategory) {
               tags.push({ tagGroupName: 'Category', tagName: lastCategory });
@@ -82,22 +104,23 @@ const ImportQueryPage = () => {
 
             const existingQuestion = processedData.find((data) => data.question === question);
             if (existingQuestion) {
-              existingQuestion.answers.push({ answer, userId: 0 });
+              existingQuestion.answers.push({ answer, userId: user.id });
             } else {
               processedData.push({
                 question,
-                userId: 0,
+                userId: user.id,
                 tags,
-                answers: [{ answer, userId: 0 }],
+                answers: [{ answer, userId: user.id }],
               });
             }
-
-            lastQuestionIndex = processedData.length - 1;
           }
         });
 
         setQuestions(processedData);
         setError(null);
+
+        localStorage.setItem(CACHE_KEY, JSON.stringify(processedData));
+        localStorage.setItem(CACHE_TIMESTAMP_KEY, new Date().toISOString());
       };
 
       reader.onerror = () => {
@@ -112,12 +135,83 @@ const ImportQueryPage = () => {
     setFile(null);
     setQuestions([]);
     setError(null);
+    localStorage.removeItem(CACHE_KEY);
+    localStorage.removeItem(CACHE_TIMESTAMP_KEY);
   };
 
-  const handleSave = () => {
-    console.log('Processed Data:', questions);
-    alert('Data successfully saved!');
+
+  const handleSave = async () => {
+    try {
+      const fetchTags = async () => {
+        const tags = await fetchAllTagDetails();
+        return tags;
+      };
+
+      const tagGroups = await fetchTags();
+
+      const existingTags = new Set(
+        tagGroups.flatMap((group: { tagGroupName: string; tagNames: string[] }) =>
+          group.tagNames.map((tagName) => `${tagName}-${group.tagGroupName}`)
+        )
+      );
+
+      const missingTags: { tagName: string; tagGroupName: string }[] = [];
+
+      questions.forEach((question) => {
+        question.tags.forEach((tag) => {
+          const tagKey = `${tag.tagName}-${tag.tagGroupName}`;
+          if (!existingTags.has(tagKey)) {
+            missingTags.push(tag);
+          }
+        });
+      });
+
+      const uniqueMissingTags = Array.from(
+        missingTags.reduce((map, tag) => {
+          const key = `${tag.tagName}-${tag.tagGroupName}`;
+          if (!map.has(key)) {
+            map.set(key, tag);
+          }
+          return map;
+        }, new Map()).values()
+      );
+
+      if (uniqueMissingTags.length > 0) {
+        const userConfirmed = window.confirm(
+          `The following tags are not in the database:\n${uniqueMissingTags
+            .map((tag) => `- ${tag.tagGroupName}: ${tag.tagName}`)
+            .join('\n')}\n\nDo you want to add these tags?`
+        );
+
+        if (userConfirmed) {
+
+          for (const tag of uniqueMissingTags) {
+            const added = await handleAddNewTag(tag);
+            if (!added) {
+              alert(`Failed to add tag: ${tag.tagGroupName} - ${tag.tagName}`);
+              return;
+            }
+          }
+        } else {
+          alert('Save operation canceled by the user.');
+          return;
+        }
+      }
+
+      const saved = await handleAddNewBulkQueryAndAnswer(questions);
+      if (saved) {
+        alert('Data successfully saved!');
+        handleClear();
+      } else {
+        alert('Something went wrong, please try again.');
+      }
+    } catch (error) {
+      console.error('An error occurred during the save process:', error);
+      alert('An unexpected error occurred. Please try again.');
+    }
   };
+
+
 
   return (
     <div className={styles.container}>
