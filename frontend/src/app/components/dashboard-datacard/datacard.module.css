@@ -74,6 +74,8 @@
   width: 100%;
   display: flex;
   overflow-x: hidden;
+  align-items: center;
+  justify-content: start;
 }
 
 .tag {

@@ -7,6 +7,12 @@ export async function POST(request: Request, { params }: { params: { id: string 
 
         const requestBody = await request.json();
 
+        console.log("yaaaaaaaaaaaaaaa");
+
+        console.log(JSON.stringify(requestBody));
+        
+        
+
         const response = await fetch(`${API_BASE_URL}/queries/${id}/tags/add`, {
             method: "POST",
             headers: {

@@ -21,25 +21,20 @@ const Dashboard: React.FC = () => {
     }
   }, [user, router]);
 
-  const [searchKeyword, setSearchQuery] = useState<string>("");
+  const [searchKeyword, setSearchKeyword] = useState("");
   const [searchResults, setSearchResults] = useState<searchQueryResult[]>([]);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [answers, setAnswers] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleCardClick = async (item: any) => {
+  const handleCardClick = async (item: searchQueryResult) => {
     setSelectedItem(item);
     setIsPopupOpen(true);
 
     try {
       const fetchedData = await fetchQueryWithAnswers(item.id);
-      if (fetchedData && fetchedData.answers) {
-        setAnswers(fetchedData.answers);
-      } else {
-        console.warn("No answers found for this query.");
-        setAnswers([]);
-      }
+      setAnswers(fetchedData?.answers || []);
     } catch (error) {
       console.error("Error fetching answers:", error);
       setAnswers([]);
@@ -47,8 +42,8 @@ const Dashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (searchKeyword) {
+    const debounceTimeout = setTimeout(() => {
+      if (searchKeyword.trim()) {
         setIsLoading(true);
         fetchQueryUsingKeyword(searchKeyword)
           .then((data) => setSearchResults(data))
@@ -59,90 +54,73 @@ const Dashboard: React.FC = () => {
       }
     }, 300);
 
-    return () => clearTimeout(delayDebounceFn);
+    return () => clearTimeout(debounceTimeout);
   }, [searchKeyword]);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
+  const clearSearch = () => setSearchKeyword("");
+
+  const renderContent = () => {
+    if (isLoading || !user) {
+      return (
+        <div className={styles.loaderContainer}>
+          <LottieLoader size={180} />
+        </div>
+      );
+    }
+
+    if (!searchKeyword) {
+      return (
+        <div className={styles["image-placeholder"]}>
+          <img src="/assets/images/dashboard-clipboard.png" alt="No Results" />
+        </div>
+      );
+    }
+
+    if (searchResults.length === 0) {
+      return (
+        <div className={styles["image-placeholder"]}>
+          <p>No answers found</p>
+          <br />
+          <a onClick={() => router.push("/pages/add-record")}>Add new data?</a>
+        </div>
+      );
+    }
+
+    return searchResults.map((result) => (
+      <DataCardDashboard
+        key={result.id}
+        id={result.id}
+        question={result.question}
+        customer={"Customer"}
+        createdBy={result.usersUsername}
+        createdAt={result.queryCreatedAt}
+        answer={result.answers[0]?.answer || "No Answer"}
+        tags={result.tags}
+        deleteOn={true}
+        copyOn={true}
+        onClick={() => handleCardClick(result)}
+      />
+    ));
   };
-
-  const clearSearch = () => {
-    setSearchQuery("");
-  }
-
-  if (!user) {
-    return <LottieLoader />;
-  }
 
   return (
     <div className={styles.dashboard}>
       <div className={styles["dashboard-search-bar"]}>
-        <img src="/assets/icons/cross-grey-icon.png" alt="Clear" onClick={() => clearSearch()} />
+        <img src="/assets/icons/cross-grey-icon.png" alt="Clear" onClick={clearSearch} />
         <input
           placeholder="Search..."
           type="text"
           value={searchKeyword}
-          onChange={handleSearchChange}
+          onChange={(e) => setSearchKeyword(e.target.value)}
         />
         <img src="/assets/icons/search-grey-icon.png" alt="Search" />
       </div>
 
-      <div className={styles["dashboard-body"]}>
-        {isLoading ? (
-          <div className={styles.loaderContainer}>
-            <LottieLoader size={"240px"} />
-          </div>
-        ) : (
-          <div className={styles["dashboard-content"]}>
-            {isLoading ? (
-              <div className={styles.loaderContainer}>
-                <LottieLoader size={80} />
-              </div>
-            ) : searchKeyword === "" ? (
-              <div className={styles["image-placeholder"]}>
-                <img
-                  src="/assets/images/dashboard-clipboard.png"
-                  alt="No Results"
-                />
-              </div>
-            ) : searchResults.length === 0 ? (
-              <div className={styles["image-placeholder"]}>
-                <p>No answers found</p>
-                <br />
-                {!isLoading && ( 
-                  <a onClick={() => router.push("/pages/add-record")}>
-                    Add new data?
-                  </a>
-                )}
-              </div>
-            ) : (
-              searchResults.map((result) => (
-                <DataCardDashboard
-                  key={result.id}
-                  id={result.id}
-                  question={result.question}
-                  customer={"Customer"}
-                  createdBy={result.usersUsername}
-                  createdAt={result.queryCreatedAt}
-                  answer={result.answers[0]?.answer || "No Answer"}
-                  tags={result.tags}
-                  deleteOn={true}
-                  copyOn={true}
-                  onClick={() => handleCardClick(result)}
-                />
-              ))
-            )}
-          </div>
+      <div className={styles["dashboard-body"]}>{renderContent()}</div>
 
-        )}
-      </div>
       {isPopupOpen && selectedItem && (
         <DataPopup
-          data={{
-            ...selectedItem,
-            answers: answers,
-            tags: selectedItem.tags || [],
-          }}
+          data={{ ...selectedItem, answers, tags: selectedItem.tags || [] }}
           onClose={() => {
             setIsPopupOpen(false);
             setSelectedItem(null);

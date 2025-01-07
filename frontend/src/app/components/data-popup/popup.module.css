@@ -14,7 +14,7 @@
 .popupContent {
     background: #fff;
     border-radius: 8px;
-    padding: 24px 12px;
+    padding: 12px;
     width: 80vw;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
@@ -26,6 +26,18 @@
     margin-bottom: 20px;
 }
 
+.answerTitleButton {
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.answerTitleandButton {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .answerTitle {
     font-size: 12px;
     color: #707070;
@@ -34,6 +46,7 @@
 
 .answerList {
     list-style: none;
+    margin-bottom: 4px;
     padding: 0;
     overflow-y: auto;
     overflow-x: hidden;
@@ -71,6 +84,8 @@
     width: 100%;
     display: flex;
     overflow-x: hidden;
+    align-items: center;
+    justify-content: start;
 }
 
 .tag {
@@ -83,6 +98,7 @@
     padding: 06px 8px;
     border-radius: 24px;
     margin-right: 5px;
+    margin-top: 12px;
     overflow-x: hidden;
 }
 
@@ -95,7 +111,6 @@
     font-size: 11px;
     color: #F1F3FA;
 }
-
 
 .deleteConfirmationOverlay {
     position: absolute;
@@ -172,7 +187,6 @@
 .addAnswerButton:hover {
     background-color: #ff4d4d;
     color: #FFFFFF;
-
 }
 
 .addAnswerModal {
@@ -197,4 +211,23 @@
 
 .modalActions button {
     margin: 10px;
+}
+
+.addTagButton {
+    background-color: #2B303A;
+    height: 28px;
+    width: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #F1F3FA;
+    transition: all 0.3s ease-in-out;
+    overflow-y: hidden;
+}
+
+.addTagButton:hover {
+    background-color: #FF9500;
+    color: #2B303A;
+    transition: all 0.3s ease-in-out;
 }

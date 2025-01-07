@@ -9,6 +9,7 @@ import { LottieLoader } from "../lottie-loader/lottieLoader";
 import AddTagPopup from "../add-tag-popup/AddTagPopup";
 import fetchAllTagDetails from "@/app/api/tags/route.ts";
 import { formatDate } from "@/app/util/formatDate";
+import { handleAddNewTagToExistingQuery } from "@/app/util/tags/tagFunctionalities";
 
 const DataPopup = ({
     data,
@@ -28,13 +29,8 @@ const DataPopup = ({
     const [tagGroups, setTagGroups] = useState<{ tagGroupName: string; tagNames: string[] }[]>([]);
 
     useEffect(() => {
-        setAnswers(data.answers);
-        const fetchTags = async () => {
-            const tags = await fetchAllTagDetails();
-            setTagGroups(tags);
-        };
-
-        fetchTags();
+        setAnswers(data.answers || []);
+        setTagGroups(data.tags || []);
     }, [data]);
 
     const handleConfirmDelete = async (itemId: number) => {
@@ -53,7 +49,7 @@ const DataPopup = ({
         setLoading(true);
         setError("");
 
-        const result = await handleAddNewQueryAnswer(newAnswer, 1, data.id);
+        const result = await handleAddNewQueryAnswer(newAnswer, user.id, data.id);
         setLoading(false);
 
         if (result.success) {
@@ -63,7 +59,7 @@ const DataPopup = ({
             setAnswers((prevAnswers: any[]) => [
                 ...prevAnswers,
                 {
-                    id: 32,
+                    id: Date.now(),
                     answer: newAnswer,
                     createdAt: formatDate(new Date().toString()),
                     email: user.email,
@@ -84,17 +80,24 @@ const DataPopup = ({
         setIsAddModalOpen(false);
     };
 
-    const handleAddTags = (newTag: { group: string; tag: string }) => {
-        setTagGroups((prevTagGroups: { tagGroupName: string; tagNames: string[] }[]) => {
-            const updatedTagGroups = [...prevTagGroups];
-            const groupIndex = updatedTagGroups.findIndex(group => group.tagGroupName === newTag.group);
-            if (groupIndex > -1) {
-                updatedTagGroups[groupIndex].tagNames.push(newTag.tag);
-            }
-            return updatedTagGroups;
-        });
-        setIsAddTagPopupOpen(false);
+    const handleAddTags = async (newTag: { group: string; tag: string }) => {
+        const tagPayload = { tagGroupName: newTag.group, tagName: newTag.tag };
+
+        const result = await handleAddNewTagToExistingQuery(data.id, tagPayload);
+
+        if (result.success) {
+            setTagGroups((prevTagGroups) => {
+                return [...prevTagGroups, { tagGroupName: newTag.group, tagNames: [newTag.tag] }];
+            });
+
+            setIsAddTagPopupOpen(false);
+            console.log("Tag successfully added to the UI.");
+        } else {
+            console.error("Failed to add tag to the backend.");
+        }
     };
+
+
 
     return (
         <div className={styles.popupOverlay}>
@@ -108,7 +111,16 @@ const DataPopup = ({
                     />
                 </div>
 
-                <h3 className={styles.answerTitle}>Answers:</h3>
+                <div className={styles.answerTitleandButton}>
+                    <h3 className={styles.answerTitle}>Answers: ({answers.length})</h3>
+                    <a
+                        className={styles.answerTitleButton}
+                        onClick={() => setIsAddModalOpen(true)}
+                    >
+                        Add Answer
+                    </a>
+
+                </div>
                 <div className={styles.answerContainer}>
                     {answers.length > 0 ? (
                         <ul className={styles.answerList}>
@@ -126,8 +138,8 @@ const DataPopup = ({
                 </div>
 
                 <div className={styles.dataCardTags}>
-                    {data.tags.length > 0 ? (
-                        data.tags.map((tag: any, index: number) => (
+                    {tagGroups.length > 0 ? (
+                        tagGroups.map((tag: any, index: number) => (
                             <div key={index} className={styles.tag}>
                                 <div className={styles.tagGroup}>
                                     {tag.tagGroupName}
@@ -141,16 +153,14 @@ const DataPopup = ({
                         <p className={styles.tag}>No tags available.</p>
                     )}
                     <button
-                        className={styles.addTagButton}
+                        className={`${styles.addTagButton} ${styles.tag}`}
                         onClick={() => setIsAddTagPopupOpen(true)}
                     >
-                        + Add Tag
+                        +
                     </button>
                 </div>
 
-                <div className={styles.addAnswerButton}>
-                    <button onClick={() => setIsAddModalOpen(true)}>Add Answer</button>
-                </div>
+
 
                 {isAddModalOpen && (
                     <div className={styles.addAnswerModal}>
