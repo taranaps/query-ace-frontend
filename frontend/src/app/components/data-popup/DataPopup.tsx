@@ -7,7 +7,7 @@ import { handleDeleteQueryAnswer } from "@/app/util/query/queryFunctionalities";
 import { handleAddNewQueryAnswer } from "@/app/util/query/queryFunctionalities";
 import { LottieLoader } from "../lottie-loader/lottieLoader";
 import AddTagPopup from "../add-tag-popup/AddTagPopup";
-import fetchAllTagDetails from "@/app/api/tags/fetchAllTagDetails";
+import fetchAllTagDetails from "@/app/api/tags/route.ts";
 import { formatDate } from "@/app/util/formatDate";
 
 const DataPopup = ({

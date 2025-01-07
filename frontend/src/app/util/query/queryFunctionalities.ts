@@ -1,3 +1,5 @@
+import QueryTagInterface from "@/app/interface/query/queryTagInterface";
+
 export const handleDeleteQuery = async (id: number) => {
     try {
         const response = await fetch(`/api/queries/${id}`, {
@@ -138,3 +140,65 @@ export const handleAddNewQueryAnswer = async (
     }
 };
 
+export const handleAddNewBulkQueryAndAnswer = async (
+    queries: {
+        question: string;
+        userId: number;
+        tags: QueryTagInterface[];
+        answers: { answer: string; userId: number }[];
+    }[]
+) => {
+    try {
+        const response = await fetch(`/api/queries/bulk`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(queries),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Error:', errorData);
+            alert(`Failed to add queries: ${errorData.message || 'Unknown error'}`);
+            return false;
+        }
+
+        const responseData = await response.json();
+        console.log('Response Data:', responseData);
+        alert('Queries and answers added successfully!');
+        return true;
+
+    } catch (error) {
+        console.error('Error during API request:', error);
+        alert('An error occurred while adding the queries and answers.');
+    }
+};
+
+
+export const handleAddNewTagToExistingQuery = async (
+    id: string,
+    tags: { tagGroupName: string; tagName: string }[]
+) => {
+    try {
+        const requestBody = { tags };
+        const response = await fetch(`/api/queries/${id}/tags/add`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        if (response.ok) {
+            console.log("Tags successfully added to the query.");
+            return { success: true, message: "Tags successfully added to the query." };
+        }
+
+        console.error(`Failed to add tags. Status: ${response.status}`);
+        return { success: false, message: `Failed to add tags. Status: ${response.status}` };
+    } catch (error) {
+        console.error("An error occurred while adding tags:", error);
+        return { success: false, message: "An error occurred while adding tags." };
+    }
+};

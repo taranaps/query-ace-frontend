@@ -1,5 +1,5 @@
-'use client';
 
+'use client'
 import { useState, useEffect } from "react";
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -10,8 +10,12 @@ import DataPopup from "@/app/components/data-popup/DataPopup";
 import fetchQueriesQuestions from "@/app/api/questioncard/fetchQueriesQuestions";
 import fetchQueryWithAnswers from "@/app/api/questioncard/fetchQueryAnswers";
 import { handleCopyQuery } from "@/app/util/query/queryFunctionalities";
-import Lottie from 'lottie-react'; // Import Lottie
+import Lottie from 'lottie-react'; 
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
+import { fetchCompanies } from "@/app/api/companies/fetchCompanies"; 
+import { fetchCreatedByUsers } from "@/app/api/companies/fetchCreatedByUsers"; 
+import Filter from "@/app/components/filter/filter"; 
+import SortFilterButton from "@/app/components/sort-filter-button/SortFilterButton";
 
 export default function QueryLookup() {
   const [data, setData] = useState<any[]>([]);
@@ -20,6 +24,11 @@ export default function QueryLookup() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [answers, setAnswers] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [companies, setCompanies] = useState<string[]>([]); 
+  const [createdBy, setCreatedBy] = useState<string[]>([]); 
+  const [filteredData, setFilteredData] = useState<any[]>([]); 
+  const [sortOrder, setSortOrder] = useState<"newest" | "earliest">("newest"); 
+
   const itemsPerPage = 10;
 
   const { user } = useAuth();
@@ -31,12 +40,50 @@ export default function QueryLookup() {
     }
   }, [user, router]);
 
+  // Fetch companies on page load
+  useEffect(() => {
+    const fetchCompaniesData = async () => {
+      try {
+        const result = await fetchCompanies();
+        if (Array.isArray(result)) {
+          setCompanies(result); 
+        } else {
+          console.error("Invalid data format for companies:", result);
+        }
+      } catch (error) {
+        console.error("Error fetching companies:", error);
+      }
+    };
+
+    fetchCompaniesData();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchCreatedByData = async () => {
+      try {
+        const result = await fetchCreatedByUsers();
+        if (Array.isArray(result)) {
+          setCreatedBy(result); 
+        } else {
+          console.error("Invalid data format for createdBy:", result);
+        }
+      } catch (error) {
+        console.error("Error fetching createdBy:", error);
+      }
+    };
+
+    fetchCreatedByData();
+  }, []);
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const result = await fetchQueriesQuestions();
         if (Array.isArray(result)) {
           setData(result);
+          setFilteredData(result); 
         } else {
           console.error("Invalid data format:", result);
         }
@@ -50,16 +97,35 @@ export default function QueryLookup() {
     fetchData();
   }, []);
 
-  const paginatedData = data.slice(
+
+  const handleFilterChange = (selectedCompanies: string[], selectedCreatedBy: string[]) => {
+    let filtered = data;
+
+    if (selectedCompanies.length > 0) {
+      filtered = filtered.filter(item => selectedCompanies.includes(item.company));
+    }
+
+    if (selectedCreatedBy.length > 0) {
+      filtered = filtered.filter(item => selectedCreatedBy.includes(item.createdBy));
+    }
+
+    setFilteredData(filtered);
+  };
+
+ 
+  const sortedData = [...filteredData].sort((a, b) => {
+    const timestampA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const timestampB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return sortOrder === "newest" ? timestampB - timestampA : timestampA - timestampB;
+  });
+
+  
+  const paginatedData = sortedData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-
-  const handleDelete = (index: number) => {
-    setData((prevData) => prevData.filter((_, i) => i !== index));
-  };
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
 
   const handleCardClick = async (item: any) => {
     setSelectedItem(item);
@@ -85,29 +151,56 @@ export default function QueryLookup() {
         <h2 className={styles.headerTitle}>Query Lookup</h2>
       </div>
 
-      {loading ? (
-        <div className={styles.loaderContainer}>
-          <LottieLoader />
-        </div>
-      ) : (
-        <div className={styles.dataItems}>
-          {paginatedData.map((item, index) => (
-            <DataCardDashboard
-              key={item.id}
-              id={item.id}
-              question={item.question || "No question provided"}
-              answer={item.answer || "No answer provided"}
-              customer={item.customer || "Unknown"}
-              createdBy={item.usersUsername || "Unknown"}
-              createdAt={item.createdAt || "Unknown"}
-              tags={(item.tags || [])}
-              deleteOn={true}
-              copyOn={item.answer ? true : false}
-              onClick={() => handleCardClick(item)}
-            />
-          ))}
-        </div>
-      )}
+      {/* Filters Section */}
+      <div className={styles.filtersRow}>
+        {/* Filter for Companies */}
+        <Filter
+          label="Company"
+          admins={companies}
+          onFilterChange={(selectedCompanies) => handleFilterChange(selectedCompanies, createdBy)}
+        />
+
+        {/* Filter for Created By */}
+        <Filter
+          label="Created By"
+          admins={createdBy}
+          onFilterChange={(selectedCreatedBy) => handleFilterChange(companies, selectedCreatedBy)}
+        />
+
+        {/* Sort and Filter Button */}
+        <SortFilterButton
+          sortOrder={sortOrder}
+          onSortChange={(order) => setSortOrder(order)}
+        />
+      </div>
+
+      <div className={styles.dataItems}>
+        {loading ? (
+          <div className={styles.loaderContainer}>
+            <LottieLoader size={"180px"} />
+          </div>
+        ) : (
+          paginatedData.length === 0 ? (
+            <p>No results found for the selected filters</p>
+          ) : (
+            paginatedData.map((item) => (
+              <DataCardDashboard
+                key={item.id}
+                id={item.id}
+                question={item.question || "No question provided"}
+                answer={item.answer || "No answer provided"}
+                customer={item.customer || "Unknown"}
+                createdBy={item.usersUsername || "Unknown"}
+                createdAt={item.createdAt || "Unknown"}
+                tags={item.tags || []}
+                deleteOn={true}
+                copyOn={Boolean(item.answer)}
+                onClick={() => handleCardClick(item)}
+              />
+            ))
+          )
+        )}
+      </div>
 
       <div className={styles.paginationContainer}>
         <Pagination
@@ -117,8 +210,7 @@ export default function QueryLookup() {
         />
         <div className={styles.itemRange}>
           <p>
-            Displaying {(currentPage - 1) * itemsPerPage + 1}–
-            {Math.min(currentPage * itemsPerPage, data.length)} of {data.length} items
+            Displaying {(currentPage - 1) * itemsPerPage + 1}–{Math.min(currentPage * itemsPerPage, data.length)} of {data.length} items
           </p>
         </div>
       </div>
