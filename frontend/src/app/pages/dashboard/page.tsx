@@ -26,7 +26,7 @@ const Dashboard: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [answers, setAnswers] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCardClick = async (item: any) => {
     setSelectedItem(item);
@@ -68,7 +68,7 @@ const Dashboard: React.FC = () => {
 
   const clearSearch = () => {
     setSearchQuery("");
-  }
+  };
 
   if (!user) {
     return <LottieLoader />;
@@ -94,22 +94,119 @@ const Dashboard: React.FC = () => {
           </div>
         ) : (
           <div className={styles["dashboard-content"]}>
-            {isLoading ? (
-              <div className={styles.loaderContainer}>
-                <LottieLoader size={80} />
+            {/* Trending Queries Section */}
+            {searchKeyword === "" && (
+              <div className={styles.trendingQueriesContainer}>
+                <h2 className={styles.trendingTitle}>Trending Queries</h2>
+                <div className={styles.queriesContent}>
+                  {/* Dummy Data for Trending Queries */}
+                  <div className={styles.queryItem}>
+                    <div className={styles.queryInfo}>
+                      <div className={styles.queryIcon}>
+                        <i className="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <div className={styles.queryTitle}>How to implement JWT authentication in Node.js?</div>
+                        <div className={styles.queryDate}>2025-01-01</div>
+                      </div>
+                    </div>
+                    <div className={styles.queryViews}>150</div>
+                  </div>
+                  <div className={styles.queryItem}>
+                    <div className={styles.queryInfo}>
+                      <div className={styles.queryIcon}>
+                        <i className="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <div className={styles.queryTitle}>What are the best practices for SEO?</div>
+                        <div className={styles.queryDate}>2025-01-02</div>
+                      </div>
+                    </div>
+                    <div className={styles.queryViews}>120</div>
+                  </div>
+                  <div className={styles.queryItem}>
+                    <div className={styles.queryInfo}>
+                      <div className={styles.queryIcon}>
+                        <i className="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <div className={styles.queryTitle}>How to use Redux with React?</div>
+                        <div className={styles.queryDate}>2025-01-03</div>
+                      </div>
+                    </div>
+                    <div className={styles.queryViews}>100</div>
+                  </div>
+                  <div className={styles.queryItem}>
+                    <div className={styles.queryInfo}>
+                      <div className={styles.queryIcon}>
+                        <i className="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <div className={styles.queryTitle}>What is the difference between SQL and NoSQL databases?</div>
+                        <div className={styles.queryDate}>2025-01-04</div>
+                      </div>
+                    </div>
+                    <div className={styles.queryViews}>80</div>
+                  </div>
+                  {/* Additional Dummy Data */}
+                  <div className={styles.queryItem}>
+                    <div className={styles.queryInfo}>
+                      <div className={styles.queryIcon}>
+                        <i className="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <div className={styles.queryTitle}>How do you handle errors in JavaScript?</div>
+                        <div className={styles.queryDate}>2025-01-05</div>
+                      </div>
+                    </div>
+                    <div className={styles.queryViews}>70</div>
+                  </div>
+                  <div className={styles.queryItem}>
+                    <div className={styles.queryInfo}>
+                      <div className={styles.queryIcon}>
+                        <i className="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <div className={styles.queryTitle}>What are the latest trends in React development?</div>
+                        <div className={styles.queryDate}>2025-01-06</div>
+                      </div>
+                    </div>
+                    <div className={styles.queryViews}>65</div>
+                  </div>
+                  <div className={styles.queryItem}>
+                    <div className={styles.queryInfo}>
+                      <div className={styles.queryIcon}>
+                        <i className="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <div className={styles.queryTitle}>What is the best way to manage state in large React applications?</div>
+                        <div className={styles.queryDate}>2025-01-07</div>
+                      </div>
+                    </div>
+                    <div className={styles.queryViews}>50</div>
+                  </div>
+                  <div className={styles.queryItem}>
+                    <div className={styles.queryInfo}>
+                      <div className={styles.queryIcon}>
+                        <i className="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <div className={styles.queryTitle}>What are microservices in backend development?</div>
+                        <div className={styles.queryDate}>2025-01-08</div>
+                      </div>
+                    </div>
+                    <div className={styles.queryViews}>45</div>
+                  </div>
+                </div>
               </div>
-            ) : searchKeyword === "" ? (
-              <div className={styles["image-placeholder"]}>
-                <img
-                  src="/assets/images/dashboard-clipboard.png"
-                  alt="No Results"
-                />
-              </div>
-            ) : searchResults.length === 0 ? (
-              <div className={styles["image-placeholder"]}>
+            )}
+
+            {/* Search Results */}
+            {searchKeyword !== "" && searchResults.length === 0 ? (
+              <div className={styles["no-results-container"]}>
                 <p>No answers found</p>
                 <br />
-                {!isLoading && ( 
+                {!isLoading && (
                   <a onClick={() => router.push("/pages/add-record")}>
                     Add new data?
                   </a>
@@ -133,9 +230,9 @@ const Dashboard: React.FC = () => {
               ))
             )}
           </div>
-
         )}
       </div>
+
       {isPopupOpen && selectedItem && (
         <DataPopup
           data={{

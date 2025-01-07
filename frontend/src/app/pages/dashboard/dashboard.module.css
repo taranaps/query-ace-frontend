@@ -300,13 +300,13 @@
   }
   
   .queryIcon {
-    width: 40px;
-    height: 40px;
+    width: 20px;
+    height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: #fed7d7;
+    background:#f1a924;
     color: #e53e3e;
   }
   
@@ -326,5 +326,162 @@
     font-weight: 600;
     color: #48bb78;
   }
+
+  /* Dashboard Body */
+.dashboard-body {
+  padding: 20px;
+}
+
+/* Trending Queries Container */
+.trendingQueriesContainer {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Tabs */
+.tabsContainer {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.tabButton {
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.tabActive {
+  background-color: #007bff;
+  color: white;
+}
+
+.tabInactive {
+  background-color: #f0f0f0;
+  color: #007bff;
+}
+
+/* Query Content */
+.queriesContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.queryItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #fafafa;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.queryInfo {
+  display: flex;
+  align-items: center;
+}
+
+.queryIcon {
+  margin-right: 10px;
+  color: #007bff;
+}
+
+.queryTitle {
+  font-weight: bold;
+}
+
+.queryDate {
+  font-size: 12px;
+  color: #888;
+}
+
+.queryViews {
+  font-size: 14px;
+  color: #333;
+}
+
+/* No Results Message */
+.noResultsMessage {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+}
+
+/* Dashboard Body */
+.dashboard-body {
+  padding: 20px;
+}
+
+/* Trending Queries Container */
+.trendingQueriesContainer {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+/* Add an animation for shifting down the table */
+.tableShiftDown {
+  transform: translateY(20px);
+  opacity: 0;
+}
+
+/* Query Content */
+.queriesContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.queryItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #fafafa;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.queryInfo {
+  display: flex;
+  align-items: center;
+}
+
+.queryIcon {
+  margin-right: 10px;
+  color: #007bff;
+}
+
+.queryTitle {
+  font-weight: bold;
+}
+
+.queryDate {
+  font-size: 12px;
+  color: #888;
+}
+
+.queryViews {
+  font-size: 14px;
+  color: #333;
+}
+
+/* No Results Message */
+.noResultsMessage {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+}
 
   
