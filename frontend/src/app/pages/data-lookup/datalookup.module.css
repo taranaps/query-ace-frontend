@@ -8,6 +8,50 @@
   width: 100%;
   height: 100%;
 }
+.filtersRow {
+  display: flex;
+  justify-content: flex-end;  /* Vertically align filters */
+  gap: 5px;
+  margin-bottom: 10px;
+  margin-right: 5px; /* Optional: adds some space below the filters */
+}
+
+.filter-container {
+  display: inline-block;
+}
+
+/* Add to your CSS file (e.g., datalookup.module.css) */
+
+.sortSection {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.sortButton {
+  padding: 8px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.sortButton:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.sortButton:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+
 
 .dataLookupContainer {
   display: flex;
