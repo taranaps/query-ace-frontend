@@ -1,6 +1,8 @@
 import { AdminData } from "@/app/components/add-admin-popup/AddAdminPopup";
 
+
 export const handleAddAdmin = async (adminData: {
+    id: number,
     firstName: string;
     email: string;
     location: string;
@@ -36,38 +38,41 @@ export const handleAddAdmin = async (adminData: {
     }
 };
 
-export const handleSubmitEdit = async (adminData: AdminData): Promise<void> => {
-    if ( !adminData.id) {
-        console.error("Invalid admin data: ID is required.");
-        return;
-    }
+
+export const handleSubmitEdit = async (adminData: {
+    id: number
+    firstName: string;
+    email: string;
+    username: string;
+}) => {
+
+    console.log("Request Data:", JSON.stringify(adminData));
 
     try {
-        console.log("Submitting admin data for edit:", adminData); 
+        console.log("Submitting admin data for edit:", adminData);
 
         const response = await fetch(`/api/admin/edit/${adminData.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(adminData), 
+            body: JSON.stringify(adminData),
         });
+
         const responseBody = await response.json();
 
-        if (response.ok) {
-            console.log("User updated successfully:", responseBody); 
+        console.log('Response Body:', responseBody);
+
+        if (!response.ok) {
+            console.error("Failed to update user. Error:");
         } else {
-            console.error("Failed to update user. Error:", responseBody); 
+            console.log("User updated successfully:");
         }
     } catch (error: unknown) {
         if (error instanceof Error) {
-            console.error("Error updating user:", error.message); 
+            console.error("Error updating user:", error.message);
         } else {
-            console.error("Unknown error occurred while updating user:", error); 
+            console.error("Unknown error occurred while updating user:", error);
         }
     }
 };
-
-
-
-

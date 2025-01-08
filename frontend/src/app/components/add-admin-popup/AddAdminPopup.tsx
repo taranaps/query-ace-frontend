@@ -23,15 +23,16 @@ export interface AdminData {
 interface AddAdminPopupProps {
     header: string;
     onClose: () => void;
-    onConfirm: (adminData: {
-        id: number,
-        firstName: string;
-        email: string;
-        location: string;
-        username: string;
-        password: string;
-        userRole: string;
-    }) => Promise<void>;
+    onConfirm: (
+        adminData: {
+            id: number,
+            firstName: string;
+            email: string;
+            location: string;
+            username: string;
+            password: string;
+            userRole: string;
+        }) => Promise<void>;
 
     closePopup: () => void;
     passwordOn?: boolean;
@@ -55,7 +56,7 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
         password: string;
         userRole: string;
     }>({
-        id:0,
+        id: 0,
         firstName: "",
         email: "",
         location: "TRIVANDRUM",
@@ -67,7 +68,7 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
     useEffect(() => {
         if (adminData) {
             setFormData({
-                id:adminData.id,
+                id: adminData.id,
                 firstName: adminData.firstName,
                 email: adminData.email,
                 location: adminData.location,
@@ -84,16 +85,41 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
 
     const [loading, setLoading] = useState(false);
 
+    // const handleConfirm = async () => {
+    //     if ((formData.firstName && formData.email && formData.username) || (passwordOn && ((formData.firstName && formData.email && formData.username && formData.password)))) {
+    //         setLoading(true);
+    //         await onConfirm(formData);
+    //         setLoading(false);
+    //         closePopup();
+    //     } else {
+    //         alert("Please fill all fields.");
+    //     }
+    // };
+
     const handleConfirm = async () => {
-        if ((formData.id && formData.firstName && formData.email && formData.username) || (passwordOn && ((formData.firstName && formData.email && formData.username && formData.password)))) {
+        const isFormValid =
+            formData.firstName &&
+            formData.email &&
+            formData.username &&
+            (!passwordOn || (passwordOn && formData.password));
+
+        if (!isFormValid) {
+            alert("Please fill all required fields.");
+            return;
+        }
+
+        try {
             setLoading(true);
-            await onConfirm(formData);
-            setLoading(false);
-            closePopup();
-        } else {
-            alert("Please fill all fields.");
+            onConfirm( formData); // Perform the confirmation action
+        } catch (error) {
+            console.error("Error during confirmation:", error);
+            alert("An error occurred. Please try again."); // Inform the user if the operation fails
+        } finally {
+            setLoading(false); // Ensure loading state is reset
+            closePopup(); // Close the popup regardless of success or failure
         }
     };
+
 
     return (
         <Dialog open onClose={onClose} className={styles.addAdminPopUp}>

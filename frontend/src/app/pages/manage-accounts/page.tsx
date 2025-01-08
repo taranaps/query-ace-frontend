@@ -112,7 +112,7 @@ const ManageAccountsPage: React.FC = () => {
     };
 
     const handleAddAccount = () => setOpenAddPopup(true);
-    const handleEditAccount = (id: number,firstName:String,email:String,username:String) => {
+    const handleEditAccount = (id: number) => {
         const userToEdit = userData.find((user) => user.id === id);
         if (userToEdit) {
             setEditUserDetails(userToEdit); 
