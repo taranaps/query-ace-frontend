@@ -17,7 +17,7 @@ import fetchAllTagDetails from '@/app/api/tags/route.ts';
 interface AddTagPopupProps {
     open: boolean;
     onClose: () => void;
-    onAddTags: (newTags: { group: string; tag: string }) => Promise<void>;
+    onAddTags: (newTags: { group: string; tag: string }) => void;
 }
 
 const AddTagPopup: React.FC<AddTagPopupProps> = ({ open, onClose, onAddTags }) => {

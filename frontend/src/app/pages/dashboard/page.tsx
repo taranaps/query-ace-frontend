@@ -28,8 +28,20 @@ const Dashboard: React.FC = () => {
   const [answers, setAnswers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleCardClick = async (item: searchQueryResult) => {
+  const [popupPosition, setPopupPosition] = useState<{ top: number, left: number }>({ top: 0, left: 0 });
+  const [popupSize, setPopupSize] = useState<{ width: number; height: number }>({ width: 60, height: 20 });
+
+  const handleCardClick = async (event: React.MouseEvent<HTMLElement>, item: searchQueryResult) => {
     setSelectedItem(item);
+    const rect = event.currentTarget.getBoundingClientRect();
+    setPopupPosition({
+      top: rect.top + window.scrollY,
+      left: rect.left + window.scrollX,
+    });
+    setPopupSize({
+      width: rect.width,
+      height: rect.height,
+    });
     setIsPopupOpen(true);
 
     try {
@@ -86,20 +98,25 @@ const Dashboard: React.FC = () => {
       );
     }
 
-    return searchResults.map((result) => (
-      <DataCardDashboard
-        key={result.id}
-        id={result.id}
-        question={result.question}
-        customer={"Customer"}
-        createdBy={result.usersUsername}
-        createdAt={result.queryCreatedAt}
-        answer={result.answers[0]?.answer || "No Answer"}
-        tags={result.tags}
-        deleteOn={true}
-        copyOn={true}
-        onClick={() => handleCardClick(result)}
-      />
+    return searchResults.map((result, index) => (
+      <div className={styles.dataItem} key={result.id}>
+        <DataCardDashboard
+          key={result.id}
+          id={result.id}
+          question={result.question}
+          customer={"Customer"}
+          createdBy={result.usersUsername}
+          createdAt={result.queryCreatedAt}
+          answer={result.answers[0]?.answer || "No Answer"}
+          numberOfAnswers={result.answers.length}
+          tags={result.tags}
+          deleteOn={true}
+          copyOn={true}
+          onClick={(e) => handleCardClick(e, result)}
+        />
+        {index < searchResults.length - 1 && <div className={styles.divider}></div>}
+      </div>
+
     ));
   };
 
@@ -127,6 +144,8 @@ const Dashboard: React.FC = () => {
             setAnswers([]);
           }}
           user={user}
+          position={popupPosition}
+          size={popupSize}
         />
       )}
     </div>

@@ -2,21 +2,22 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.6);
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 9999;
 }
 
 .popupContent {
-    background: #fff;
+    position: absolute;
+    background-color: white;
     border-radius: 8px;
-    padding: 12px;
-    width: 80vw;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transition: all 0.5s ease;
+    padding: 24px;
 }
 
 .popupHeader {
@@ -24,6 +25,17 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+}
+
+.popupHeaderQuestion {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.popupHeaderQuestion p {
+    font-size: 12px;
+    color: #707070;
 }
 
 .answerTitleButton {
@@ -45,6 +57,7 @@
 }
 
 .answerList {
+    flex: 1;
     list-style: none;
     margin-bottom: 4px;
     padding: 0;
@@ -71,7 +84,7 @@
 }
 
 .answerContainer {
-    height: 40vh;
+    height: 55vh;
     overflow-y: auto;
     overflow-x: hidden;
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import DataCardDashboard from "@/app/components/dashboard-datacard/DataCardDashboard";
@@ -21,6 +21,10 @@ export default function QueryLookup() {
   const [answers, setAnswers] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const itemsPerPage = 10;
+
+  const [popupPosition, setPopupPosition] = useState<{ top: number, left: number }>({ top: 0, left: 0 });
+  const [popupSize, setPopupSize] = useState<{ width: number; height: number }>({ width: 60, height: 20 });
+
 
   const { user } = useAuth();
   const router = useRouter();
@@ -61,8 +65,19 @@ export default function QueryLookup() {
     setData((prevData) => prevData.filter((_, i) => i !== index));
   };
 
-  const handleCardClick = async (item: any) => {
+  const handleCardClick = async (event: React.MouseEvent<HTMLElement>, item: any) => {
     setSelectedItem(item);
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    setPopupPosition({
+      top: rect.top + window.scrollY,
+      left: rect.left + window.scrollX,
+    });
+    setPopupSize({
+      width: rect.width,
+      height: rect.height,
+    });
+
     setIsPopupOpen(true);
 
     try {
@@ -88,23 +103,27 @@ export default function QueryLookup() {
       <div className={styles.dataItems}>
         {loading ? (
           <div className={styles.loaderContainer}>
-            <LottieLoader size={"180px"}/>
+            <LottieLoader size={"180px"} />
           </div>
         ) : (
-          paginatedData.map((item) => (
-            <DataCardDashboard
-              key={item.id}
-              id={item.id}
-              question={item.question || "No question provided"}
-              answer={item.answer || "No answer provided"}
-              customer={item.customer || "Unknown"}
-              createdBy={item.usersUsername || "Unknown"}
-              createdAt={item.createdAt || "Unknown"}
-              tags={item.tags || []}
-              deleteOn={true}
-              copyOn={Boolean(item.answer)}
-              onClick={() => handleCardClick(item)}
-            />
+          paginatedData.map((item, index) => (
+            <div className={styles.dataItem} key={item.id}>
+              <DataCardDashboard
+                key={item.id}
+                id={item.id}
+                question={item.question || "No question provided"}
+                answer={item.answer || "No answer provided"}
+                customer={item.customer || "Unknown"}
+                createdBy={item.usersUsername || "Unknown"}
+                createdAt={item.createdAt || "Unknown"}
+                tags={item.tags || []}
+                deleteOn={true}
+                copyOn={Boolean(item.answer)}
+                onClick={(e) => handleCardClick(e, item)}
+              />
+              {index < paginatedData.length - 1 && <div className={styles.divider}></div>}
+            </div>
+
           ))
         )}
       </div>
@@ -135,6 +154,8 @@ export default function QueryLookup() {
             setSelectedItem(null);
             setAnswers([]);
           }}
+          position={popupPosition}
+          size={popupSize}
         />
       )}
     </div>
