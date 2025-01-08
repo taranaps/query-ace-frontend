@@ -13,7 +13,16 @@ import { fetchUserInterface } from "@/app/interface/user/fetchUserInterface";
 
 import styles from "./ManageAccountsPage.module.css";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
-import { handleAddAdmin } from "@/app/util/admin/adminFunctionalities";
+import { handleAddAdmin, handleEditAdmin } from "@/app/util/admin/adminFunctionalities";
+
+type AdminFormData = {
+    firstName: string;
+    email: string;
+    location: string;
+    username: string;
+    password: string; // Empty string if not editing password
+    userRole: "SUPER_ADMIN" | "ADMIN"; // Or other roles if applicable
+};
 
 const ManageAccountsPage: React.FC = () => {
     const [userData, setUserData] = useState<fetchUserInterface[]>([]);
@@ -23,6 +32,7 @@ const ManageAccountsPage: React.FC = () => {
     const [openEditPopup, setOpenEditPopup] = useState(false);
     const [openTogglePopup, setOpenTogglePopup] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedAdmin, setSelectedAdmin] = useState<fetchUserInterface | null>(null);
     const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -110,12 +120,60 @@ const ManageAccountsPage: React.FC = () => {
     };
 
     const handleAddAccount = () => setOpenAddPopup(true);
-    const handleEditAccount = () => setOpenEditPopup(true);
+    const handleEditAccount = async (id: number) => {
+        try {
+            const response = await fetch(`/api/admin/users/${id}`);
+            const adminDetails = await response.json();
 
-    const handleCloseAddPopup = () => {
-        setOpenAddPopup(false);
-        setOpenEditPopup(false);
-    }
+            if (response.ok) {
+                setSelectedAdmin(adminDetails);
+                setOpenEditPopup(true);
+            } else {
+                console.error('Failed to fetch admin details:', adminDetails);
+            }
+        } catch (error) {
+            console.error('Error fetching admin details:', error);
+        }
+    };
+
+    const handleUpdateAdmin = async (updatedAdminData: AdminFormData) => {
+        if (!selectedAdmin) return;
+    
+        try {
+            const response = await fetch(`/api/admin/users/${selectedAdmin.id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedAdminData),
+            });
+            console.log('sel admin:',selectedAdmin);
+            if (!response.ok) {
+                console.error('Failed to update admin:', response.statusText);
+                return;
+            }
+    
+            const result = await response.json();
+            console.log('Updated admin response:', result);
+    
+            if (result) {
+                const updatedUserData = userData.map((admin) =>
+                    admin.id === selectedAdmin.id ? { ...admin, ...updatedAdminData } : admin
+                );
+                setUserData(updatedUserData);  // Update the local user data
+                setOpenEditPopup(false);  // Close the edit popup
+                console.log(updatedAdminData); // Log the updated admin data to verify the values
+            } else {
+                console.error('Failed to update admin:', result);
+            }
+        } catch (error) {
+            console.error('Error updating admin:', error);
+        }
+    };
+
+    const handleCloseAddPopup = () => setOpenAddPopup(false);
+    const handleCloseEditPopup = () => setOpenEditPopup(false);
+
     const handleCloseTogglePopup = () => setOpenTogglePopup(false);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value);
@@ -165,7 +223,7 @@ const ManageAccountsPage: React.FC = () => {
                     <TableWrapper
                         data={paginatedData}
                         onToggleStatus={(email) => handleToggleStatus(email)}
-                        onEditAdmin={handleEditAccount}
+                        onEditAdmin={(id) => handleEditAccount(id)}
                         headerClassName={styles.tableHeader}
                         rowClassName={styles.tableRow}
                     />
@@ -198,14 +256,23 @@ const ManageAccountsPage: React.FC = () => {
                     passwordOn={true}
                 />}
 
-            {openEditPopup &&
+            {openEditPopup && selectedAdmin && (
+
                 <AddAdminPopup
                     header="Edit Admin"
-                    onConfirm={handleEditAccount}
-                    onClose={handleCloseAddPopup}
-                    closePopup={handleCloseAddPopup}
+                    onConfirm={handleUpdateAdmin}  // Use the correct function for updating
+                    onClose={handleCloseEditPopup}
+                    closePopup={handleCloseEditPopup}
+                    formData={{
+                        firstName: selectedAdmin.firstName,
+                        email: selectedAdmin.email,
+                        location: selectedAdmin.location,
+                        username: selectedAdmin.username,
+                        password: "", // Do not pass passwords for editing
+                        userRole: selectedAdmin.roles[0]?.roleName as "SUPER_ADMIN" | "ADMIN",
+                    }}
                     passwordOn={false}
-                />}
+                />)}
             {openTogglePopup && (
                 <AdminTogglePopup onConfirm={confirmToggleStatus} onClose={handleCloseTogglePopup} />
             )}

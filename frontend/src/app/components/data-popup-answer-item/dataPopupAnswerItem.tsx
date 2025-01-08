@@ -7,7 +7,7 @@ import { formatDate } from '@/app/util/formatDate';
 import LottieIconButton from "../lottie-animated-button/LottieIconButton";
 import copyAnimation from "../../../../public/assets/animatedIcons/copyv3.json";
 import closeAnimation from "../../../../public/assets/animatedIcons/Close.json";
-import editAnimation from "../../../../public/assets/animatedIcons/editv2.json";
+import editAnimation from "../../../../public/assets/animatedIcons/editv2.json"; 
 import deleteAnimation from "../../../../public/assets/animatedIcons/delete.json";
 import saveAnimation from "../../../../public/assets/animatedIcons/save.json"
 

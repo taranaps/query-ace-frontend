@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
     try {
-        const { id } = params;
+        const { id } = params; 
         const requestBody = await request.json();
 
         const response = await fetch(`${API_BASE_URL}/queries/answers/${id}`, {
