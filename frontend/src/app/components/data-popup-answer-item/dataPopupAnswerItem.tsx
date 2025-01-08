@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { formatDate } from '@/app/util/formatDate';
 import LottieIconButton from "../lottie-animated-button/LottieIconButton";
 import copyAnimation from "../../../../public/assets/animatedIcons/copyv3.json";
+import editAnimation from "../../../../public/assets/animatedIcons/edit.json";
+import deleteAnimation from "../../../../public/assets/animatedIcons/delete.json";
 import closeAnimation from "../../../../public/assets/animatedIcons/Close.json";
 import saveAnimation from "../../../../public/assets/animatedIcons/save.json";
 import { handleDeleteQueryAnswer, handleEditQuery, handleCopyQuery } from '@/app/util/query/queryFunctionalities';
@@ -117,7 +119,6 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
         <li
             className={styles.answerItem}
             onContextMenu={handleRightClick} // Trigger right-click menu
-            onClick={() => handleCopy(answer.answer, answer.id)} // Default click action (copy)
         >
             {editing ? (
                 <div className={styles.answerItemTop}>
@@ -144,6 +145,23 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
                 <>
                     <div className={styles.answerItemTop}>
                         <p>{answer.answer}</p>
+                        <div className={styles.actionButtons}>
+                            <LottieIconButton
+                                animationData={copyAnimation}
+                                label="Copy Answer"
+                                onClick={() => handleCopy(answer.answer, answer.id)}
+                            />
+                            <LottieIconButton
+                                animationData={editAnimation}
+                                label="Edit"
+                                onClick={handleEdit}
+                            />
+                            <LottieIconButton
+                                animationData={deleteAnimation}
+                                label="Delete"
+                                onClick={handleDeleteClick}
+                            />
+                        </div>
                     </div>
                     <div className={styles.answerItemBottom}>
                         <span>Updated By: {answer.usersUsername}</span> |{" "}
@@ -151,7 +169,7 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
                     </div>
                 </>
             )}
-
+    
             {/* Custom Context Menu */}
             {contextMenu.visible && (
                 <div
@@ -165,15 +183,14 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
                     </ul>
                 </div>
             )}
-
-
+    
             {/* Copy overlay (success message) */}
             {copyOverlayVisible && (
                 <div className={`${styles.copyOverlay} ${copyOverlayVisible ? '' : styles['slide-out']}`}>
                     Copied!
                 </div>
             )}
-
+    
             {/* Delete confirmation overlay */}
             {deletingItemId === answer.id && (
                 <div className={`${styles.deleteConfirmationOverlay} ${isSlidingOut ? 'slide-out' : ''}`}>
@@ -188,6 +205,6 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
             )}
         </li>
     );
-};
-
-export default DataPopupAnswerItem;
+}
+    
+    export default DataPopupAnswerItem;
