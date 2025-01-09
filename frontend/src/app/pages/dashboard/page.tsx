@@ -36,6 +36,25 @@ const Dashboard: React.FC = () => {
   const [popupPosition, setPopupPosition] = useState<{ top: number, left: number }>({ top: 0, left: 0 });
   const [popupSize, setPopupSize] = useState<{ width: number; height: number }>({ width: 60, height: 20 });
 
+  const [trendingQueries, setTrendingQueries] = useState<any[]>([]);
+
+  const fetchTrendingQueries = async () => {
+    try {
+      const response = await fetch("/api/queries/top");
+      if (!response.ok) {
+        throw new Error("Failed to fetch trending queries.");
+      }
+      const data = await response.json();
+      setTrendingQueries(data);
+    } catch (error) {
+      console.error("Error fetching trending queries:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTrendingQueries();
+  }, []);
+
   const handleCardClick = async (event: React.MouseEvent<HTMLElement>, item: any) => {
     setSelectedItem(item);
 
@@ -131,103 +150,20 @@ const Dashboard: React.FC = () => {
 
                 <div className={styles.queriesContent}>
                   {/* Dummy Data for Trending Queries */}
-                  <div className={styles.queryItem}>
-                    <div className={styles.queryInfo}>
-                      <div className={styles.queryIcon}>
-                        <i className="fas fa-shield-alt"></i>
+                  {trendingQueries.map((query) => (
+                    <div className={styles.queryItem} key={query.id}>
+                      <div className={styles.queryInfo}>
+                        <div className={styles.queryIcon}>
+                          <i className="fas fa-shield-alt"></i>
+                        </div>
+                        <div>
+                          <div className={styles.queryTitle}>{query.question}</div>
+                          <div className={styles.queryDate}>{query.createdAt}</div>
+                        </div>
                       </div>
-                      <div>
-                        <div className={styles.queryTitle}>How to implement JWT authentication in Node.js?</div>
-                        <div className={styles.queryDate}>2025-01-01</div>
-                      </div>
+                      <div className={styles.queryViews}>{query.highestCopyCount}</div>
                     </div>
-                    <div className={styles.queryViews}>150</div>
-                  </div>
-                  <div className={styles.queryItem}>
-                    <div className={styles.queryInfo}>
-                      <div className={styles.queryIcon}>
-                        <i className="fas fa-shield-alt"></i>
-                      </div>
-                      <div>
-                        <div className={styles.queryTitle}>What are the best practices for SEO?</div>
-                        <div className={styles.queryDate}>2025-01-02</div>
-                      </div>
-                    </div>
-                    <div className={styles.queryViews}>120</div>
-                  </div>
-                  <div className={styles.queryItem}>
-                    <div className={styles.queryInfo}>
-                      <div className={styles.queryIcon}>
-                        <i className="fas fa-shield-alt"></i>
-                      </div>
-                      <div>
-                        <div className={styles.queryTitle}>How to use Redux with React?</div>
-                        <div className={styles.queryDate}>2025-01-03</div>
-                      </div>
-                    </div>
-                    <div className={styles.queryViews}>100</div>
-                  </div>
-                  <div className={styles.queryItem}>
-                    <div className={styles.queryInfo}>
-                      <div className={styles.queryIcon}>
-                        <i className="fas fa-shield-alt"></i>
-                      </div>
-                      <div>
-                        <div className={styles.queryTitle}>What is the difference between SQL and NoSQL databases?</div>
-                        <div className={styles.queryDate}>2025-01-04</div>
-                      </div>
-                    </div>
-                    <div className={styles.queryViews}>80</div>
-                  </div>
-                  {/* Additional Dummy Data */}
-                  <div className={styles.queryItem}>
-                    <div className={styles.queryInfo}>
-                      <div className={styles.queryIcon}>
-                        <i className="fas fa-shield-alt"></i>
-                      </div>
-                      <div>
-                        <div className={styles.queryTitle}>How do you handle errors in JavaScript?</div>
-                        <div className={styles.queryDate}>2025-01-05</div>
-                      </div>
-                    </div>
-                    <div className={styles.queryViews}>70</div>
-                  </div>
-                  <div className={styles.queryItem}>
-                    <div className={styles.queryInfo}>
-                      <div className={styles.queryIcon}>
-                        <i className="fas fa-shield-alt"></i>
-                      </div>
-                      <div>
-                        <div className={styles.queryTitle}>What are the latest trends in React development?</div>
-                        <div className={styles.queryDate}>2025-01-06</div>
-                      </div>
-                    </div>
-                    <div className={styles.queryViews}>65</div>
-                  </div>
-                  <div className={styles.queryItem}>
-                    <div className={styles.queryInfo}>
-                      <div className={styles.queryIcon}>
-                        <i className="fas fa-shield-alt"></i>
-                      </div>
-                      <div>
-                        <div className={styles.queryTitle}>What is the best way to manage state in large React applications?</div>
-                        <div className={styles.queryDate}>2025-01-07</div>
-                      </div>
-                    </div>
-                    <div className={styles.queryViews}>50</div>
-                  </div>
-                  <div className={styles.queryItem}>
-                    <div className={styles.queryInfo}>
-                      <div className={styles.queryIcon}>
-                        <i className="fas fa-shield-alt"></i>
-                      </div>
-                      <div>
-                        <div className={styles.queryTitle}>What are microservices in backend development?</div>
-                        <div className={styles.queryDate}>2025-01-08</div>
-                      </div>
-                    </div>
-                    <div className={styles.queryViews}>45</div>
-                  </div>
+                  ))}
                 </div>
               </div>
             )}
