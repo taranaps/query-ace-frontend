@@ -15,6 +15,7 @@ const Filter: React.FC<FilterProps> = ({ admins, onFilterChange }) => {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value.toLowerCase());
   };
+  
 
   const handleSelect = (admin: string) => {
     const updatedSelection = selectedAdmins.includes(admin)
@@ -28,6 +29,8 @@ const Filter: React.FC<FilterProps> = ({ admins, onFilterChange }) => {
   const filteredAdmins = admins.filter((admin) =>
     admin.toLowerCase().includes(searchQuery)
   );
+
+  
 
   return (
     <div className="filter-container">
