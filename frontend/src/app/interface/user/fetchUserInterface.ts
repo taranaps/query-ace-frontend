@@ -5,7 +5,8 @@ export interface fetchUserInterface {
     location: string;
     status: "ACTIVE" | "INACTIVE";
     isActive: boolean;
-    timestamp: Date;
+    createdAt: Date;
+    updatedAt: Date;
     roles: {
         id: number;
         roleName: string;

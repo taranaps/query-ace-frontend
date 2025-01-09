@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 import SearchBar from "../../components/search-bar/SearchBar";
 import SortFilterButton from "../../components/sort-filter-button/SortFilterButton";
 import TableWrapper from "../../components/table/Table";
@@ -10,26 +12,40 @@ import AdminTogglePopup from "../../components/admin-toggle-popup/AdminTogglePop
 import { fetchUserInterface } from "@/app/interface/user/fetchUserInterface";
 
 import styles from "./ManageAccountsPage.module.css";
+import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
+import { handleAddAdmin } from "@/app/util/admin/adminFunctionalities";
 
 const ManageAccountsPage: React.FC = () => {
-
     const [userData, setUserData] = useState<fetchUserInterface[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState<"newest" | "earliest">("newest");
     const [openAddPopup, setOpenAddPopup] = useState(false);
+    const [openEditPopup, setOpenEditPopup] = useState(false);
     const [openTogglePopup, setOpenTogglePopup] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const itemsPerPage = 8;
+
+    const { user } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!user || user.status === 'INACTIVE') {
+            router.push('/pages/login');
+        } else if (user.roles[0]?.roleName !== 'SUPER_ADMIN') {
+            router.back();
+        }
+    }, [user, router]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch("/api/admin/users")
+                const response = await fetch("/api/admin/users");
                 const result = await response.json();
                 console.log(result);
-                
+
                 if (Array.isArray(result)) {
                     setUserData(result);
                 } else {
@@ -37,6 +53,8 @@ const ManageAccountsPage: React.FC = () => {
                 }
             } catch (error) {
                 console.error("Error fetching users:", error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -59,7 +77,6 @@ const ManageAccountsPage: React.FC = () => {
                     const url = `/api/admin/toggle-status/${userToUpdate.id}`.trim();
 
                     console.log(url);
-
 
                     const response = await fetch(url, {
                         method: 'PUT',
@@ -92,53 +109,21 @@ const ManageAccountsPage: React.FC = () => {
         setSelectedEmail(null);
     };
 
-    const handleAddAdmin = async (adminData: {
-        firstName: string;
-        email: string;
-        location: string;
-        username: string;
-        password: string;
-        userRole: "SUPER_ADMIN" | "ADMIN";
-    }) => {
-        try {
-            const url = `/api/admin/create`;
-
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(adminData),
-            });
-
-            console.log(JSON.stringify(adminData));
-            
-
-            if (response.ok) {
-                const result = await response.json();
-                console.log('New admin created successfully:', result);
-                setOpenAddPopup(false);
-            } else {
-                const errorResult = await response.json();
-                console.error('Failed to create admin:', errorResult);
-                alert(`Error: ${errorResult.message || 'Failed to create admin.'}`);
-            }
-        } catch (error) {
-            console.error('Error creating admin:', error);
-            alert('An unexpected error occurred while creating the admin.');
-        }
-    };
-
     const handleAddAccount = () => setOpenAddPopup(true);
-    const handleCloseAddPopup = () => setOpenAddPopup(false);
+    const handleEditAccount = () => setOpenEditPopup(true);
+
+    const handleCloseAddPopup = () => {
+        setOpenAddPopup(false);
+        setOpenEditPopup(false);
+    }
     const handleCloseTogglePopup = () => setOpenTogglePopup(false);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value);
     const handlePageChange = (page: number) => setCurrentPage(page);
 
     const sortedData = [...userData].sort((a, b) => {
-        const timestampA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
-        const timestampB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+        const timestampA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const timestampB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
         return sortOrder === "newest" ? timestampB - timestampA : timestampA - timestampB;
     });
 
@@ -172,12 +157,19 @@ const ManageAccountsPage: React.FC = () => {
             </div>
 
             <div className={styles.tableData}>
-                <TableWrapper
-                    data={paginatedData}
-                    onToggleStatus={(email) => handleToggleStatus(email)}
-                    headerClassName={styles.tableHeader}
-                    rowClassName={styles.tableRow}
-                />
+                {isLoading ? (
+                    <div className={styles.loaderContainer}>
+                        <LottieLoader size={"180px"} />
+                    </div>
+                ) : (
+                    <TableWrapper
+                        data={paginatedData}
+                        onToggleStatus={(email) => handleToggleStatus(email)}
+                        onEditAdmin={handleEditAccount}
+                        headerClassName={styles.tableHeader}
+                        rowClassName={styles.tableRow}
+                    />
+                )}
             </div>
 
             <div className={styles.footer}>
@@ -197,14 +189,25 @@ const ManageAccountsPage: React.FC = () => {
                     + Add Account
                 </button>
             </div>
-            {openAddPopup && <AddAdminPopup
-                onConfirm={handleAddAdmin}
-                onClose={handleCloseAddPopup} />}
+            {openAddPopup &&
+                <AddAdminPopup
+                    header="Add Admin"
+                    onConfirm={handleAddAdmin}
+                    onClose={handleCloseAddPopup}
+                    closePopup={handleCloseAddPopup}
+                    passwordOn={true}
+                />}
+
+            {openEditPopup &&
+                <AddAdminPopup
+                    header="Edit Admin"
+                    onConfirm={handleEditAccount}
+                    onClose={handleCloseAddPopup}
+                    closePopup={handleCloseAddPopup}
+                    passwordOn={false}
+                />}
             {openTogglePopup && (
-                <AdminTogglePopup
-                    onConfirm={confirmToggleStatus}
-                    onClose={handleCloseTogglePopup}
-                />
+                <AdminTogglePopup onConfirm={confirmToggleStatus} onClose={handleCloseTogglePopup} />
             )}
         </div>
     );
