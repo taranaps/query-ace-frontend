@@ -69,6 +69,8 @@ const FileProcessingPage: React.FC = () => {
 
     const { user } = useAuth();
     const router = useRouter();
+
+
     useEffect(() => {
         if (!user || user.status === "INACTIVE") {
             router.push("/pages/login");
@@ -125,7 +127,6 @@ const FileProcessingPage: React.FC = () => {
         fetchData();
     }, [keywords]);
 
-
     const extractKeywords = (text: string): string[] => {
         const doc = nlp(text);
         const keywords = doc
@@ -138,7 +139,6 @@ const FileProcessingPage: React.FC = () => {
         });
         return filteredKeywords;
     };
-
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0];
@@ -193,6 +193,7 @@ const FileProcessingPage: React.FC = () => {
                 ? Math.min(prev + 1, questions.length - 1)
                 : Math.max(prev - 1, 0)
         );
+        setSearchQuery("");
     };
 
     const handleDownload = () => {

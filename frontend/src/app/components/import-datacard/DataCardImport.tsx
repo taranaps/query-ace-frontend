@@ -11,15 +11,13 @@ interface DataCardProps {
   id: number;
   question: string;
   answers: { answer: string; userId: number }[];
-  customer: string;
-  createdBy: string;
-  createdAt: string;
   tags: { tagName: string; tagGroupName: string }[];
   onDelete: () => void;
+  onClick: () => void;
 }
 
 const MAX_QUESTION_WORDS = 20;
-const MAX_ANSWER_WORDS = 40;
+const MAX_ANSWER_WORDS = 30;
 
 const truncateText = (text: string | undefined, limit: number): string => {
   if (!text) return "";
@@ -27,50 +25,55 @@ const truncateText = (text: string | undefined, limit: number): string => {
   return words.length > limit ? `${words.slice(0, limit).join(" ")}...` : text;
 };
 
+
 const DataCardImport: React.FC<DataCardProps> = ({
   id,
   question,
   answers,
-  customer,
-  createdBy,
-  createdAt,
   tags,
   onDelete,
+  onClick,
 }) => {
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDelete();
+  };
+
   return (
-    <div className={styles.dataCard}>
+    <div className={styles.dataCard} onClick={onClick}>
       <div className={styles.dataCardTop}>
         <div className={styles.dataCardQuestionAndAnswerContainer}>
           <p className={styles.dataCardQuestion}>
             Question: {truncateText(question, MAX_QUESTION_WORDS)}
           </p>
-          <div className={styles.dataCardAnswerContainer}>
+          <ul className={styles.dataCardAnswerContainer}>
             {answers.map((answerObj, index) => (
-              <p key={index} className={styles.dataCardAnswer}>
-                {truncateText(answerObj.answer, MAX_ANSWER_WORDS)}
-              </p>
+              <li key={index} className={styles.dataCardAnswer}>
+                ▣ {truncateText(answerObj.answer, MAX_ANSWER_WORDS)}
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </div>
 
       <div className={styles.dataCardFooter}>
         <div className={styles.dataCardDetails}>
-        <div className={styles.dataCardTags}>
-        {tags.map((tag, index) => (
-          <div key={index} className={styles.tag}>
-            <div className={styles.tagGroup}>{tag.tagGroupName}</div>
-            <div className={styles.tagName}>{tag.tagName}</div>
+          <div className={styles.dataCardTags}>
+            {tags.map((tag, index) => (
+              <div key={index} className={styles.tag}>
+                <div className={styles.tagGroup}>{tag.tagGroupName}</div>
+                <div className={styles.tagName}>{tag.tagName}</div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
         </div>
         <div className={styles.dataCardActionButtons}>
           <div className={styles.dataCardActions}>
             <LottieIconButton
               animationData={deleteAnimation}
               label="Delete"
-              onClick={onDelete}
+              onClick={handleDelete}
             />
           </div>
         </div>
