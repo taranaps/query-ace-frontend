@@ -51,29 +51,29 @@ export default function QueryLookup() {
       try {
         const createdByResult = await fetchCreatedByUsers();
         if (Array.isArray(createdByResult)) setCreatedBy(createdByResult);
-  
+
         const tags = await fetchAllTagDetails();
         setTagGroups(tags);
-  
+
         const filteredQueriesResponse = await handleFilterQuery(selectedCreatedBy, selectedCompanies);
-        
+
         if (filteredQueriesResponse.success) {
           setData(filteredQueriesResponse.data);
           setFilteredData(filteredQueriesResponse.data);
         } else {
           console.error("Failed to fetch filtered queries:", filteredQueriesResponse.message);
         }
-        
+
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, [selectedCompanies, selectedCreatedBy]);
-  
+
 
   const handleFilterChange = async () => {
     setLoading(true);
@@ -173,8 +173,6 @@ export default function QueryLookup() {
                 onClick={(e) => handleCardClick(e, item)}
                 numberOfAnswers={item.answers.length}
               />
-
-              {index < paginatedData.length - 1 && <div className={styles.divider}></div>}
             </div>
           ))
         )}

@@ -5,7 +5,7 @@ import SlidingToggle from "../sliding-toggle/SlidingToggle";
 interface TableRowProps {
     name: string;
     email: string;
-    location: string;
+    userRole: string;
     status: "ACTIVE" | "INACTIVE";
     isActive: boolean;
     rowClassName?: string;
@@ -16,7 +16,7 @@ interface TableRowProps {
 const TableRow: React.FC<TableRowProps> = ({
     name,
     email,
-    location,
+    userRole,
     status,
     isActive,
     rowClassName,
@@ -30,7 +30,7 @@ const TableRow: React.FC<TableRowProps> = ({
     };
 
     const handleToggleClick = (event: React.MouseEvent) => {
-        event.stopPropagation(); 
+        event.stopPropagation();
         onToggle(!isActive);
     };
 
@@ -64,9 +64,15 @@ const TableRow: React.FC<TableRowProps> = ({
                 </span>
             </TableCell>
             <TableCell>
-                <div onClick={handleToggleClick}>
-                    <SlidingToggle checked={status === "ACTIVE"} onChange={onToggle} />
-                </div>
+                {userRole === "ADMIN" && (
+
+                    <div onClick={handleToggleClick}>
+                        <SlidingToggle
+                            checked={status === "ACTIVE" ? true : status === "INACTIVE" ? false : false}
+                            onChange={onToggle}
+                        />
+                    </div>
+                )}
             </TableCell>
         </MuiTableRow>
     );

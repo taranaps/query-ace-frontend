@@ -13,7 +13,7 @@ const SlidingToggle: React.FC<SlidingToggleProps> = ({ checked, onChange }) => {
             className={`relative w-[40px] h-[20px] flex items-center rounded-full cursor-pointer transition duration-300 ${checked ? "bg-[#A6E7D8]" : "bg-[#FFC5C5]"
                 }`}
             style={{
-                boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.2)", // Inner shadow
+                boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.2)",
             }}
             onClick={() => onChange(!checked)}
         >
