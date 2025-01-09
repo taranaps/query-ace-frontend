@@ -21,8 +21,8 @@ type AdminFormData = {
     email: string;
     location: string;
     username: string;
-    password: string; // Empty string if not editing password
-    userRole: "SUPER_ADMIN" | "ADMIN"; // Or other roles if applicable
+    password: string; 
+    userRole: "SUPER_ADMIN" | "ADMIN"; 
 };
 
 const ManageAccountsPage: React.FC = () => {
@@ -161,9 +161,9 @@ const ManageAccountsPage: React.FC = () => {
                 const updatedUserData = userData.map((admin) =>
                     admin.id === selectedAdmin.id ? { ...admin, ...updatedAdminData } : admin
                 );
-                setUserData(updatedUserData);  // Update the local user data
-                setOpenEditPopup(false);  // Close the edit popup
-                console.log(updatedAdminData); // Log the updated admin data to verify the values
+                setUserData(updatedUserData);  
+                setOpenEditPopup(false);  
+                console.log(updatedAdminData); 
             } else {
                 console.error('Failed to update admin:', result);
             }

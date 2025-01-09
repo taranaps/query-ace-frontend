@@ -11,9 +11,13 @@ import { useAuth } from '@/context/AuthContext';
 import fetchAllTagDetails from '@/app/api/tags/route.ts';
 import { handleAddNewTag } from '@/app/util/tags/tagFunctionalities';
 import NewButton from '../new-button/NewButton';
+import DataPopupImport from '../data-popup-import/DataPopupImport';
+import { v4 as uuidv4 } from 'uuid';
+import { log } from 'console';
 
 
 interface ProcessedDataType {
+  id: string;
   question: string;
   userId: number;
   tags: QueryTagInterface[];
@@ -30,6 +34,8 @@ const ImportQueryPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [questions, setQuestions] = useState<ProcessedDataType[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCardData, setSelectedCardData] = useState<ProcessedDataType | null>(null);
+  const [openPopup, setOpenPopup] = useState(false);
 
   useEffect(() => {
     const cachedData = localStorage.getItem(CACHE_KEY);
@@ -54,6 +60,9 @@ const ImportQueryPage = () => {
       const reader = new FileReader();
 
       reader.onload = (event) => {
+
+        let id: number = 1;
+
         const result = event.target?.result as ArrayBuffer;
         const data = new Uint8Array(result);
         const workbook = XLSX.read(data, { type: 'array' });
@@ -106,14 +115,18 @@ const ImportQueryPage = () => {
 
             const existingQuestion = processedData.find((data) => data.question === question);
             if (existingQuestion) {
-              existingQuestion.answers.push({ answer, userId: user.id });
+              existingQuestion.answers.push({
+                answer, userId: user.id
+              });
             } else {
               processedData.push({
+                id: uuidv4(),
                 question,
                 userId: user.id,
                 tags,
                 answers: [{ answer, userId: user.id }],
               });
+              id++;
             }
           }
         });
@@ -213,11 +226,26 @@ const ImportQueryPage = () => {
     }
   };
 
-
-
   function handleDownloadTemplate(): void {
     throw new Error('Function not implemented.');
   }
+
+  const handleCardClick = (data: ProcessedDataType) => {
+    setSelectedCardData(data);
+    setOpenPopup(true);
+  };
+
+  const handlePopupSave = (updatedData: ProcessedDataType) => {
+    console.log('Updated Data:', updatedData);
+    console.log(' Data:', questions);
+
+    setQuestions((prev) =>
+      prev.map((question) =>
+        question.id === updatedData.id ? { ...question, ...updatedData } : question
+      )
+    );
+    setOpenPopup(false);
+  };
 
   return (
     <div className={styles.container}>
@@ -228,12 +256,10 @@ const ImportQueryPage = () => {
               key={index}
               id={index + 1}
               question={question.question}
-              customer={question.tags.find((tag) => tag.tagGroupName === 'Company')?.tagName || ''}
-              createdBy="System"
-              createdAt={new Date().toISOString().split('T')[0]}
               answers={question.answers}
               tags={question.tags}
               onDelete={() => setQuestions((prev) => prev.filter((_, i) => i !== index))}
+              onClick={() => handleCardClick(question)}
             />
           ))
         ) : (
@@ -259,7 +285,7 @@ const ImportQueryPage = () => {
         </div>
         <div className={styles.rightButtons}>
           <NewButton
-            variant="cancel" // "Clear" button with the cancel style
+            variant="cancel"
             onClick={handleClear}
             disabled={!file && questions.length === 0}
             width="fit"
@@ -268,7 +294,7 @@ const ImportQueryPage = () => {
             Clear
           </NewButton>
           <NewButton
-            variant={questions.length > 0 ? 'submit' : 'info'} // "Save Data" or "Import File" button
+            variant={questions.length > 0 ? 'submit' : 'info'}
             onClick={() =>
               questions.length > 0 ? handleSave() : document.getElementById('fileInput')?.click()
             }
@@ -286,6 +312,14 @@ const ImportQueryPage = () => {
           </NewButton>
         </div>
       </div>
+
+      {openPopup && (
+        <DataPopupImport
+          data={selectedCardData}
+          onClose={() => setOpenPopup(false)}
+          onSave={handlePopupSave}
+        />
+      )}
 
       {error && (
         <Typography color="error" className={styles.errorMessage}>
