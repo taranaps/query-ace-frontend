@@ -115,7 +115,7 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
     return (
         <li
             className={styles.answerItem}
-            onContextMenu={handleRightClick} // Trigger right-click menu
+            onContextMenu={handleRightClick}
         >
             {editing ? (
                 <div className={styles.answerItemTop}>

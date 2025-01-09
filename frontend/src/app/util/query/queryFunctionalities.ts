@@ -1,4 +1,5 @@
 import QueryTagInterface from "@/app/interface/query/queryTagInterface";
+import { API_BASE_URL } from "@/config/apiConfig";
 
 export const handleDeleteQuery = async (id: number) => {
     try {
@@ -181,22 +182,19 @@ export const handleFilterQuery = async (
     tags: string[]
 ) => {
     try {
-        const apiUrl = `/api/queries/filters`;
 
-        const requestBody = {
-            usersUsernames,
-            tags
-        };
+        const queryParams = new URLSearchParams();
+        usersUsernames.forEach(username => queryParams.append('usersUsernames', username));
+        tags.forEach(tag => queryParams.append('tags', tag));
+        const apiUrl = `${API_BASE_URL}/queries/filters?${queryParams.toString()}`;
 
-        console.log(JSON.stringify(requestBody));
-
+        console.log("API URL:", apiUrl);
 
         const response = await fetch(apiUrl, {
-            method: "POST",  // Changed to POST
+            method: "GET",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(requestBody),
         });
 
         if (!response.ok) {
