@@ -9,6 +9,7 @@ import { LottieLoader } from "../lottie-loader/lottieLoader";
 import AddTagPopup from "../add-tag-popup/AddTagPopup";
 import { formatDate } from "@/app/util/formatDate";
 import { handleAddNewTagToExistingQuery } from "@/app/util/tags/tagFunctionalities";
+import NewButton from '../../components/new-button/NewButton';
 
 const DataPopup = ({
     data,
@@ -29,9 +30,19 @@ const DataPopup = ({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [isAddTagPopupOpen, setIsAddTagPopupOpen] = useState(false);
-    const [tagGroups, setTagGroups] = useState<{ tagGroupName: string; tagNames: string[] }[]>([]);
+    const [tagGroups, setTagGroups] = useState<{ tagGroupName: string; tagNames: string }[]>([]);
 
     const [isTransitionComplete, setIsTransitionComplete] = useState(false);
+
+    const [formData, setFormData] = useState({
+        question: '',
+        answers: [] as string[],
+        tags: [] as { group: string; tag: string }[],
+    });
+
+    const handleChange = (field: string, value: string | string[] | { group: string; tag: string }[]) => {
+        setFormData((prev) => ({ ...prev, [field]: value }));
+    };
 
     useEffect(() => {
         setTimeout(() => {
@@ -40,6 +51,7 @@ const DataPopup = ({
         setAnswers(data.answers || []);
         setTagGroups(data.tags || []);
     }, [data]);
+    
 
     const handleConfirmDelete = async (itemId: number) => {
         const result = await handleDeleteQueryAnswer(itemId);
@@ -88,17 +100,30 @@ const DataPopup = ({
     const handleAddTags = async (newTag: { group: string; tag: string }) => {
         const tagPayload = { tagGroupName: newTag.group, tagName: newTag.tag };
 
+        console.log(tagGroups);
+        console.log(tagPayload);
+
         const result = await handleAddNewTagToExistingQuery(data.id, tagPayload);
 
         if (result.success) {
             setTagGroups((prevTagGroups) => {
-                return [...prevTagGroups, { tagGroupName: newTag.group, tagNames: [newTag.tag] }];
+                const updatedTagGroups = [...prevTagGroups];
+                updatedTagGroups.push({ tagGroupName: newTag.group, tagNames: newTag.tag });
+                return updatedTagGroups;
             });
+
+            console.log(tagGroups);
+
             setIsAddTagPopupOpen(false);
         } else {
             console.error("Failed to add tag to the backend.");
         }
     };
+
+
+
+
+    const handleRemoveTag = (index: number) => handleChange('tags', formData.tags.filter((_, i) => i !== index));
 
     return (
         <div className={styles.popupOverlay}>
@@ -115,8 +140,9 @@ const DataPopup = ({
             >
 
                 <div className={styles.popupHeader}>
-                <div className={styles.popupHeaderQuestion}>
-                        <p>Question : </p>
+                    <div className={styles.popupHeaderQuestion}>
+                        <p style={{ fontSize: '18px', fontWeight: "bold" }}>Question:</p>
+
                         <h2>{data.question}</h2>
                     </div>
                     <LottieIconButton
@@ -128,12 +154,15 @@ const DataPopup = ({
 
                 <div className={styles.answerTitleandButton}>
                     <h3 className={styles.answerTitle}>Answers : ({answers.length})</h3>
-                    <a
-                        className={styles.answerTitleButton}
+                    <NewButton
+                        variant="custom"
                         onClick={() => setIsAddModalOpen(true)}
+                        width="fit"
+                        type="button"
+
                     >
-                        Add Answer
-                    </a>
+                        Add Answer +
+                    </NewButton>
                 </div>
 
                 <div className={styles.answerContainer}>
@@ -162,6 +191,13 @@ const DataPopup = ({
                                 <div className={styles.tagName}>
                                     {tag.tagName}
                                 </div>
+                                <button
+                                    className={styles.crossButton}
+                                    onClick={() => handleRemoveTag(index)}
+                                >
+
+                                    ✕
+                                </button>
                             </div>
                         ))
                     ) : (
@@ -174,6 +210,7 @@ const DataPopup = ({
                         +
                     </button>
                 </div>
+
 
                 {isAddModalOpen && (
                     <div className={styles.addAnswerModal}>

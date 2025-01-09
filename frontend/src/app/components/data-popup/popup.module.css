@@ -8,7 +8,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
+    z-index: 1000
 }
 
 .popupContent {
@@ -18,6 +18,9 @@
     overflow: hidden;
     transition: all 0.5s ease;
     padding: 24px;
+    
+    
+
 }
 
 .popupHeader {
@@ -106,7 +109,7 @@
     align-items: center;
     gap: 2px;
     flex-direction: row;
-    background-color: #2B303A;
+    background-color: #F2F3FA;
     color: #333;
     padding: 06px 8px;
     border-radius: 24px;
@@ -117,12 +120,17 @@
 
 .tagGroup {
     font-size: 9px;
-    color: #9e9e9e;
+    color: #333;
 }
 
+.tag:hover{
+
+    background-color: #FF9500;
+    color: white;
+}
 .tagName {
     font-size: 11px;
-    color: #F1F3FA;
+    color: #333;
 }
 
 .deleteConfirmationOverlay {
@@ -244,3 +252,54 @@
     color: #2B303A;
     transition: all 0.3s ease-in-out;
 }
+
+/* .p{
+font-size: 20px;;
+} */
+
+
+.crossButton {
+    background-color: red;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    color: WHITE;
+    line-height: 1;
+    padding: 0;
+}
+
+
+.answerTitle {
+    font-size: 15px;
+    font-weight: bold;
+
+}
+
+.answerTitleButton {
+    background-color: orange;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 10px;
+    transition: background-color 0.3s ease;
+    margin-top: -15px;
+  
+}
+
+/* Optional: Hover Effect */
+.answerTitleButton:hover {
+    background-color: darkorange;
+    color: white;
+}
+
+

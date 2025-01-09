@@ -10,6 +10,11 @@ import fetchQueryUsingKeyword from "@/app/api/queries/fetchQueryUsingKeyword";
 import DataPopup from "@/app/components/data-popup/DataPopup";
 import fetchQueryWithAnswers from "@/app/api/questioncard/fetchQueryAnswers";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
+import planeanimation from "../../../../public/assets/animatedIcons/Paper Plane (1).json";
+import LottieIconButton from "../../components/lottie-animated-button/LottieIconButton";
+
+
+
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -21,7 +26,7 @@ const Dashboard: React.FC = () => {
     }
   }, [user, router]);
 
-  const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchKeyword, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<searchQueryResult[]>([]);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -31,8 +36,9 @@ const Dashboard: React.FC = () => {
   const [popupPosition, setPopupPosition] = useState<{ top: number, left: number }>({ top: 0, left: 0 });
   const [popupSize, setPopupSize] = useState<{ width: number; height: number }>({ width: 60, height: 20 });
 
-  const handleCardClick = async (event: React.MouseEvent<HTMLElement>, item: searchQueryResult) => {
+  const handleCardClick = async (event: React.MouseEvent<HTMLElement>, item: any) => {
     setSelectedItem(item);
+
     const rect = event.currentTarget.getBoundingClientRect();
     setPopupPosition({
       top: rect.top + window.scrollY,
@@ -42,11 +48,17 @@ const Dashboard: React.FC = () => {
       width: rect.width,
       height: rect.height,
     });
+
     setIsPopupOpen(true);
 
     try {
       const fetchedData = await fetchQueryWithAnswers(item.id);
-      setAnswers(fetchedData?.answers || []);
+      if (fetchedData && fetchedData.answers) {
+        setAnswers(fetchedData.answers);
+      } else {
+        console.warn("No answers found for this query.");
+        setAnswers([]);
+      }
     } catch (error) {
       console.error("Error fetching answers:", error);
       setAnswers([]);
@@ -54,8 +66,8 @@ const Dashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    const debounceTimeout = setTimeout(() => {
-      if (searchKeyword.trim()) {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchKeyword) {
         setIsLoading(true);
         fetchQueryUsingKeyword(searchKeyword)
           .then((data) => setSearchResults(data))
@@ -66,78 +78,202 @@ const Dashboard: React.FC = () => {
       }
     }, 300);
 
-    return () => clearTimeout(debounceTimeout);
+    return () => clearTimeout(delayDebounceFn);
   }, [searchKeyword]);
 
-  const clearSearch = () => setSearchKeyword("");
-
-  const renderContent = () => {
-    if (isLoading || !user) {
-      return (
-        <div className={styles.loaderContainer}>
-          <LottieLoader size={180} />
-        </div>
-      );
-    }
-
-    if (!searchKeyword) {
-      return (
-        <div className={styles["image-placeholder"]}>
-          <img src="/assets/images/dashboard-clipboard.png" alt="No Results" />
-        </div>
-      );
-    }
-
-    if (searchResults.length === 0) {
-      return (
-        <div className={styles["image-placeholder"]}>
-          <p>No answers found</p>
-          <br />
-          <a onClick={() => router.push("/pages/add-record")}>Add new data?</a>
-        </div>
-      );
-    }
-
-    return searchResults.map((result, index) => (
-      <div className={styles.dataItem} key={result.id}>
-        <DataCardDashboard
-          key={result.id}
-          id={result.id}
-          question={result.question}
-          customer={"Customer"}
-          createdBy={result.usersUsername}
-          createdAt={result.queryCreatedAt}
-          answer={result.answers[0]?.answer || "No Answer"}
-          numberOfAnswers={result.answers.length}
-          tags={result.tags}
-          deleteOn={true}
-          copyOn={true}
-          onClick={(e) => handleCardClick(e, result)}
-        />
-        {index < searchResults.length - 1 && <div className={styles.divider}></div>}
-      </div>
-
-    ));
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
   };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+  };
+
+  if (!user) {
+    return <LottieLoader />;
+  }
 
   return (
     <div className={styles.dashboard}>
       <div className={styles["dashboard-search-bar"]}>
-        <img src="/assets/icons/cross-grey-icon.png" alt="Clear" onClick={clearSearch} />
+        <img src="/assets/icons/cross-grey-icon.png" alt="Clear" onClick={() => clearSearch()} />
         <input
           placeholder="Search..."
           type="text"
           value={searchKeyword}
-          onChange={(e) => setSearchKeyword(e.target.value)}
+          onChange={handleSearchChange}
         />
         <img src="/assets/icons/search-grey-icon.png" alt="Search" />
       </div>
 
-      <div className={styles["dashboard-body"]}>{renderContent()}</div>
+      <div className={styles["dashboard-body"]}>
+        {isLoading ? (
+          <div className={styles.loaderContainer}>
+            <LottieLoader size={"240px"} />
+          </div>
+        ) : (
+          <div className={styles["dashboard-content"]}>
+            {/* Trending Queries Section */}
+            {searchKeyword === "" && (
+              <div className={styles.trendingQueriesContainer}>
+                <div className={styles.headingContainer}>
+                  <h2 className={styles.trendingTitle}>Trending Queries</h2>
+                  <div className=" Lottie">
+                    <LottieIconButton
+                      animationData={planeanimation}
+                      label="Copy Answer"
+                      onClick={() => { }}
+                    />
+                  </div>
+                </div>
+
+
+
+                <div className={styles.queriesContent}>
+                  {/* Dummy Data for Trending Queries */}
+                  <div className={styles.queryItem}>
+                    <div className={styles.queryInfo}>
+                      <div className={styles.queryIcon}>
+                        <i className="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <div className={styles.queryTitle}>How to implement JWT authentication in Node.js?</div>
+                        <div className={styles.queryDate}>2025-01-01</div>
+                      </div>
+                    </div>
+                    <div className={styles.queryViews}>150</div>
+                  </div>
+                  <div className={styles.queryItem}>
+                    <div className={styles.queryInfo}>
+                      <div className={styles.queryIcon}>
+                        <i className="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <div className={styles.queryTitle}>What are the best practices for SEO?</div>
+                        <div className={styles.queryDate}>2025-01-02</div>
+                      </div>
+                    </div>
+                    <div className={styles.queryViews}>120</div>
+                  </div>
+                  <div className={styles.queryItem}>
+                    <div className={styles.queryInfo}>
+                      <div className={styles.queryIcon}>
+                        <i className="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <div className={styles.queryTitle}>How to use Redux with React?</div>
+                        <div className={styles.queryDate}>2025-01-03</div>
+                      </div>
+                    </div>
+                    <div className={styles.queryViews}>100</div>
+                  </div>
+                  <div className={styles.queryItem}>
+                    <div className={styles.queryInfo}>
+                      <div className={styles.queryIcon}>
+                        <i className="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <div className={styles.queryTitle}>What is the difference between SQL and NoSQL databases?</div>
+                        <div className={styles.queryDate}>2025-01-04</div>
+                      </div>
+                    </div>
+                    <div className={styles.queryViews}>80</div>
+                  </div>
+                  {/* Additional Dummy Data */}
+                  <div className={styles.queryItem}>
+                    <div className={styles.queryInfo}>
+                      <div className={styles.queryIcon}>
+                        <i className="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <div className={styles.queryTitle}>How do you handle errors in JavaScript?</div>
+                        <div className={styles.queryDate}>2025-01-05</div>
+                      </div>
+                    </div>
+                    <div className={styles.queryViews}>70</div>
+                  </div>
+                  <div className={styles.queryItem}>
+                    <div className={styles.queryInfo}>
+                      <div className={styles.queryIcon}>
+                        <i className="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <div className={styles.queryTitle}>What are the latest trends in React development?</div>
+                        <div className={styles.queryDate}>2025-01-06</div>
+                      </div>
+                    </div>
+                    <div className={styles.queryViews}>65</div>
+                  </div>
+                  <div className={styles.queryItem}>
+                    <div className={styles.queryInfo}>
+                      <div className={styles.queryIcon}>
+                        <i className="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <div className={styles.queryTitle}>What is the best way to manage state in large React applications?</div>
+                        <div className={styles.queryDate}>2025-01-07</div>
+                      </div>
+                    </div>
+                    <div className={styles.queryViews}>50</div>
+                  </div>
+                  <div className={styles.queryItem}>
+                    <div className={styles.queryInfo}>
+                      <div className={styles.queryIcon}>
+                        <i className="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <div className={styles.queryTitle}>What are microservices in backend development?</div>
+                        <div className={styles.queryDate}>2025-01-08</div>
+                      </div>
+                    </div>
+                    <div className={styles.queryViews}>45</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Search Results */}
+            {searchKeyword !== "" && searchResults.length === 0 ? (
+              <div className={styles["image-placeholder"]}>
+                <p>No answers found</p>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+
+                <a onClick={() => router.push("/pages/add-record")}   >Add new data?</a>
+              </div>
+            ) : (
+              searchResults.map((result) => (
+                <DataCardDashboard
+                  key={result.id}
+                  id={result.id}
+                  question={result.question}
+                  customer={"Customer"}
+                  numberOfAnswers={1}
+                  createdBy={result.usersUsername}
+                  createdAt={result.queryCreatedAt}
+                  answer={result.answers[0]?.answer || "No Answer"}
+                  tags={result.tags}
+                  deleteOn={true}
+                  copyOn={true}
+                  onClick={(e) => handleCardClick(e, result)}
+                />
+              ))
+            )}
+          </div>
+        )}
+      </div>
 
       {isPopupOpen && selectedItem && (
         <DataPopup
-          data={{ ...selectedItem, answers, tags: selectedItem.tags || [] }}
+          data={{
+            ...selectedItem,
+            answers: answers,
+            tags: selectedItem.tags || [],
+          }}
           onClose={() => {
             setIsPopupOpen(false);
             setSelectedItem(null);
@@ -147,6 +283,7 @@ const Dashboard: React.FC = () => {
           position={popupPosition}
           size={popupSize}
         />
+
       )}
     </div>
   );

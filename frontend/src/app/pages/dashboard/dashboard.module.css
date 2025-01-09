@@ -25,7 +25,8 @@
   border: none;
   outline: none;
   flex: 1;
-  text-align: center;
+  margin-left: 20px;
+  text-align: start;
 }
 
 .dashboard-search-bar img {
@@ -107,4 +108,268 @@
 
 .dataItem{
   width: 100%;
+}
+
+.trendingQueriesContainer {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+}
+
+.trendingTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #4a5568;
+}
+
+.tabsContainer {
+  display: flex;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 16px;
+}
+
+.tabButton {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.tabActive {
+  color: #2563eb;
+  border-color: #2563eb;
+}
+
+.tabInactive {
+  color: #718096;
+}
+
+.queriesContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.queryItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-radius: 8px;
+  background: #f9fafb;
+  transition: background 0.2s ease;
+}
+
+.queryItem:hover {
+  background: #edf2f7;
+}
+
+.queryInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.queryIcon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background:#f1a924;
+  color: #e53e3e;
+}
+
+.queryTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.queryDate {
+  font-size: 12px;
+  color: #a0aec0;
+}
+
+.queryViews {
+  font-size: 14px;
+  font-weight: 600;
+  color: #48bb78;
+}
+
+/* Dashboard Body */
+.dashboard-body {
+padding: 20px;
+}
+
+/* Trending Queries Container */
+.trendingQueriesContainer {
+background-color: white;
+padding: 20px;
+border-radius: 8px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+width: 100%;
+margin-bottom: 20px;
+
+}
+
+/* Tabs */
+.tabsContainer {
+display: flex;
+gap: 10px;
+margin-bottom: 15px;
+}
+
+.tabButton {
+padding: 10px 20px;
+background-color: #f0f0f0;
+border: none;
+cursor: pointer;
+border-radius: 4px;
+font-size: 14px;
+}
+
+.tabActive {
+background-color: #007bff;
+color: white;
+}
+
+.tabInactive {
+background-color: #f0f0f0;
+color: #007bff;
+}
+
+/* Query Content */
+.queriesContent {
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+.queryItem {
+display: flex;
+justify-content: space-between;
+padding: 10px;
+background-color: #fafafa;
+border-radius: 4px;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.queryInfo {
+display: flex;
+align-items: center;
+}
+
+.queryIcon {
+margin-right: 10px;
+color: #007bff;
+}
+
+.queryTitle {
+font-weight: bold;
+}
+
+.queryDate {
+font-size: 12px;
+color: #888;
+}
+
+.queryViews {
+font-size: 14px;
+color: #333;
+}
+
+/* No Results Message */
+.noResultsMessage {
+text-align: center;
+padding: 20px;
+color: #888;
+}
+
+/* Dashboard Body */
+.dashboard-body {
+padding: 20px;
+}
+
+/* Trending Queries Container */
+.trendingQueriesContainer {
+background-color: white;
+padding: 20px;
+border-radius: 8px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+width: 100%;
+margin-bottom: 20px;
+transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+/* Add an animation for shifting down the table */
+.tableShiftDown {
+transform: translateY(20px);
+opacity: 0;
+}
+
+/* Query Content */
+.queriesContent {
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+.queryItem {
+display: flex;
+justify-content: space-between;
+padding: 10px;
+background-color: #fafafa;
+border-radius: 4px;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.queryInfo {
+display: flex;
+align-items: center;
+}
+
+.queryIcon {
+margin-right: 10px;
+color: #007bff;
+}
+
+.queryTitle {
+font-weight: bold;
+}
+
+.queryDate {
+font-size: 12px;
+color: #888;
+}
+
+.queryViews {
+font-size: 14px;
+color: #333;
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.headingContainer{
+  display: flex;
+  flex-direction: row;
+  
+}
+
+
+.lottie{
+  margin-top: 1g00px;
+ 
 }

@@ -106,10 +106,10 @@ const AddRecordForm = () => {
 
           <div className={styles.tagSection}>
             <NewButton
-              variant="info"
+              variant="custom"
               onClick={() => setIsTagPopupOpen(true)}
             >
-              Add Tags
+              Add Tags +
             </NewButton>
             <div className={styles.tagsList}>
               {formData.tags.map((tag, index) => (
