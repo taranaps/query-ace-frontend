@@ -13,8 +13,8 @@ import { fetchUserInterface } from "@/app/interface/user/fetchUserInterface";
 
 import styles from "./ManageAccountsPage.module.css";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
-<<<<<<< HEAD
 import { handleAddAdmin, handleEditAdmin } from "@/app/util/admin/adminFunctionalities";
+import NewButton from '../../components/new-button/NewButton';
 
 type AdminFormData = {
     firstName: string;
@@ -24,10 +24,6 @@ type AdminFormData = {
     password: string; // Empty string if not editing password
     userRole: "SUPER_ADMIN" | "ADMIN"; // Or other roles if applicable
 };
-=======
-import { handleAddAdmin } from "@/app/util/admin/adminFunctionalities";
-import NewButton from '../../components/new-button/NewButton';
->>>>>>> 95df2ca1b0b920faf980e6a5f66a62fa59d0ebb6
 
 const ManageAccountsPage: React.FC = () => {
     const [userData, setUserData] = useState<fetchUserInterface[]>([]);

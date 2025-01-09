@@ -4,14 +4,9 @@ import React, { useState } from 'react';
 import { formatDate } from '@/app/util/formatDate';
 import LottieIconButton from "../lottie-animated-button/LottieIconButton";
 import copyAnimation from "../../../../public/assets/animatedIcons/copyv3.json";
-<<<<<<< HEAD
-import closeAnimation from "../../../../public/assets/animatedIcons/Close.json";
-import editAnimation from "../../../../public/assets/animatedIcons/editv2.json"; 
-=======
+import closeAnimation from "../../../../public/assets/animatedIcons/Close.json"; 
 import editAnimation from "../../../../public/assets/animatedIcons/edit.json";
->>>>>>> 95df2ca1b0b920faf980e6a5f66a62fa59d0ebb6
 import deleteAnimation from "../../../../public/assets/animatedIcons/delete.json";
-import closeAnimation from "../../../../public/assets/animatedIcons/Close.json";
 import saveAnimation from "../../../../public/assets/animatedIcons/save.json";
 import { handleEditQuery, handleCopyQuery } from '@/app/util/query/queryFunctionalities';
 import { Button } from '@mui/material';
