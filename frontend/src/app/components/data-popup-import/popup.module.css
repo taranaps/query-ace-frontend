@@ -1,0 +1,305 @@
+.popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000
+}
+
+.popupContent {
+    position: absolute;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.5s ease;
+    padding: 24px;
+    
+    
+
+}
+
+.popupHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.popupHeaderQuestion {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.popupHeaderQuestion p {
+    font-size: 12px;
+    color: #707070;
+}
+
+.answerTitleButton {
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.answerTitleandButton {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.answerTitle {
+    font-size: 12px;
+    color: #707070;
+    margin-bottom: 12px;
+}
+
+.answerList {
+    flex: 1;
+    list-style: none;
+    margin-bottom: 4px;
+    padding: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.answerItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 8px;
+    background-color: #F1F3FA;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.answerItem p {
+    margin: 0;
+}
+
+.answerItem button {
+    margin-left: 8px;
+}
+
+.answerContainer {
+    height: 55vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.actionButtons {
+    display: flex;
+}
+
+.dataCardTags {
+    width: 100%;
+    display: flex;
+    overflow-x: hidden;
+    align-items: center;
+    justify-content: start;
+}
+
+.tag {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-direction: row;
+    background-color: #F2F3FA;
+    color: #333;
+    padding: 06px 8px;
+    border-radius: 24px;
+    margin-right: 5px;
+    margin-top: 12px;
+    overflow-x: hidden;
+}
+
+.tagGroup {
+    font-size: 9px;
+    color: #333;
+}
+
+.tag:hover{
+
+    background-color: #FF9500;
+    color: white;
+}
+.tagName {
+    font-size: 11px;
+    color: #333;
+}
+
+.deleteConfirmationOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: slideInFromLeft 0.3s forwards;
+    border-radius: 4px;
+}
+
+@keyframes slideInFromLeft {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+.confirmationMessage {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.confirmationButtons {
+    display: flex;
+    gap: 10px;
+}
+
+.cancelButton,
+.confirmButton {
+    padding: 8px 16px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.cancelButton {
+    background-color: #ddd;
+}
+
+.confirmButton {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+.cancelButton:hover,
+.confirmButton:hover {
+    opacity: 0.8;
+}
+
+.addAnswerButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #FFFFFF;
+    color: #2B303A;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.addAnswerButton:hover {
+    background-color: #ff4d4d;
+    color: #FFFFFF;
+}
+
+.addAnswerModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modalContent {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+}
+
+.modalActions button {
+    margin: 10px;
+}
+
+.addTagButton {
+    background-color: #2B303A;
+    height: 28px;
+    width: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #F1F3FA;
+    transition: all 0.3s ease-in-out;
+    overflow-y: hidden;
+}
+
+.addTagButton:hover {
+    background-color: #FF9500;
+    color: #2B303A;
+    transition: all 0.3s ease-in-out;
+}
+
+/* .p{
+font-size: 20px;;
+} */
+
+
+.crossButton {
+    background-color: red;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    color: WHITE;
+    line-height: 1;
+    padding: 0;
+}
+
+
+.answerTitle {
+    font-size: 15px;
+    font-weight: bold;
+
+}
+
+.answerTitleButton {
+    background-color: orange;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 10px;
+    transition: background-color 0.3s ease;
+    margin-top: -15px;
+  
+}
+
+/* Optional: Hover Effect */
+.answerTitleButton:hover {
+    background-color: darkorange;
+    color: white;
+}
+
+

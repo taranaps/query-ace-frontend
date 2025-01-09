@@ -43,9 +43,9 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
 
     const handleCopy = async (text: string, id: number) => {
         try {
-            await handleCopyQuery(id);
             await navigator.clipboard.writeText(text);
             setCopyOverlayVisible(true);
+            await handleCopyQuery(id);
             setTimeout(() => {
                 setCopyOverlayVisible(false);
             }, 3000);

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import { Button, Typography } from '@mui/material';
 import styles from './ImportQueryPage.module.css';
-import DataCardImport from '../dashboard-datacard copy/DataCardImport';
+import DataCardImport from '../import-datacard/DataCardImport';
 import QueryTagInterface from '@/app/interface/query/queryTagInterface';
 import { handleAddNewBulkQueryAndAnswer } from '@/app/util/query/queryFunctionalities';
 import { useAuth } from '@/context/AuthContext';
@@ -247,53 +247,53 @@ const ImportQueryPage = () => {
         )}
       </div>
       <div className={styles.footer}>
-    <div className={styles.leftButtons}>
-        <NewButton
-            variant="custom" // For the "Download Template" button
+        <div className={styles.leftButtons}>
+          <NewButton
+            variant="custom"
             onClick={handleDownloadTemplate}
             width="fit"
             type="button"
-        >
+          >
             Download Template
-        </NewButton>
-    </div>
-    <div className={styles.rightButtons}>
-        <NewButton
+          </NewButton>
+        </div>
+        <div className={styles.rightButtons}>
+          <NewButton
             variant="cancel" // "Clear" button with the cancel style
             onClick={handleClear}
             disabled={!file && questions.length === 0}
             width="fit"
             type="button"
-        >
+          >
             Clear
-        </NewButton>
-        <NewButton
+          </NewButton>
+          <NewButton
             variant={questions.length > 0 ? 'submit' : 'info'} // "Save Data" or "Import File" button
             onClick={() =>
-                questions.length > 0 ? handleSave() : document.getElementById('fileInput')?.click()
+              questions.length > 0 ? handleSave() : document.getElementById('fileInput')?.click()
             }
             width="fit"
             type="button"
-        >
+          >
             {questions.length > 0 ? 'Save Data' : 'Import File'}
             <input
-                id="fileInput"
-                type="file"
-                hidden
-                accept=".xlsx, .xls"
-                onChange={handleFileChange}
+              id="fileInput"
+              type="file"
+              hidden
+              accept=".xlsx, .xls"
+              onChange={handleFileChange}
             />
-        </NewButton>
-    </div>
-</div>
-
-        {error && (
-          <Typography color="error" className={styles.errorMessage}>
-            {error}
-          </Typography>
-        )}
+          </NewButton>
+        </div>
       </div>
-   
+
+      {error && (
+        <Typography color="error" className={styles.errorMessage}>
+          {error}
+        </Typography>
+      )}
+    </div>
+
   );
 };
 
