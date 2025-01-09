@@ -10,7 +10,7 @@ import { usePathname } from 'next/navigation';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const pagesWithoutLayout = ['/pages/login'];
+  const pagesWithoutLayout = ['/pages/login', '/pages/forgot-password', '/pages/reset-password'];
   return (<html lang="en">
     <body>
       <ThemeProvider theme={theme}>

@@ -83,7 +83,7 @@ const LoginPage: React.FC = () => {
                             />
                         </div>
                         <div className={styles['login-container-forgot-password']}>
-                            <a href="#">Forgot Password?</a>
+                            <a href="/forgot-password">Forgot Password?</a>
                         </div>
                         <button type="submit" className={styles['login-button']}>
                             Login
