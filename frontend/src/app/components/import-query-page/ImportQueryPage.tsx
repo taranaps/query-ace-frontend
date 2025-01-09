@@ -12,6 +12,7 @@ import fetchAllTagDetails from '@/app/api/tags/route.ts';
 import { handleAddNewTag } from '@/app/util/tags/tagFunctionalities';
 import NewButton from '../new-button/NewButton';
 
+
 interface ProcessedDataType {
   question: string;
   userId: number;

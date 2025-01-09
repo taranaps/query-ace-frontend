@@ -10,6 +10,11 @@ import fetchQueryUsingKeyword from "@/app/api/queries/fetchQueryUsingKeyword";
 import DataPopup from "@/app/components/data-popup/DataPopup";
 import fetchQueryWithAnswers from "@/app/api/questioncard/fetchQueryAnswers";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
+import planeanimation from "../../../../public/assets/animatedIcons/Paper Plane (1).json";
+import LottieIconButton from "../../components/lottie-animated-button/LottieIconButton";
+
+
+
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -97,7 +102,19 @@ const Dashboard: React.FC = () => {
             {/* Trending Queries Section */}
             {searchKeyword === "" && (
               <div className={styles.trendingQueriesContainer}>
-                <h2 className={styles.trendingTitle}>Trending Queries</h2>
+              <div className={styles.headingContainer}>
+                  <h2 className={styles.trendingTitle}>Trending Queries</h2>
+                  <div className = " Lottie">
+                  <LottieIconButton
+                      animationData={planeanimation}
+                      label="Copy Answer"
+                      
+                  />
+                  </div>
+              </div>
+          
+          
+               
                 <div className={styles.queriesContent}>
                   {/* Dummy Data for Trending Queries */}
                   <div className={styles.queryItem}>

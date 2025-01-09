@@ -215,6 +215,7 @@ border-radius: 8px;
 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 width: 100%;
 margin-bottom: 20px;
+
 }
 
 /* Tabs */
@@ -358,4 +359,17 @@ color: #333;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+
+.headingContainer{
+  display: flex;
+  flex-direction: row;
+  
+}
+
+
+.lottie{
+  margin-top: 1g00px;
+ 
 }
