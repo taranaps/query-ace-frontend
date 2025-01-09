@@ -1,5 +1,3 @@
-// src/app/api/auth/register.ts
-
 import { NextResponse } from 'next/server';
 import { API_BASE_URL } from '@/config/apiConfig';
 

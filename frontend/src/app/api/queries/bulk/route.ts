@@ -4,10 +4,7 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
     try {
         const requestBody = await request.json();
-
-        console.log(JSON.stringify(requestBody));
         
-
         const response = await fetch(`${API_BASE_URL}/queries/bulk`, {
             method: "POST",
             headers: {

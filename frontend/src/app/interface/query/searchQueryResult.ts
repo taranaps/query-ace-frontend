@@ -2,6 +2,7 @@ import QueryTagInterface from "./queryTagInterface";
 import FetchQueryAnswerInterface from "./fetchQueryAnswerInterface";
 
 interface searchQueryResult {
+    customer: string;
     id: number;
     question: string;
     usersId: number;

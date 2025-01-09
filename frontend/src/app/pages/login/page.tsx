@@ -1,52 +1,90 @@
 'use client';
 
-import React, { useState, useContext } from 'react';
-import { AuthContext } from '@/context/AuthContext';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { login } from '@/app/lib/auth';
+import type { AuthError } from '@/app/lib/types/auth';
 import styles from './login.module.css';
 
-const LoginPage: React.FC = () => {
-    const [formData, setFormData] = useState({
-        email: '',
-        password: ''
-    });
-    const { login } = useContext(AuthContext);
-    const router = useRouter();
+export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData(prev => ({
-            ...prev,
-            [e.target.name]: e.target.value
-        }));
-    };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    try {
+      const response = await login(email, password);
+      
+      const redirectPath = response.role === 'SUPER_ADMIN' 
+        ? '/dashboard/super-admin'
+        : '/dashboard/admin';
+        
+      router.push(redirectPath);
+    } catch (err) {
+      const authError = err as AuthError;
+      setError(authError.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-        try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                login(data);                
-                alert('Logged in Successfully!');
-                router.push('/pages/dashboard');
-            } else {
-                alert(`Error: ${data.message}`);
-            }
-        } catch (error) {
-            console.error('Login Error:', error);
-            alert('An error occurred. Please try again.');
-        }
-    };
-
+  return (
+    <div className={styles['login-page']}>
+      <div className={styles['login-background']}>
+        <img src="/assets/logos/experion-logo.png" alt="Experion Logo" />
+      </div>
+      <div className={styles['login-foreground']}>
+        <div className={styles['login-container']}>
+          <div className={styles['login-container-avatar']}>
+            <img src="/assets/icons/login-avatar.png" alt="Login Avatar" />
+          </div>
+          {error && <div className={styles['error-message']}>{error}</div>}
+          <form onSubmit={handleSubmit}>
+            <div className={styles['login-form-group']}>
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="Enter your email"
+              />
+            </div>
+            <div className={styles['login-form-group']}>
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="Enter your password"
+              />
+            </div>
+            <div className={styles['login-container-forgot-password']}>
+              <a>Forgot Password?</a>
+            </div>
+            <button 
+              type="submit" 
+              className={styles['login-button']}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Logging in...' : 'Login'}
+            </button>
+          </form>
+        </div>
+        <div className={styles['false-container']}></div>
+      </div>
+    </div>
+  );
+}
     return (
         <div className={styles['login-page']}>
             <div className={styles['login-background']}>
