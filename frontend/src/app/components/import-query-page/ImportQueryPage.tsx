@@ -10,6 +10,7 @@ import { handleAddNewBulkQueryAndAnswer } from '@/app/util/query/queryFunctional
 import { useAuth } from '@/context/AuthContext';
 import fetchAllTagDetails from '@/app/api/tags/route.ts';
 import { handleAddNewTag } from '@/app/util/tags/tagFunctionalities';
+import NewButton from '../new-button/NewButton';
 
 interface ProcessedDataType {
   question: string;
@@ -213,6 +214,10 @@ const ImportQueryPage = () => {
 
 
 
+  function handleDownloadTemplate(): void {
+    throw new Error('Function not implemented.');
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.dataCardsContainer}>
@@ -241,37 +246,53 @@ const ImportQueryPage = () => {
         )}
       </div>
       <div className={styles.footer}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleClear}
-          disabled={!file && questions.length === 0}
+    <div className={styles.leftButtons}>
+        <NewButton
+            variant="custom" // For the "Download Template" button
+            onClick={handleDownloadTemplate}
+            width="fit"
+            type="button"
         >
-          Clear
-        </Button>
-        <Button
-          variant="contained"
-          color={questions.length > 0 ? 'success' : 'info'}
-          onClick={() =>
-            questions.length > 0 ? handleSave() : document.getElementById('fileInput')?.click()
-          }
+            Download Template
+        </NewButton>
+    </div>
+    <div className={styles.rightButtons}>
+        <NewButton
+            variant="cancel" // "Clear" button with the cancel style
+            onClick={handleClear}
+            disabled={!file && questions.length === 0}
+            width="fit"
+            type="button"
         >
-          {questions.length > 0 ? 'Save Data' : 'Import File'}
-          <input
-            id="fileInput"
-            type="file"
-            hidden
-            accept=".xlsx, .xls"
-            onChange={handleFileChange}
-          />
-        </Button>
+            Clear
+        </NewButton>
+        <NewButton
+            variant={questions.length > 0 ? 'submit' : 'info'} // "Save Data" or "Import File" button
+            onClick={() =>
+                questions.length > 0 ? handleSave() : document.getElementById('fileInput')?.click()
+            }
+            width="fit"
+            type="button"
+        >
+            {questions.length > 0 ? 'Save Data' : 'Import File'}
+            <input
+                id="fileInput"
+                type="file"
+                hidden
+                accept=".xlsx, .xls"
+                onChange={handleFileChange}
+            />
+        </NewButton>
+    </div>
+</div>
+
         {error && (
           <Typography color="error" className={styles.errorMessage}>
             {error}
           </Typography>
         )}
       </div>
-    </div>
+   
   );
 };
 

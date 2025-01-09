@@ -4,7 +4,7 @@ import React, { useCallback } from "react";
 import { formatDate } from "@/app/util/formatDate";
 
 import LottieIconButton from "../lottie-animated-button/LottieIconButton";
-import copyAnimation from "../../../../public/assets/animatedIcons/copylast.json";
+import copyAnimation from "../../../../public/assets/animatedIcons/copyv3.json";
 
 import { handleCopyQuery } from "@/app/util/query/queryFunctionalities";
 

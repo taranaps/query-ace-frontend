@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 
 type ButtonProps = {
-    variant: 'cancel' | 'submit' | 'info' | 'outlined';
+    variant: 'cancel' | 'submit' | 'info' | 'outlined' | 'custom';
     width?: 'max' | 'fit' | 'fixed';
     onClick?: () => void;
     icon?: ReactNode;
@@ -35,6 +35,7 @@ const NewButton: React.FC<ButtonProps> = ({
         submit: { backgroundColor: '#4CAF50', color: '#fff', borderColor: '#4CCF60' },
         info: { backgroundColor: '#2196F3', color: '#fff', borderColor: '#2196F3' },
         outlined: { backgroundColor: 'transparent', color: '#000', borderColor: '#000' },
+        custom: { backgroundColor: 'orange', color: 'white' },
     };
 
     const hoverStyles: Record<string, React.CSSProperties> = {
@@ -42,6 +43,7 @@ const NewButton: React.FC<ButtonProps> = ({
         submit: { backgroundColor: '#388E3C' },
         info: { backgroundColor: '#1976D2' },
         outlined: { backgroundColor: '#f5f5f5', color: '#000' },
+        custom: { backgroundColor: 'orange' },
     };
 
     const currentStyle = { ...baseStyles, ...variantStyles[variant] };

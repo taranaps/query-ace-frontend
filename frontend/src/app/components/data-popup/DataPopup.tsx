@@ -9,6 +9,7 @@ import { LottieLoader } from "../lottie-loader/lottieLoader";
 import AddTagPopup from "../add-tag-popup/AddTagPopup";
 import { formatDate } from "@/app/util/formatDate";
 import { handleAddNewTagToExistingQuery } from "@/app/util/tags/tagFunctionalities";
+import NewButton from '../../components/new-button/NewButton';
 
 const DataPopup = ({
     data,
@@ -32,6 +33,21 @@ const DataPopup = ({
     const [tagGroups, setTagGroups] = useState<{ tagGroupName: string; tagNames: string[] }[]>([]);
 
     const [isTransitionComplete, setIsTransitionComplete] = useState(false);
+
+ const [formData, setFormData] = useState({
+    question: '',
+    answers: [] as string[],
+    tags: [] as { group: string; tag: string }[],
+  });
+
+
+
+  const handleChange = (field: string, value: string | string[] | { group: string; tag: string }[]) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+
+
 
     useEffect(() => {
         setTimeout(() => {
@@ -100,6 +116,8 @@ const DataPopup = ({
         }
     };
 
+    const handleRemoveTag = (index: number) => handleChange('tags', formData.tags.filter((_, i) => i !== index));
+
     return (
         <div className={styles.popupOverlay}>
             <div
@@ -116,7 +134,8 @@ const DataPopup = ({
 
                 <div className={styles.popupHeader}>
                 <div className={styles.popupHeaderQuestion}>
-                        <p>Question : </p>
+                <p style={{ fontSize: '18px' ,fontWeight:"bold" }}>Question:</p>
+
                         <h2>{data.question}</h2>
                     </div>
                     <LottieIconButton
@@ -127,14 +146,17 @@ const DataPopup = ({
                 </div>
 
                 <div className={styles.answerTitleandButton}>
-                    <h3 className={styles.answerTitle}>Answers : ({answers.length})</h3>
-                    <a
-                        className={styles.answerTitleButton}
-                        onClick={() => setIsAddModalOpen(true)}
-                    >
-                        Add Answer
-                    </a>
-                </div>
+            <h3 className={styles.answerTitle}>Answers : ({answers.length})</h3>
+            <NewButton
+                variant="custom" // You can change this variant depending on the design
+                onClick={() => setIsAddModalOpen(true)}
+                width="fit"
+                type="button"
+                
+            >
+                Add Answer +
+            </NewButton>
+        </div>
 
                 <div className={styles.answerContainer}>
                     {answers.length > 0 ? (
@@ -153,27 +175,35 @@ const DataPopup = ({
                 </div>
 
                 <div className={styles.dataCardTags}>
-                    {tagGroups.length > 0 ? (
-                        tagGroups.map((tag: any, index: number) => (
-                            <div key={index} className={styles.tag}>
-                                <div className={styles.tagGroup}>
-                                    {tag.tagGroupName}
-                                </div>
-                                <div className={styles.tagName}>
-                                    {tag.tagName}
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <p className={styles.tag}>No tags available.</p>
-                    )}
-                    <button
-                        className={`${styles.addTagButton} ${styles.tag}`}
-                        onClick={() => setIsAddTagPopupOpen(true)}
-                    >
-                        +
-                    </button>
+    {tagGroups.length > 0 ? (
+        tagGroups.map((tag: any, index: number) => (
+            <div key={index} className={styles.tag}>
+                <div className={styles.tagGroup}>
+                    {tag.tagGroupName}
                 </div>
+                <div className={styles.tagName}>
+                    {tag.tagName}
+                </div>
+                <button 
+                    className={styles.crossButton} 
+                    onClick={() => handleRemoveTag(index)}
+                >
+                    
+                    ✕
+                </button>
+            </div>
+        ))
+    ) : (
+        <p className={styles.tag}>No tags available.</p>
+    )}
+    <button
+        className={`${styles.addTagButton} ${styles.tag}`}
+        onClick={() => setIsAddTagPopupOpen(true)}
+    >
+        +
+    </button>
+</div>
+
 
                 {isAddModalOpen && (
                     <div className={styles.addAnswerModal}>
