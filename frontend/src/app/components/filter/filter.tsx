@@ -14,8 +14,14 @@ interface FilterProps {
 
 const Filter: React.FC<FilterProps> = ({ tagData, onFilterChange }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [hoveredGroup, setHoveredGroup] = useState<string | null>(null);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedAdmins, setSelectedAdmins] = useState<string[]>([]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value.toLowerCase());
+  };
+
 
   const handleSelect = (tag: string) => {
     const updatedSelection = selectedTags.includes(tag)
@@ -33,6 +39,8 @@ const Filter: React.FC<FilterProps> = ({ tagData, onFilterChange }) => {
   const handleMouseLeave = () => {
     setHoveredGroup(null);
   };
+
+  
 
   return (
     <div className="filter-container">
