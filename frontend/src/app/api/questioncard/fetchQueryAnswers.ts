@@ -6,7 +6,7 @@ export default async function fetchQueryWithAnswers(id: number) {
 
   const url = `http://localhost:8080/api/v1/queryapplication/queries/${id}/with-answers`;
 
-  console.log("Fetching data from:", url);  // Log the request URL for debugging
+  console.log("Fetching data from:", url);
 
   try {
       const response = await fetch(url, {

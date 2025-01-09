@@ -175,3 +175,41 @@ export const handleAddNewBulkQueryAndAnswer = async (
     }
 };
 
+
+export const handleFilterQuery = async (
+    usersUsernames: string[],
+    tags: string[]
+) => {
+    try {
+        const apiUrl = `/api/queries/filters`;
+
+        const requestBody = {
+            usersUsernames,
+            tags
+        };
+
+        console.log(JSON.stringify(requestBody));
+
+
+        const response = await fetch(apiUrl, {
+            method: "POST",  // Changed to POST
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to fetch filtered queries. Status: ${response.status}, Message: ${response.statusText}`);
+            return { success: false, message: "Failed to fetch filtered queries" };
+        }
+
+        const responseData = await response.json();
+        console.log("Filtered queries:", responseData);
+        return { success: true, data: responseData };
+
+    } catch (error) {
+        console.error("Error during fetching filtered queries:", error);
+        return { success: false, message: "An error occurred while processing the request" };
+    }
+};

@@ -211,8 +211,6 @@ const ImportQueryPage = () => {
     }
   };
 
-
-
   return (
     <div className={styles.container}>
       <div className={styles.dataCardsContainer}>

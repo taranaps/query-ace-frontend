@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import LottieIconButton from "../lottie-animated-button/LottieIconButton";
 import styles from './popup.module.css';
 import closeAnimation from "../../../../public/assets/animatedIcons/Close.json";

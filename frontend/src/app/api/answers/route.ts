@@ -7,7 +7,6 @@ export async function POST(request: Request, { params }: { params: { questionId:
     const questionId = params.questionId;
     const body = await request.json();
 
-    // Retrieve JWT token from headers
     const authHeader = request.headers.get('Authorization');
     const token = authHeader && authHeader.split(' ')[1];
 
@@ -49,7 +48,6 @@ export async function POST(request: Request, { params }: { params: { questionId:
 export async function GET(request: Request, { params }: { params: { questionId: string } }) {
     const questionId = params.questionId;
 
-    // Retrieve JWT token from headers if needed
     const authHeader = request.headers.get('Authorization');
     const token = authHeader && authHeader.split(' ')[1];
 

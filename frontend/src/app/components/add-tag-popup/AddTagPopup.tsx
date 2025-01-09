@@ -108,7 +108,6 @@ const AddTagPopup: React.FC<AddTagPopupProps> = ({ open, onClose, onAddTags }) =
                         <MenuItem value="">
                             <em>None</em>
                         </MenuItem>
-                        {/* Search inside dropdown */}
                         <MenuItem>
                             <TextField
                                 label="Search Group"

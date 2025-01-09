@@ -3,10 +3,9 @@
 import React, { useState } from 'react';
 import { formatDate } from '@/app/util/formatDate';
 import LottieIconButton from "../lottie-animated-button/LottieIconButton";
-import copyAnimation from "../../../../public/assets/animatedIcons/copyv3.json";
 import closeAnimation from "../../../../public/assets/animatedIcons/Close.json";
 import saveAnimation from "../../../../public/assets/animatedIcons/save.json";
-import { handleDeleteQueryAnswer, handleEditQuery, handleCopyQuery } from '@/app/util/query/queryFunctionalities';
+import { handleEditQuery, handleCopyQuery } from '@/app/util/query/queryFunctionalities';
 import { Button } from '@mui/material';
 import styles from './DataPopupAnswerItem.module.css';
 
@@ -45,7 +44,7 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
             await navigator.clipboard.writeText(text);
             setCopyOverlayVisible(true);
             setTimeout(() => {
-                setCopyOverlayVisible(false); 
+                setCopyOverlayVisible(false);
             }, 3000);
 
         } catch (err) {
@@ -54,7 +53,7 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
     };
 
     const handleRightClick = (event: React.MouseEvent) => {
-        event.preventDefault(); 
+        event.preventDefault();
         const { clientX: x, clientY: y } = event;
         setContextMenu({ x, y, visible: true });
     };
@@ -65,7 +64,7 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
 
     const handleEdit = () => {
         setEditing(true);
-        handleCloseContextMenu();  // Close context menu after selecting edit
+        handleCloseContextMenu();
     };
 
     const handleSaveEdit = async () => {
@@ -80,32 +79,29 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
 
     const handleDeleteClick = () => {
         setDeletingItemId(answer.id);
-        setContextMenu({ ...contextMenu, visible: false }); // Hide context menu on delete
+        setContextMenu({ ...contextMenu, visible: false });
     };
-
 
     const handleCancelDelete = () => {
         setIsSlidingOut(true);
         setTimeout(() => {
             setDeletingItemId(null);
             setIsSlidingOut(false);
-        }, 300); // Match the duration of slide-out animation
+        }, 300);
     };
 
     const handleConfirmDelete = async () => {
         await onDelete(answer.id);
-        setContextMenu({ ...contextMenu, visible: false }); // Hide context menu after confirming delete
+        setContextMenu({ ...contextMenu, visible: false });
     };
 
-    // Hide context menu on click outside
     const handleClickOutside = (e: MouseEvent) => {
-        const target = e.target as Element | null; // Cast target to Element
+        const target = e.target as Element | null;
         if (target && !target.closest(`.${styles.answerItem}`)) {
-            handleCloseContextMenu // Close context menu if clicking outside
+            handleCloseContextMenu
         }
     };
 
-    // Attach event listener for clicks outside
     React.useEffect(() => {
         document.addEventListener('click', handleClickOutside);
         return () => {
@@ -116,8 +112,8 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
     return (
         <li
             className={styles.answerItem}
-            onContextMenu={handleRightClick} // Trigger right-click menu
-            onClick={() => handleCopy(answer.answer, answer.id)} // Default click action (copy)
+            onContextMenu={handleRightClick}
+            onClick={() => handleCopy(answer.answer, answer.id)}
         >
             {editing ? (
                 <div className={styles.answerItemTop}>
@@ -152,7 +148,6 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
                 </>
             )}
 
-            {/* Custom Context Menu */}
             {contextMenu.visible && (
                 <div
                     className={styles.contextMenu}
@@ -166,15 +161,12 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
                 </div>
             )}
 
-
-            {/* Copy overlay (success message) */}
             {copyOverlayVisible && (
                 <div className={`${styles.copyOverlay} ${copyOverlayVisible ? '' : styles['slide-out']}`}>
                     Copied!
                 </div>
             )}
 
-            {/* Delete confirmation overlay */}
             {deletingItemId === answer.id && (
                 <div className={`${styles.deleteConfirmationOverlay} ${isSlidingOut ? 'slide-out' : ''}`}>
                     <div className={styles.confirmationMessage}>
