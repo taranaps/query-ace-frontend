@@ -73,7 +73,7 @@ const DataCardDashboard: React.FC<DataCardProps> = React.memo(
               }}
             ></div>
 
-            <div className={styles.divider}></div>
+            {/* <div className={styles.divider}></div> */}
 
             <div className={styles.dataCardAnswerContainer}>
               <p className={styles.dataCardAnswerHeader}>Answers: ({numberOfAnswers})</p>
@@ -113,7 +113,7 @@ const DataCardDashboard: React.FC<DataCardProps> = React.memo(
             <span>Created By: {createdBy}</span> |{" "}
             <span>Created At: {formatDate(createdAt)}</span>
           </div>
-
+          <div className={styles.divider1}></div>
         </div>
       </div>
     );
