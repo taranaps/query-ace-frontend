@@ -1,5 +1,3 @@
-// src/app/api/queries/route.ts
-
 import { NextResponse } from 'next/server';
 import { API_BASE_URL } from '@/config/apiConfig';
 import QueryAnswerInterface from '@/app/interface/query/postQueryAnswerInterface';
@@ -8,14 +6,6 @@ import QueryQuestionInterface from '@/app/interface/query/postQueryQuestionInter
 export async function POST(request: Request) {
     const body = await request.json();
 
-    // // Retrieve JWT token from headers
-    // const authHeader = request.headers.get('Authorization');
-    // const token = authHeader && authHeader.split(' ')[1];
-
-    // if (!token) {
-    //     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    // }
-
     const { questionData, answersData }: { questionData: QueryQuestionInterface[]; answersData: QueryAnswerInterface[] } = body;
 
     try {
@@ -23,7 +13,6 @@ export async function POST(request: Request) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(questionData),
         });
@@ -51,7 +40,6 @@ export async function POST(request: Request) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(answersWithQueryId),
             });

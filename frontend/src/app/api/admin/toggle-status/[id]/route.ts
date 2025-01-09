@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { API_BASE_URL } from '@/config/apiConfig';
 
 export async function PUT(request: Request) {
-    // Extract the URL from the request
     const url = new URL(request.url);
     const id = url.pathname.split('/').pop();
 

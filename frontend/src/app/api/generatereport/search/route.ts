@@ -1,17 +1,11 @@
 import { API_BASE_URL } from "@/config/apiConfig";
 import { NextResponse } from "next/server";
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request) {
     try {
-        const { id } = params;
-
         const requestBody = await request.json();
 
-        console.log("yaaaaaaaaaaaaaaa");
-
-        console.log(JSON.stringify(requestBody));
-        
-        const response = await fetch(`${API_BASE_URL}/queries/${id}/tags/add`, {
+        const response = await fetch(`${API_BASE_URL}/generatereport/search`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -20,14 +14,13 @@ export async function POST(request: Request, { params }: { params: { id: string 
         });
 
         if (response.ok) {
-            return NextResponse.json(
-                { message: "Tags successfully added to the query" },
-                { status: 200 }
-            );
+            const responseData = await response.json();
+            return NextResponse.json(responseData, { status: 200 });
         }
 
+        const errorData = await response.json();
         return NextResponse.json(
-            { message: `Failed to add tags to the query. Status: ${response.status}` },
+            { message: `Failed to fetch data. Status: ${response.status}`, details: errorData },
             { status: response.status }
         );
     } catch (error) {

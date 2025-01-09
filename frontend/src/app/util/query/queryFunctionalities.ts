@@ -176,29 +176,40 @@ export const handleAddNewBulkQueryAndAnswer = async (
 };
 
 
-export const handleAddNewTagToExistingQuery = async (
-    id: string,
-    tags: { tagGroupName: string; tagName: string }[]
+export const handleFilterQuery = async (
+    usersUsernames: string[],
+    tags: string[]
 ) => {
     try {
-        const requestBody = { tags };
-        const response = await fetch(`/api/queries/${id}/tags/add`, {
-            method: "POST",
+        const apiUrl = `/api/queries/filters`;
+
+        const requestBody = {
+            usersUsernames,
+            tags
+        };
+
+        console.log(JSON.stringify(requestBody));
+
+
+        const response = await fetch(apiUrl, {
+            method: "POST",  // Changed to POST
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(requestBody),
         });
 
-        if (response.ok) {
-            console.log("Tags successfully added to the query.");
-            return { success: true, message: "Tags successfully added to the query." };
+        if (!response.ok) {
+            console.error(`Failed to fetch filtered queries. Status: ${response.status}, Message: ${response.statusText}`);
+            return { success: false, message: "Failed to fetch filtered queries" };
         }
 
-        console.error(`Failed to add tags. Status: ${response.status}`);
-        return { success: false, message: `Failed to add tags. Status: ${response.status}` };
+        const responseData = await response.json();
+        console.log("Filtered queries:", responseData);
+        return { success: true, data: responseData };
+
     } catch (error) {
-        console.error("An error occurred while adding tags:", error);
-        return { success: false, message: "An error occurred while adding tags." };
+        console.error("Error during fetching filtered queries:", error);
+        return { success: false, message: "An error occurred while processing the request" };
     }
 };
