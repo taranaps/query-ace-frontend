@@ -88,12 +88,12 @@ const FileProcessingPage: React.FC = () => {
                 setKeywords(extractedKeywords);
             }
         }, 300);
-    
+
         return () => {
-            clearTimeout(delayDebounce); 
+            clearTimeout(delayDebounce);
         };
     }, [searchQuery, currentQuestionIndex, questions]);
-    
+
 
     useEffect(() => {
         console.log("State changed, saving to localStorage...");
@@ -222,18 +222,21 @@ const FileProcessingPage: React.FC = () => {
             {currentPage === "import" ? (
                 <div className={styles.headerRight}>
                     {questions.length === 0 ? (
-                        <label htmlFor="fileInput">
-                            <Button variant="contained" component="span">
-                                Import File
-                            </Button>
-                            <input
-                                id="fileInput"
-                                type="file"
-                                hidden
-                                accept=".xlsx, .xls"
-                                onChange={handleFileChange}
-                            />
-                        </label>
+                        <>
+                            <a href="/assets/templates/File Processing Template.xlsx">Download Template</a>
+                            <label htmlFor="fileInput">
+                                <Button variant="contained" component="span">
+                                    Import File
+                                </Button>
+                                <input
+                                    id="fileInput"
+                                    type="file"
+                                    hidden
+                                    accept=".xlsx, .xls"
+                                    onChange={handleFileChange}
+                                />
+                            </label>
+                        </>
                     ) : (
 
                         <Button

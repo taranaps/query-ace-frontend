@@ -227,8 +227,16 @@ const ImportQueryPage = () => {
   };
 
   function handleDownloadTemplate(): void {
-    throw new Error('Function not implemented.');
+    const filePath = '/assets/templates/Import Query Template.xlsx'; 
+
+    const anchor = document.createElement('a');
+    anchor.href = filePath;
+    anchor.download = 'Import Query Template.xlsx'; 
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
   }
+
 
   const handleCardClick = (data: ProcessedDataType) => {
     setSelectedCardData(data);
