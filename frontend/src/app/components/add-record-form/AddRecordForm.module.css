@@ -146,15 +146,23 @@
 .answersAndAddButton button {
   font-size: 18px;
   font-weight: 600;
-  color: aquamarine;
-  background-color: #ccc;
+  color: #FF9500;
+  background-color: transparent;
+  border: 2px solid #FF9500;
   border-radius: 25px;
-  height: 42px;
-  width: 42px;
+  height: 32px;
+  width: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
 }
+
+.answersAndAddButton button:hover {
+  color: #FFFFFF;
+  background-color: #FF9500;
+}
+
 
 .answersList {
   overflow-y: auto;

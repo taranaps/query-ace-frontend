@@ -1,15 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import LottieIconButton from "../lottie-animated-button/LottieIconButton"; // Import the LottieIconButton component
+import LottieIconButton from "../lottie-animated-button/LottieIconButton";
 import styles from "./datacard.module.css";
-
-// Import Lottie animations
-// import copyAnimation from "/assets/animatedIcons/edit.json";
-// import saveAnimation from "/assets/animatedIcons/edit.json";
-// import cancelAnimation from "/assets/animatedIcons/edit.json";
-// import editAnimation from "/assets/animatedIcons/edit.json";
-// import deleteAnimation from "/assets/animatedIcons/edit.json";
 
 import copyAnimation from "../../../../public/assets/animatedIcons/copyv3.json"
 import saveAnimation from "../../../../public/assets/animatedIcons/save.json"
@@ -49,25 +42,21 @@ const DataCard: React.FC<DataCardProps> = ({
   const [editableText, setEditableText] = useState(text);
   const [editableDescription, setEditableDescription] = useState(description);
 
-  // Handle Copy to Clipboard
   const handleCopy = () => {
     navigator.clipboard.writeText(editableText);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Handle Save Changes
   const handleSave = () => {
     setIsEditing(false);
     onEdit(id, editableText, editableDescription);
   };
 
-  // Handle Edit
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  // Handle Cancel Edit
   const handleCancelEdit = () => {
     setIsEditing(false);
     setEditableText(text);

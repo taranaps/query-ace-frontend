@@ -1,12 +1,9 @@
-// src/app/api/auth/add-admin.ts
-
 import { NextResponse } from 'next/server';
 import { API_BASE_URL } from '@/config/apiConfig';
 
 export async function POST(request: Request) {
     const body = await request.json();
 
-    // Retrieve JWT token from headers
     const authHeader = request.headers.get('Authorization');
     const token = authHeader && authHeader.split(' ')[1];
 
