@@ -129,3 +129,24 @@
   align-items: center;
   gap: 12px;
 }
+
+.footer {
+  display: flex;
+  justify-content: space-between; /* Space between buttons */
+  align-items: center;
+  width: 100%;
+}
+
+.leftButtons {
+  display: flex;
+  justify-content: flex-start; /* Aligns the 'Download Template' button to the left */
+}
+
+.rightButtons {
+  display: flex;
+  gap: 10px; /* Adds space between the 'Clear' and 'Save/Import File' buttons */
+  justify-content: flex-end; /* Aligns 'Clear' and 'Save/Import File' buttons to the right */
+}
+
+
+

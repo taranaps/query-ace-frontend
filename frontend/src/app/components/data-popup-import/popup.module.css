@@ -1,0 +1,285 @@
+.popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popupContent {
+    position: absolute;
+    background-color: rgb(255, 255, 255);
+    border-radius: 8px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: all 0.5s ease;
+    padding: 30px 50px;
+    width: 60vw;
+    height: 90vh;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+}
+
+.popupHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    /* Reduced margin */
+    border-bottom: 1px solid #f0f0f0;
+    /* Thinner border */
+    padding-bottom: 10px;
+    /* Reduced padding */
+}
+
+.popupHeaderQuestion {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.popupHeaderQuestion p {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.popupHeaderQuestion input {
+    flex: 1;
+    width: 50vw;
+}
+
+.editableInput {
+    font-size: 13px;
+    padding: 8px;
+    margin-top: 6px;
+    border: 1px solid #000000;
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: border 0.3s ease;
+}
+
+.editableInput input{
+    width: 50vw;
+}
+
+.editableInput:focus {
+    border-color: #ff9500;
+    outline: none;
+}
+
+.popupHeader button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.answerTitleandButton {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    /* Reduced margin */
+}
+
+.answerTitle {
+    font-size: 14px;
+    /* Smaller font size */
+    font-weight: bold;
+    color: #333;
+}
+
+.answerList {
+    display: flex;
+    flex-direction: column;
+}
+
+.answerItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 6px;
+    /* Smaller border radius */
+    margin-bottom: 8px;
+    /* Reduced margin */
+}
+
+.answerItem input {
+    font-size: 13px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    width: 80vw;
+    transition: border 0.3s ease;
+}
+
+.answerItem input:focus {
+    border-color: #ff9500;
+    outline: none;
+}
+
+.answerItem button {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.answerItem button:hover {
+    opacity: 0.8;
+}
+
+.dataCardTags {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.tag {
+    font-size: 12px;
+    /* Smaller font size */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    background-color: #f2f3fa;
+    padding: 2px 4px;
+    border-radius: 20px;
+}
+
+.tag input {
+    flex: 1;
+    width: 35px;
+    font-size: 12px;
+    /* Smaller font size */
+    padding: 4px 8px;
+    /* Smaller padding */
+    border: 1px solid #000000;
+    border-radius: 6px;
+    /* Smaller border radius */
+    transition: border 0.3s ease;
+}
+
+.tag input:focus {
+    border-color: #ff9500;
+    outline: none;
+}
+
+.addTagButton {
+    background-color: #2b303a;
+    color: #f1f3fa;
+    font-size: 16px;
+    /* Smaller font size */
+    padding: 8px 14px;
+    /* Smaller padding */
+    border-radius: 10px;
+    /* Smaller border radius */
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+    /* Reduced margin */
+    transition: background-color 0.3s ease-in-out;
+}
+
+.addTagButton:hover {
+    background-color: #ff9500;
+    color: white;
+}
+
+.saveButtonContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    /* Reduced margin */
+}
+
+.saveButtonContainer button {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 8px 16px;
+    /* Smaller padding */
+    border-radius: 6px;
+    /* Smaller border radius */
+    font-size: 14px;
+    /* Smaller font size */
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.saveButtonContainer button:hover {
+    background-color: #ff2a2a;
+}
+
+.crossButton {
+    font-size: 16px;
+    /* Smaller font size */
+    color: white;
+    background-color: red;
+    width: 28px;
+    /* Smaller size */
+    height: 28px;
+    /* Smaller size */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-left: 6px;
+    /* Reduced margin */
+}
+
+.crossButton:hover {
+    background-color: darkred;
+}
+
+.modalContent {
+    background-color: white;
+    padding: 15px;
+    /* Reduced padding */
+    border-radius: 8px;
+    /* Smaller border radius */
+    width: 250px;
+    /* Smaller width */
+    text-align: center;
+}
+
+.modalActions button {
+    margin: 8px;
+    /* Reduced margin */
+}
+
+.addAnswerButton {
+    position: fixed;
+    bottom: 10px;
+    /* Reduced position */
+    right: 10px;
+    /* Reduced position */
+    background-color: #ffffff;
+    color: #2b303a;
+    padding: 12px 24px;
+    /* Smaller padding */
+    border-radius: 10px;
+    /* Smaller border radius */
+    border: none;
+    font-size: 14px;
+    /* Smaller font size */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.addAnswerButton:hover {
+    background-color: #ff4d4d;
+    color: white;
+}

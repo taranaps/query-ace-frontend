@@ -1,5 +1,3 @@
-// src/app/api/questions/route.ts
-
 import { NextResponse } from 'next/server';
 import { API_BASE_URL } from '@/config/apiConfig';
 
@@ -39,7 +37,6 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
     const query = new URL(request.url).searchParams;
 
-    // Read query parameters for pagination/sorting
     const pageNo = query.get("pageNo") || "0";
     const pageSize = query.get("pageSize") || "3";
     const sortBy = query.get("sortBy") || "id";

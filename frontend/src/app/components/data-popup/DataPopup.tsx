@@ -7,17 +7,22 @@ import { handleDeleteQueryAnswer } from "@/app/util/query/queryFunctionalities";
 import { handleAddNewQueryAnswer } from "@/app/util/query/queryFunctionalities";
 import { LottieLoader } from "../lottie-loader/lottieLoader";
 import AddTagPopup from "../add-tag-popup/AddTagPopup";
-import fetchAllTagDetails from "@/app/api/tags/route.ts";
 import { formatDate } from "@/app/util/formatDate";
+import { handleAddNewTagToExistingQuery } from "@/app/util/tags/tagFunctionalities";
+import NewButton from '../../components/new-button/NewButton';
 
 const DataPopup = ({
     data,
     onClose,
-    user
+    user,
+    position,
+    size
 }: {
     data: any;
     onClose: () => void;
-    user?: any
+    user?: any;
+    position: { top: number; left: number };
+    size: { width: number; height: number };
 }) => {
     const [answers, setAnswers] = useState(data.answers);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -25,17 +30,28 @@ const DataPopup = ({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [isAddTagPopupOpen, setIsAddTagPopupOpen] = useState(false);
-    const [tagGroups, setTagGroups] = useState<{ tagGroupName: string; tagNames: string[] }[]>([]);
+    const [tagGroups, setTagGroups] = useState<{ tagGroupName: string; tagNames: string }[]>([]);
+
+    const [isTransitionComplete, setIsTransitionComplete] = useState(false);
+
+    const [formData, setFormData] = useState({
+        question: '',
+        answers: [] as string[],
+        tags: [] as { group: string; tag: string }[],
+    });
+
+    const handleChange = (field: string, value: string | string[] | { group: string; tag: string }[]) => {
+        setFormData((prev) => ({ ...prev, [field]: value }));
+    };
 
     useEffect(() => {
-        setAnswers(data.answers);
-        const fetchTags = async () => {
-            const tags = await fetchAllTagDetails();
-            setTagGroups(tags);
-        };
-
-        fetchTags();
+        setTimeout(() => {
+            setIsTransitionComplete(true);
+        }, 50);
+        setAnswers(data.answers || []);
+        setTagGroups(data.tags || []);
     }, [data]);
+    
 
     const handleConfirmDelete = async (itemId: number) => {
         const result = await handleDeleteQueryAnswer(itemId);
@@ -53,17 +69,14 @@ const DataPopup = ({
         setLoading(true);
         setError("");
 
-        const result = await handleAddNewQueryAnswer(newAnswer, 1, data.id);
+        const result = await handleAddNewQueryAnswer(newAnswer, user.id, data.id);
         setLoading(false);
 
         if (result.success) {
-
-            console.log(user);
-
             setAnswers((prevAnswers: any[]) => [
                 ...prevAnswers,
                 {
-                    id: 32,
+                    id: Date.now(),
                     answer: newAnswer,
                     createdAt: formatDate(new Date().toString()),
                     email: user.email,
@@ -84,23 +97,54 @@ const DataPopup = ({
         setIsAddModalOpen(false);
     };
 
-    const handleAddTags = (newTag: { group: string; tag: string }) => {
-        setTagGroups((prevTagGroups: { tagGroupName: string; tagNames: string[] }[]) => {
-            const updatedTagGroups = [...prevTagGroups];
-            const groupIndex = updatedTagGroups.findIndex(group => group.tagGroupName === newTag.group);
-            if (groupIndex > -1) {
-                updatedTagGroups[groupIndex].tagNames.push(newTag.tag);
-            }
-            return updatedTagGroups;
-        });
-        setIsAddTagPopupOpen(false);
+    const handleAddTags = async (newTag: { group: string; tag: string }) => {
+        const tagPayload = { tagGroupName: newTag.group, tagName: newTag.tag };
+
+        console.log(tagGroups);
+        console.log(tagPayload);
+
+        const result = await handleAddNewTagToExistingQuery(data.id, tagPayload);
+
+        if (result.success) {
+            setTagGroups((prevTagGroups) => {
+                const updatedTagGroups = [...prevTagGroups];
+                updatedTagGroups.push({ tagGroupName: newTag.group, tagNames: newTag.tag });
+                return updatedTagGroups;
+            });
+
+            console.log(tagGroups);
+
+            setIsAddTagPopupOpen(false);
+        } else {
+            console.error("Failed to add tag to the backend.");
+        }
     };
+
+
+
+
+    const handleRemoveTag = (index: number) => handleChange('tags', formData.tags.filter((_, i) => i !== index));
 
     return (
         <div className={styles.popupOverlay}>
-            <div className={styles.popupContent}>
+            <div
+                className={styles.popupContent}
+                style={{
+                    top: isTransitionComplete ? '50%' : position.top,
+                    left: isTransitionComplete ? '50%' : position.left,
+                    width: isTransitionComplete ? '80vw' : `${size.width}px`,
+                    height: isTransitionComplete ? '80vh' : `${size.height}px`,
+                    transform: isTransitionComplete ? 'translate(-50%, -50%)' : 'none',
+                    transition: 'all 0.5s ease',
+                }}
+            >
+
                 <div className={styles.popupHeader}>
-                    <h2>{data.question}</h2>
+                    <div className={styles.popupHeaderQuestion}>
+                        <p style={{ fontSize: '18px', fontWeight: "bold" }}>Question:</p>
+
+                        <h2>{data.question}</h2>
+                    </div>
                     <LottieIconButton
                         animationData={closeAnimation}
                         label="Close"
@@ -108,7 +152,19 @@ const DataPopup = ({
                     />
                 </div>
 
-                <h3 className={styles.answerTitle}>Answers:</h3>
+                <div className={styles.answerTitleandButton}>
+                    <h3 className={styles.answerTitle}>Answers : ({answers.length})</h3>
+                    <NewButton
+                        variant="custom"
+                        onClick={() => setIsAddModalOpen(true)}
+                        width="fit"
+                        type="button"
+
+                    >
+                        Add Answer +
+                    </NewButton>
+                </div>
+
                 <div className={styles.answerContainer}>
                     {answers.length > 0 ? (
                         <ul className={styles.answerList}>
@@ -126,8 +182,8 @@ const DataPopup = ({
                 </div>
 
                 <div className={styles.dataCardTags}>
-                    {data.tags.length > 0 ? (
-                        data.tags.map((tag: any, index: number) => (
+                    {tagGroups.length > 0 ? (
+                        tagGroups.map((tag: any, index: number) => (
                             <div key={index} className={styles.tag}>
                                 <div className={styles.tagGroup}>
                                     {tag.tagGroupName}
@@ -135,22 +191,26 @@ const DataPopup = ({
                                 <div className={styles.tagName}>
                                     {tag.tagName}
                                 </div>
+                                <button
+                                    className={styles.crossButton}
+                                    onClick={() => handleRemoveTag(index)}
+                                >
+
+                                    ✕
+                                </button>
                             </div>
                         ))
                     ) : (
                         <p className={styles.tag}>No tags available.</p>
                     )}
                     <button
-                        className={styles.addTagButton}
+                        className={`${styles.addTagButton} ${styles.tag}`}
                         onClick={() => setIsAddTagPopupOpen(true)}
                     >
-                        + Add Tag
+                        +
                     </button>
                 </div>
 
-                <div className={styles.addAnswerButton}>
-                    <button onClick={() => setIsAddModalOpen(true)}>Add Answer</button>
-                </div>
 
                 {isAddModalOpen && (
                     <div className={styles.addAnswerModal}>
@@ -183,7 +243,7 @@ const DataPopup = ({
                     onAddTags={handleAddTags}
                 />
             </div>
-        </div>
+        </div >
     );
 };
 

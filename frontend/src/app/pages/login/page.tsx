@@ -35,7 +35,7 @@ const LoginPage: React.FC = () => {
             const data = await response.json();
 
             if (response.ok) {
-                login(data);                
+                login(data);
                 alert('Logged in Successfully!');
                 router.push('/pages/dashboard');
             } else {

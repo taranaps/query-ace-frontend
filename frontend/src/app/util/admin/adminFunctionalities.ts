@@ -5,7 +5,7 @@ export const handleAddAdmin = async (adminData: {
     id: number,
     firstName: string;
     email: string;
-    location: string;
+    location: string; 
     username: string;
     password: string;
     userRole: string;
@@ -33,25 +33,22 @@ export const handleAddAdmin = async (adminData: {
             alert(`Error: ${errorResult.message || "Failed to create admin."}`);
         }
     } catch (error) {
-        console.error("Error creating admin:", error);
-        alert("An unexpected error occurred while creating the admin.");
+        console.error('Error creating admin:', error);
+        alert('An unexpected error occurred while creating the admin.');
     }
 };
 
-
-export const handleSubmitEdit = async (adminData: {
-    id: number
+export const handleEditAdmin = async (
+    id: string, 
+    adminData: Partial<{
     firstName: string;
     email: string;
     username: string;
-}) => {
-
-    console.log("Request Data:", JSON.stringify(adminData));
-
+}>) => {
     try {
-        console.log("Submitting admin data for edit:", adminData);
+        const url = `/api/admin/users/${id}`;
 
-        const response = await fetch(`/api/admin/edit/${adminData.id}`, {
+        const response = await fetch(url, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -59,20 +56,18 @@ export const handleSubmitEdit = async (adminData: {
             body: JSON.stringify(adminData),
         });
 
-        const responseBody = await response.json();
+        console.log(JSON.stringify(adminData));
 
-        console.log('Response Body:', responseBody);
-
-        if (!response.ok) {
-            console.error("Failed to update user. Error:");
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Admin updated successfully:', result);
         } else {
-            console.log("User updated successfully:");
+            const errorResult = await response.json();
+            console.error('Failed to update admin:', errorResult);
+            alert(`Error: ${errorResult.message || 'Failed to update admin.'}`);
         }
-    } catch (error: unknown) {
-        if (error instanceof Error) {
-            console.error("Error updating user:", error.message);
-        } else {
-            console.error("Unknown error occurred while updating user:", error);
-        }
+    } catch (error) {
+        console.error('Error updating admin:', error);
+        alert('An unexpected error occurred while updating the admin.');
     }
 };

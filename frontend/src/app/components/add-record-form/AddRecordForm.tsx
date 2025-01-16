@@ -17,6 +17,7 @@ import PostQueryAnswerInterface from '@/app/interface/query/postQueryAnswerInter
 import { LottieLoader } from '../lottie-loader/lottieLoader';
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import NewButton from '../new-button/NewButton';
 
 const AddRecordForm = () => {
 
@@ -104,13 +105,12 @@ const AddRecordForm = () => {
           />
 
           <div className={styles.tagSection}>
-            <Button
-              variant="outlined"
-              color="primary"
+            <NewButton
+              variant="custom"
               onClick={() => setIsTagPopupOpen(true)}
             >
-              Add Tags
-            </Button>
+              Add Tags +
+            </NewButton>
             <div className={styles.tagsList}>
               {formData.tags.map((tag, index) => (
                 <Chip
@@ -158,12 +158,18 @@ const AddRecordForm = () => {
           </div>
 
           <div className={styles.buttonGroup}>
-            <Button variant="outlined" color="secondary" onClick={handleClear}>
+            <NewButton
+              variant="cancel"
+              onClick={handleClear}
+
+            >
               Clear
-            </Button>
-            <Button variant="contained" color="primary" type="submit">
+            </NewButton>
+            <NewButton
+              variant="submit"
+              type="submit">
               Save
-            </Button>
+            </NewButton>
           </div>
 
           <AddTagPopup

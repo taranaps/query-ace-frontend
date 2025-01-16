@@ -20,23 +20,22 @@ export interface AdminData {
     userRole: string;
 }
 
+interface AdminFormData {
+    firstName: string;
+    email: string;
+    location: string;
+    username: string;
+    password: string;
+    userRole: "SUPER_ADMIN" | "ADMIN";
+}
+
 interface AddAdminPopupProps {
     header: string;
     onClose: () => void;
-    onConfirm: (
-        adminData: {
-            id: number,
-            firstName: string;
-            email: string;
-            location: string;
-            username: string;
-            password: string;
-            userRole: string;
-        }) => Promise<void>;
-
+    onConfirm: (adminData: AdminFormData) => void;
     closePopup: () => void;
     passwordOn?: boolean;
-    adminData?: AdminData;
+    formData?: Partial<AdminFormData>; // Allow partial data for initialization
 }
 
 const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
@@ -45,78 +44,33 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
     onConfirm,
     closePopup,
     passwordOn = true,
-    adminData,
+    formData = {}, // Default to an empty object if not provided
 }) => {
-    const [formData, setFormData] = useState<{
-        id: number,
-        firstName: string;
-        email: string;
-        location: string;
-        username: string;
-        password: string;
-        userRole: string;
-    }>({
-        id: 0,
-        firstName: "",
-        email: "",
-        location: "TRIVANDRUM",
-        username: "",
-        password: "",
-        userRole: "ADMIN",
+    const [formState, setFormState] = useState<AdminFormData>({
+        firstName: formData.firstName || "",
+        email: formData.email || "",
+        location: formData.location || "TRIVANDRUM",
+        username: formData.username || "",
+        password: formData.password || "",
+        userRole: formData.userRole || "ADMIN",
     });
 
-    useEffect(() => {
-        if (adminData) {
-            setFormData({
-                id: adminData.id,
-                firstName: adminData.firstName,
-                email: adminData.email,
-                location: adminData.location,
-                username: adminData.username,
-                password: "",
-                userRole: adminData.userRole,
-            });
-        }
-    }, [adminData]);
-
-    const handleInputChange = (field: keyof typeof formData, value: string) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
+    const handleInputChange = (field: keyof AdminFormData, value: string) => {
+        setFormState((prev) => ({ ...prev, [field]: value }));
     };
 
     const [loading, setLoading] = useState(false);
 
-    // const handleConfirm = async () => {
-    //     if ((formData.firstName && formData.email && formData.username) || (passwordOn && ((formData.firstName && formData.email && formData.username && formData.password)))) {
-    //         setLoading(true);
-    //         await onConfirm(formData);
-    //         setLoading(false);
-    //         closePopup();
-    //     } else {
-    //         alert("Please fill all fields.");
-    //     }
-    // };
+    const handleCreate = async () => {
+        const { firstName, email, location, username, password } = formState;
 
-    const handleConfirm = async () => {
-        const isFormValid =
-            formData.firstName &&
-            formData.email &&
-            formData.username &&
-            (!passwordOn || (passwordOn && formData.password));
-
-        if (!isFormValid) {
-            alert("Please fill all required fields.");
-            return;
-        }
-
-        try {
+        if (firstName && email && location && username && (password || !passwordOn)) {
             setLoading(true);
-            onConfirm( formData); // Perform the confirmation action
-        } catch (error) {
-            console.error("Error during confirmation:", error);
-            alert("An error occurred. Please try again."); // Inform the user if the operation fails
-        } finally {
-            setLoading(false); // Ensure loading state is reset
-            closePopup(); // Close the popup regardless of success or failure
+            await onConfirm(formState);
+            setLoading(false);
+            closePopup();
+        } else {
+            alert("Please fill all required fields before creating an account.");
         }
     };
 
@@ -135,25 +89,33 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
                             <div className={styles.addAdminPopUpFields}>
                                 <Textfield
                                     placeholder="Full name"
-                                    value={formData.firstName}
-                                    onChange={(value) => handleInputChange("firstName", value)}
+                                    value={formState.firstName}
+                                    onChange={(value) =>
+                                        handleInputChange("firstName", value)
+                                    }
                                 />
                                 <Textfield
                                     placeholder="Email"
-                                    value={formData.email}
-                                    onChange={(value) => handleInputChange("email", value)}
+                                    value={formState.email}
+                                    onChange={(value) =>
+                                        handleInputChange("email", value)
+                                    }
                                 />
                                 <Textfield
                                     placeholder="Username"
-                                    value={formData.username}
-                                    onChange={(value) => handleInputChange("username", value)}
+                                    value={formState.username}
+                                    onChange={(value) =>
+                                        handleInputChange("username", value)
+                                    }
                                 />
                                 {passwordOn && (
                                     <Textfield
                                         type="password"
                                         placeholder="Password"
-                                        value={formData.password}
-                                        onChange={(value) => handleInputChange("password", value)}
+                                        value={formState.password}
+                                        onChange={(value) =>
+                                            handleInputChange("password", value)
+                                        }
                                     />
                                 )}
                             </div>

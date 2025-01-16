@@ -1,84 +1,158 @@
-"use client";
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import { useRouter } from "next/navigation";
+// import { SystemLog } from "types/system-log";
+// import { fetchAllLogs, fetchUserLogs } from "@/app/api/system-log/root";
+// import { fetchUserNames } from "@/app/api/admin/user-names/root";
+// import { isAuthenticated } from "@/app/lib/auth";
+// import Pagination from "@/app/components/pagination/Pagination";
+// import styles from "./systemLog.module.css";
 
-import React, { useState, useEffect } from "react";
-import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
-import { systemLogs, adminList } from "../../components/Data/system-log";
-import Filter from "@/app/components/filter/filter";
-import styles from "./systemLog.module.css";
+// const SystemLogPage: React.FC = () => {
+//   const [logs, setLogs] = useState<SystemLog[]>([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const [visibleIndexes, setVisibleIndexes] = useState<number[]>([]);
+//   const [userNames, setUserNames] = useState<string[]>([]);
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const [totalPages, setTotalPages] = useState(1);
 
-const SystemLog: React.FC = () => {
-  const [filteredLogs, setFilteredLogs] = useState(systemLogs);
-  const [visibleIndexes, setVisibleIndexes] = useState<number[]>([]);
+//   const router = useRouter();
 
-  const logs = [
-    { date: "2024-12-25", text: "User Arun Kumar added Manoj Kumar as Admin" },
-    { date: "2024-12-24", text: "Sreehari Narayanan edited query C001" },
-    { date: "2024-12-23", text: "Parvathy Eeshwar removed Arun Mathew from Admin" },
-    { date: "2024-12-23", text: "Parvathy Eeshwar removed Arun Mathew from Admin" },
-    { date: "2024-12-23", text: "Parvathy Eeshwar removed Arun Mathew from Admin" },
-    { date: "2024-12-23", text: "Parvathy Eeshwar removed Arun Mathew from Admin" },
-    { date: "2024-12-23", text: "Parvathy Eeshwar removed Arun Mathew from Admin" },
-  ];
+//   useEffect(() => {
+//     if (!isAuthenticated()) {
+//       router.push("/login");
+//       return;
+//     }
 
-  const { user } = useAuth();
-  const router = useRouter();
+//     const loadUserNames = async () => {
+//       try {
+//         const names = await fetchUserNames();
+//         setUserNames(names);
+//       } catch (err:any) {
+//         console.error("Error fetching user names:", err);
+//         if (err.response?.status === 401) {
+//           setError("Unauthorized access. Please log in."); 
+//         }
+//       }
+//     };
 
-  useEffect(() => {
-    if (!user || user.status === 'INACTIVE') {
-      router.push('/pages/login');
-    }
-  }, [user, router]);
+//     loadUserNames();
+//   }, []);
 
-  useEffect(() => {
+//   const loadLogs = async (page: number) => {
+//     try {
+//       setLoading(true);
+//       setVisibleIndexes([]);
+//       const data = await fetchAllLogs(page - 1);
+//       setLogs(data);
+//       setTotalPages(Math.ceil(data.length / 10));
+//     } catch (err) {
+//       setError("Failed to load logs");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
 
-    const interval = setInterval(() => {
-      setVisibleIndexes((prev) => {
-        const nextIndex = prev.length;
-        if (nextIndex >= logs.length) {
-          clearInterval(interval);
-          console.log("Cleared interval at index:", nextIndex);
-          return prev;
-        }
-        const newVisibleIndexes = [...prev, nextIndex];
-        console.log("Previous visibleIndexes:", prev);
-        console.log("New visibleIndexes after adding index:", newVisibleIndexes);
-        return newVisibleIndexes;
-      });
-    }, 100);
+//   useEffect(() => {
+//     loadLogs(currentPage);
+//   }, [currentPage]);
 
-    return () => clearInterval(interval);
-  }, [logs.length]);
+//   const handlePageChange = (page: number) => {
+//     setCurrentPage(page);
+//   };
 
-  return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.headerLeft}>
-          <h6>System Log</h6>
-          <p>Actions done by admins</p>
-        </div>
-        <div className={styles.headerRight}>
-          <Filter admins={adminList} onFilterChange={() => { }} />
-        </div>
-      </div>
+//   const handleFilterChange = async (selectedItems: string[]) => {
+//     try {
+//       setLoading(true);
+//       setVisibleIndexes([]);
 
-      <div className={styles.content}>
-        {logs.map((log, index) => (
-          <div
-            key={index}
-            className={`${styles.logItem} ${visibleIndexes.includes(index) ? styles.visible : ""
-              }`}
-          >
-            <span className={styles.date}>{log.date}</span>
-            <div className={styles.circle}></div>
-            <div className={styles.spaceAfterCircle}></div>
-            <span className={styles.text}>{log.text}</span>
-            {index < logs.length - 1 && <div className={styles.line}></div>}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+//       if (selectedItems.length === 1) {
+//         const userId = parseInt(selectedItems[0]);
+//         const userLogs = await fetchUserLogs(userId, 0);
+//         setLogs(userLogs.length > 0 ? userLogs : []);
+//         setTotalPages(userLogs.length > 0 ? Math.ceil(userLogs.length / 10) : 1);
+//       } else {
+//         await loadLogs(1);
+//       }
+//     } catch (err) {
+//       setError("Failed to filter logs");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
 
-export default SystemLog;
+//   useEffect(() => {
+//     if (!loading && logs.length > 0) {
+//       const totalEntries = logs.reduce((sum, dateGroup) => sum + dateGroup.logs.length, 0);
+//       let currentIndex = 0;
+
+//       const interval = setInterval(() => {
+//         if (currentIndex >= totalEntries) {
+//           clearInterval(interval);
+//           return;
+//         }
+
+//         setVisibleIndexes((prev) => [...prev, currentIndex]);
+//         currentIndex++;
+//       }, 100);
+
+//       return () => clearInterval(interval);
+//     }
+//   }, [loading, logs]);
+
+//   if (loading) return <div>Loading...</div>;
+//   if (error) return <div>{error}</div>;
+
+//   return (
+//     <div className={styles.container}>
+//       <div className={styles.header}>
+//         <div className={styles.headerLeft}>
+//           <h6>System Log</h6>
+//           <p>Actions done by admins</p>
+//         </div>
+        
+//       </div>
+//       <div className={styles.content}>
+//         {logs.length > 0 ? (
+//           logs.map((dateGroup, dateIndex) => (
+//             <div key={dateGroup.date} className={styles.dateGroup}>
+//               <h3 className={styles.dateHeading}>{dateGroup.date}</h3>
+//               {dateGroup.logs.map((log, logIndex) => {
+//                 const globalIndex = logs
+//                   .slice(0, dateIndex)
+//                   .reduce((sum, group) => sum + group.logs.length, 0) + logIndex;
+
+//                 return (
+//                   <div
+//                     key={`${dateGroup.date}-${logIndex}`}
+//                     className={`${styles.logItem} ${
+//                       visibleIndexes.includes(globalIndex) ? styles.visible : ""
+//                     }`}
+//                   >
+//                     <span className={styles.time}>{log.time}</span>
+//                     <div className={styles.circle}></div>
+//                     <div className={styles.spaceAfterCircle}></div>
+//                     <span className={styles.text}>{log.description}</span>
+//                     {logIndex < dateGroup.logs.length - 1 && <div className={styles.line}></div>}
+//                   </div>
+//                 );
+//               })}
+//             </div>
+//           ))
+//         ) : (
+//           <div className={styles.noLogsMessage}>No logs available for the selected user.</div>
+//         )}
+//       </div>
+//       <div className={styles.paginationContainer}>
+//         <Pagination
+//           currentPage={currentPage}
+//           totalPages={totalPages}
+//           onPageChange={handlePageChange}
+//         />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default SystemLogPage;

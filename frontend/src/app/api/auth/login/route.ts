@@ -1,4 +1,3 @@
-// src/app/api/auth/login/route.ts
 import { NextResponse } from 'next/server';
 import { API_BASE_URL } from '@/config/apiConfig';
 

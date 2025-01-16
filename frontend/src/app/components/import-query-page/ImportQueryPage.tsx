@@ -4,14 +4,20 @@ import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import { Button, Typography } from '@mui/material';
 import styles from './ImportQueryPage.module.css';
-import DataCardImport from '../dashboard-datacard copy/DataCardImport';
+import DataCardImport from '../import-datacard/DataCardImport';
 import QueryTagInterface from '@/app/interface/query/queryTagInterface';
 import { handleAddNewBulkQueryAndAnswer } from '@/app/util/query/queryFunctionalities';
 import { useAuth } from '@/context/AuthContext';
 import fetchAllTagDetails from '@/app/api/tags/route.ts';
 import { handleAddNewTag } from '@/app/util/tags/tagFunctionalities';
+import NewButton from '../new-button/NewButton';
+import DataPopupImport from '../data-popup-import/DataPopupImport';
+import { v4 as uuidv4 } from 'uuid';
+import { log } from 'console';
+
 
 interface ProcessedDataType {
+  id: string;
   question: string;
   userId: number;
   tags: QueryTagInterface[];
@@ -28,6 +34,8 @@ const ImportQueryPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [questions, setQuestions] = useState<ProcessedDataType[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCardData, setSelectedCardData] = useState<ProcessedDataType | null>(null);
+  const [openPopup, setOpenPopup] = useState(false);
 
   useEffect(() => {
     const cachedData = localStorage.getItem(CACHE_KEY);
@@ -52,6 +60,9 @@ const ImportQueryPage = () => {
       const reader = new FileReader();
 
       reader.onload = (event) => {
+
+        let id: number = 1;
+
         const result = event.target?.result as ArrayBuffer;
         const data = new Uint8Array(result);
         const workbook = XLSX.read(data, { type: 'array' });
@@ -104,14 +115,18 @@ const ImportQueryPage = () => {
 
             const existingQuestion = processedData.find((data) => data.question === question);
             if (existingQuestion) {
-              existingQuestion.answers.push({ answer, userId: user.id });
+              existingQuestion.answers.push({
+                answer, userId: user.id
+              });
             } else {
               processedData.push({
+                id: uuidv4(),
                 question,
                 userId: user.id,
                 tags,
                 answers: [{ answer, userId: user.id }],
               });
+              id++;
             }
           }
         });
@@ -211,7 +226,34 @@ const ImportQueryPage = () => {
     }
   };
 
+  function handleDownloadTemplate(): void {
+    const filePath = '/assets/templates/Import Query Template.xlsx'; 
 
+    const anchor = document.createElement('a');
+    anchor.href = filePath;
+    anchor.download = 'Import Query Template.xlsx'; 
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+  }
+
+
+  const handleCardClick = (data: ProcessedDataType) => {
+    setSelectedCardData(data);
+    setOpenPopup(true);
+  };
+
+  const handlePopupSave = (updatedData: ProcessedDataType) => {
+    console.log('Updated Data:', updatedData);
+    console.log(' Data:', questions);
+
+    setQuestions((prev) =>
+      prev.map((question) =>
+        question.id === updatedData.id ? { ...question, ...updatedData } : question
+      )
+    );
+    setOpenPopup(false);
+  };
 
   return (
     <div className={styles.container}>
@@ -222,12 +264,10 @@ const ImportQueryPage = () => {
               key={index}
               id={index + 1}
               question={question.question}
-              customer={question.tags.find((tag) => tag.tagGroupName === 'Company')?.tagName || ''}
-              createdBy="System"
-              createdAt={new Date().toISOString().split('T')[0]}
               answers={question.answers}
               tags={question.tags}
               onDelete={() => setQuestions((prev) => prev.filter((_, i) => i !== index))}
+              onClick={() => handleCardClick(question)}
             />
           ))
         ) : (
@@ -241,37 +281,61 @@ const ImportQueryPage = () => {
         )}
       </div>
       <div className={styles.footer}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleClear}
-          disabled={!file && questions.length === 0}
-        >
-          Clear
-        </Button>
-        <Button
-          variant="contained"
-          color={questions.length > 0 ? 'success' : 'info'}
-          onClick={() =>
-            questions.length > 0 ? handleSave() : document.getElementById('fileInput')?.click()
-          }
-        >
-          {questions.length > 0 ? 'Save Data' : 'Import File'}
-          <input
-            id="fileInput"
-            type="file"
-            hidden
-            accept=".xlsx, .xls"
-            onChange={handleFileChange}
-          />
-        </Button>
-        {error && (
-          <Typography color="error" className={styles.errorMessage}>
-            {error}
-          </Typography>
-        )}
+        <div className={styles.leftButtons}>
+          <NewButton
+            variant="custom"
+            onClick={handleDownloadTemplate}
+            width="fit"
+            type="button"
+          >
+            Download Template
+          </NewButton>
+        </div>
+        <div className={styles.rightButtons}>
+          <NewButton
+            variant="cancel"
+            onClick={handleClear}
+            disabled={!file && questions.length === 0}
+            width="fit"
+            type="button"
+          >
+            Clear
+          </NewButton>
+          <NewButton
+            variant={questions.length > 0 ? 'submit' : 'info'}
+            onClick={() =>
+              questions.length > 0 ? handleSave() : document.getElementById('fileInput')?.click()
+            }
+            width="fit"
+            type="button"
+          >
+            {questions.length > 0 ? 'Save Data' : 'Import File'}
+            <input
+              id="fileInput"
+              type="file"
+              hidden
+              accept=".xlsx, .xls"
+              onChange={handleFileChange}
+            />
+          </NewButton>
+        </div>
       </div>
+
+      {openPopup && (
+        <DataPopupImport
+          data={selectedCardData}
+          onClose={() => setOpenPopup(false)}
+          onSave={handlePopupSave}
+        />
+      )}
+
+      {error && (
+        <Typography color="error" className={styles.errorMessage}>
+          {error}
+        </Typography>
+      )}
     </div>
+
   );
 };
 

@@ -37,7 +37,6 @@ const TableWrapper: React.FC<TableWrapperProps> = ({
                 border: "none",
                 boxShadow: "none",
                 "& .MuiTableCell-root": {
-
                     padding: "8px",
                 },
             }}
@@ -57,7 +56,7 @@ const TableWrapper: React.FC<TableWrapperProps> = ({
                             key={`${row.id}-${row.createdAt}`}
                             name={row.firstName}
                             email={row.email}
-                            location={row.location}
+                            userRole={row.roles[0].roleName}
                             status={row.status}
                             username={row.username}
                             isActive={row.isActive}
