@@ -11,13 +11,14 @@ interface DecodedToken {
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
-    // Public routes
-    if (pathname.startsWith('/login') || pathname.startsWith('/register') || pathname.startsWith('/api/auth')) {
+    if (pathname.startsWith('/login') || 
+        pathname.startsWith('/register') || 
+        pathname.startsWith('/api/auth')) {
         return NextResponse.next();
     }
 
     const authHeader = request.headers.get('Authorization');
-    const token = authHeader && authHeader.split(' ')[1];
+    const token = authHeader?.split(' ')[1] || request.cookies.get('token')?.value;
 
     if (!token) {
         return NextResponse.redirect(new URL('/login', request.url));
@@ -28,21 +29,34 @@ export function middleware(request: NextRequest) {
         const currentTime = Date.now() / 1000;
 
         if (decoded.exp < currentTime) {
-            return NextResponse.redirect(new URL('/login', request.url));
+            const response = NextResponse.redirect(new URL('/login', request.url));
+            response.cookies.delete('token');
+            return response;
         }
 
-        // Role-based redirection
         if (pathname.startsWith('/super-admin') && !decoded.roles.includes('SUPER_ADMIN')) {
             return NextResponse.redirect(new URL('/dashboard', request.url));
         }
+
+        const requestHeaders = new Headers(request.headers);
+        requestHeaders.set('x-user-roles', decoded.roles.join(','));
+        requestHeaders.set('x-user-email', decoded.sub);
+
+        return NextResponse.next({
+            headers: requestHeaders
+        });
+
     } catch (error) {
-        console.error('Middleware error:', error); // Log the error
+        console.error('Token validation error:', error);
         return NextResponse.redirect(new URL('/login', request.url));
     }
-
-    return NextResponse.next();
 }
 
 export const config = {
-    matcher: ['/super-admin/:path*', '/dashboard/:path*', '/questions/:path*', '/answers/:path*'],
+    matcher: [
+        '/super-admin/:path', 
+        '/dashboard/:path', 
+        '/questions/:path', 
+        '/answers/:path',
+    ],
 };

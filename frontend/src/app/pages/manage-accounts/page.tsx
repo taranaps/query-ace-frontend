@@ -10,7 +10,7 @@ import Pagination from "../../components/pagination/Pagination";
 import AddAdminPopup from "../../components/add-admin-popup/AddAdminPopup";
 import AdminTogglePopup from "../../components/admin-toggle-popup/AdminTogglePopup";
 import { fetchUserInterface } from "@/app/interface/user/fetchUserInterface";
-import { handleSubmitEdit } from "@/app/util/admin/adminFunctionalities";
+// import { handleSubmitEdit } from "@/app/util/admin/adminFunctionalities";
 
 import styles from "./ManageAccountsPage.module.css";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";

@@ -1,158 +1,229 @@
-// "use client";
-// import React, { useState, useEffect } from "react";
-// import { useRouter } from "next/navigation";
-// import { SystemLog } from "types/system-log";
-// import { fetchAllLogs, fetchUserLogs } from "@/app/api/system-log/root";
-// import { fetchUserNames } from "@/app/api/admin/user-names/root";
-// import { isAuthenticated } from "@/app/lib/auth";
-// import Pagination from "@/app/components/pagination/Pagination";
-// import styles from "./systemLog.module.css";
+"use client";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { SystemLogResponse } from "types/system-log";
+import { UserDTO } from "types/system-log";
+import { fetchAllLogs, fetchUserLogs } from "@/app/api/system-log/root";
+import { fetchUserNames } from "@/app/api/admin/user-names/root";
+import { useAuth } from '@/context/AuthContext';
+import Pagination from "@/app/components/pagination/Pagination";
+import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
+import Filter from "@/app/components/filter/filter";
+import styles from "./systemLog.module.css";
 
-// const SystemLogPage: React.FC = () => {
-//   const [logs, setLogs] = useState<SystemLog[]>([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState<string | null>(null);
-//   const [visibleIndexes, setVisibleIndexes] = useState<number[]>([]);
-//   const [userNames, setUserNames] = useState<string[]>([]);
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const [totalPages, setTotalPages] = useState(1);
+const DATES_PER_PAGE = 10;
 
-//   const router = useRouter();
+const SystemLogPage: React.FC = () => {
+ const [logs, setLogs] = useState<SystemLogResponse>([]);
+ const [loading, setLoading] = useState(true);
+ const [error, setError] = useState<string | null>(null);
+ const [visibleIndexes, setVisibleIndexes] = useState<number[]>([]);
+ const [userNames, setUserNames] = useState<UserDTO[]>([]);
+ const [currentPage, setCurrentPage] = useState(0);
+ const [selectedUser, setSelectedUser] = useState<string | null>(null);
+ const [hasMoreData, setHasMoreData] = useState(true);
 
-//   useEffect(() => {
-//     if (!isAuthenticated()) {
-//       router.push("/login");
-//       return;
-//     }
+ const router = useRouter();
+ const { user } = useAuth();
+ const token = localStorage.getItem('token');
 
-//     const loadUserNames = async () => {
-//       try {
-//         const names = await fetchUserNames();
-//         setUserNames(names);
-//       } catch (err:any) {
-//         console.error("Error fetching user names:", err);
-//         if (err.response?.status === 401) {
-//           setError("Unauthorized access. Please log in."); 
-//         }
-//       }
-//     };
+ useEffect(() => {
+   if (!user || !token) {
+     router.push("/pages/login");
+     return;
+   }
 
-//     loadUserNames();
-//   }, []);
+   const loadUserNames = async () => {
+     try {
+        console.log('Fetching user names...');
 
-//   const loadLogs = async (page: number) => {
-//     try {
-//       setLoading(true);
-//       setVisibleIndexes([]);
-//       const data = await fetchAllLogs(page - 1);
-//       setLogs(data);
-//       setTotalPages(Math.ceil(data.length / 10));
-//     } catch (err) {
-//       setError("Failed to load logs");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
+       const data = await fetchUserNames(token);
+       setUserNames(data);
+     } catch (err) {
+       console.error("Error fetching user names:", err);
+     }
+   };
 
-//   useEffect(() => {
-//     loadLogs(currentPage);
-//   }, [currentPage]);
+   loadUserNames();
+   loadLogs(0);
+ }, [user, token, router]);
 
-//   const handlePageChange = (page: number) => {
-//     setCurrentPage(page);
-//   };
+ const loadLogs = async (pageNumber: number = currentPage, userToLoad: string | null = selectedUser) => {
+    try {
+      console.log('loadLogs - Start with userToLoad:', userToLoad);
+      setLoading(true);
+      setVisibleIndexes([]);
+      let data;
+ 
+      if (userToLoad) {
+         console.log('Trying to fetch user logs for:', userToLoad);
+         const userInfo = userNames.find(u => u.username === userToLoad);
+         console.log('Found userInfo:', userInfo);
+         
+         if (!userInfo) {
+           setLogs([]);
+           setHasMoreData(false);
+           setLoading(false);
+           return;
+         }
+         try {
+           data = await fetchUserLogs(userInfo.id, pageNumber, token);
+           setHasMoreData(data && data.length > 0);
+         } catch (error: any) {
+           if (error.response?.status === 404) {
+             setLogs([]);
+             setHasMoreData(false);
+           } else {
+             throw error;
+           }
+        }
+      } else {
+        try {
+          data = await fetchAllLogs(pageNumber, token);
+          setHasMoreData(data && data.length === DATES_PER_PAGE);
+        } catch (error: any) {
+          if (error.response?.status === 404) {
+            if (pageNumber > 0) {
+              setCurrentPage(pageNumber - 1);
+              await loadLogs(pageNumber - 1);
+              return;
+            }
+            setLogs([]);
+            setHasMoreData(false);
+          } else {
+            throw error;
+          }
+        }
+      }
+ 
+      if (data) {
+        setLogs(data);
+        animateLogs(data);
+      }
+    } catch (err: any) {
+      setError("Failed to load logs");
+      if (err.response?.status === 401) {
+        router.push("/pages/login");
+      }
+    } finally {
+      setLoading(false);
+    }
+ };
+ 
+ const handleFilterChange = async (username: string | null) => {
+     setSelectedUser(username);
+     setCurrentPage(0);
+     setError(null);
+     await loadLogs(0, username);  // Pass the new username directly
+ };
 
-//   const handleFilterChange = async (selectedItems: string[]) => {
-//     try {
-//       setLoading(true);
-//       setVisibleIndexes([]);
+ const animateLogs = (logData: SystemLogResponse) => {
+   const totalLogs = logData.reduce((sum, dateGroup) => sum + dateGroup.logs.length, 0);
+   let currentIndex = 0;
 
-//       if (selectedItems.length === 1) {
-//         const userId = parseInt(selectedItems[0]);
-//         const userLogs = await fetchUserLogs(userId, 0);
-//         setLogs(userLogs.length > 0 ? userLogs : []);
-//         setTotalPages(userLogs.length > 0 ? Math.ceil(userLogs.length / 10) : 1);
-//       } else {
-//         await loadLogs(1);
-//       }
-//     } catch (err) {
-//       setError("Failed to filter logs");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
+   const interval = setInterval(() => {
+     if (currentIndex >= totalLogs) {
+       clearInterval(interval);
+       return;
+     }
 
-//   useEffect(() => {
-//     if (!loading && logs.length > 0) {
-//       const totalEntries = logs.reduce((sum, dateGroup) => sum + dateGroup.logs.length, 0);
-//       let currentIndex = 0;
+     setVisibleIndexes(prev => [...prev, currentIndex]);
+     currentIndex++;
+   }, 100);
 
-//       const interval = setInterval(() => {
-//         if (currentIndex >= totalEntries) {
-//           clearInterval(interval);
-//           return;
-//         }
+   return () => clearInterval(interval);
+ };
 
-//         setVisibleIndexes((prev) => [...prev, currentIndex]);
-//         currentIndex++;
-//       }, 100);
 
-//       return () => clearInterval(interval);
-//     }
-//   }, [loading, logs]);
+ const handlePageChange = (page: number) => {
+    if (page > 0 && (hasMoreData || page <= currentPage + 1)) {
+        setCurrentPage(page - 1);
+        loadLogs(page - 1);
+    }
+};
 
-//   if (loading) return <div>Loading...</div>;
-//   if (error) return <div>{error}</div>;
+ const getGlobalIndex = (dateIndex: number, logIndex: number) => {
+   let globalIndex = 0;
+   for (let i = 0; i < dateIndex; i++) {
+     globalIndex += logs[i].logs.length;
+   }
+   return globalIndex + logIndex;
+ };
 
-//   return (
-//     <div className={styles.container}>
-//       <div className={styles.header}>
-//         <div className={styles.headerLeft}>
-//           <h6>System Log</h6>
-//           <p>Actions done by admins</p>
-//         </div>
-        
-//       </div>
-//       <div className={styles.content}>
-//         {logs.length > 0 ? (
-//           logs.map((dateGroup, dateIndex) => (
-//             <div key={dateGroup.date} className={styles.dateGroup}>
-//               <h3 className={styles.dateHeading}>{dateGroup.date}</h3>
-//               {dateGroup.logs.map((log, logIndex) => {
-//                 const globalIndex = logs
-//                   .slice(0, dateIndex)
-//                   .reduce((sum, group) => sum + group.logs.length, 0) + logIndex;
+ return (
+   <div className={styles.container}>
+     <div className={styles.header}>
+       <div className={styles.headerLeft}>
+         <h6>System Log</h6>
+         <p>Actions done by admins</p>
+       </div>
+       <Filter 
+         userNames={userNames || []}
+         onFilterChange={handleFilterChange}
+       />
+     </div>
+     
+     {loading ? (
+       <div className={styles.loaderContainer}>
+         <LottieLoader size={"180px"} />
+       </div>
+     ) : error ? (
+       <div className={styles.error}>{error}</div>
+     ) : (
+       <div className={styles.content}>
+         {logs.length > 0 ? (
+           logs.map((dateGroup, dateIndex) => (
+             <div key={dateGroup.date} className={styles.dateGroup}>
+               <h3 className={styles.dateHeading}>
+                 {new Date(dateGroup.date).toLocaleDateString('en-US', {
+                   year: 'numeric',
+                   month: 'long',
+                   day: 'numeric'   
+                 })}
+               </h3>
+               {dateGroup.logs.map((log, logIndex) => {
+                 const globalIndex = getGlobalIndex(dateIndex, logIndex);
+                 return (
+                   <div
+                     key={`${dateGroup.date}-${logIndex}`}
+                     className={`${styles.logItem} ${
+                       visibleIndexes.includes(globalIndex) ? styles.visible : ""
+                     }`}
+                   >
+                     <span className={styles.time}>
+                       {new Date(`2000-01-01T${log.time}`).toLocaleTimeString('en-US', {
+                         hour: '2-digit',
+                         minute: '2-digit'
+                       })}
+                     </span>
+                     <div className={styles.circle}></div>
+                     <div className={styles.spaceAfterCircle}></div>
+                     <span className={styles.text}>{log.description}</span>
+                     {logIndex < dateGroup.logs.length - 1 && (
+                       <div className={styles.line}></div>
+                     )}
+                   </div>
+                 );
+               })}
+             </div>
+           ))
+         ) : (
+           <div className={styles.noLogsMessage}>No logs available</div>
+         )} 
+       </div>
+     )}
 
-//                 return (
-//                   <div
-//                     key={`${dateGroup.date}-${logIndex}`}
-//                     className={`${styles.logItem} ${
-//                       visibleIndexes.includes(globalIndex) ? styles.visible : ""
-//                     }`}
-//                   >
-//                     <span className={styles.time}>{log.time}</span>
-//                     <div className={styles.circle}></div>
-//                     <div className={styles.spaceAfterCircle}></div>
-//                     <span className={styles.text}>{log.description}</span>
-//                     {logIndex < dateGroup.logs.length - 1 && <div className={styles.line}></div>}
-//                   </div>
-//                 );
-//               })}
-//             </div>
-//           ))
-//         ) : (
-//           <div className={styles.noLogsMessage}>No logs available for the selected user.</div>
-//         )}
-//       </div>
-//       <div className={styles.paginationContainer}>
-//         <Pagination
-//           currentPage={currentPage}
-//           totalPages={totalPages}
-//           onPageChange={handlePageChange}
-//         />
-//       </div>
-//     </div>
-//   );
-// };
+    {logs.length > 0 && (
+        <div className={styles.paginationContainer}>
+            <Pagination
+                currentPage={currentPage + 1}
+                totalPages={hasMoreData ? currentPage + 2 : currentPage + 1}
+                onPageChange={handlePageChange}
+            />
+        </div>
+     )}
+   </div>
+ );
+};
 
-// export default SystemLogPage;
+export default SystemLogPage;

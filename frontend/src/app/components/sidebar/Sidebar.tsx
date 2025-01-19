@@ -21,7 +21,7 @@ const Sidebar = React.memo(() => {
         { navigationPath: '/system-log', iconPath: '/assets/icons/system-log-icon.svg', label: 'System Logs' },
     ];
 
-    if (user?.roles[0]?.roleName.includes('SUPER_ADMIN')) {
+    if (user?.roles?.[0]?.roleName === 'SUPER_ADMIN') {
         navItems.push({
             navigationPath: '/manage-accounts',
             iconPath: '/assets/icons/manage-accounts-icon.svg',

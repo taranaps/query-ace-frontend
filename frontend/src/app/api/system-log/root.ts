@@ -1,23 +1,40 @@
-// app/api/system-log/root.ts
-import axiosInstance from '@/app/lib/axios';
-import { SystemLog } from 'types/system-log';
+import { API_BASE_URL } from '@/config/apiConfig';
+import { SystemLogResponse } from 'types/system-log';
 
-export async function fetchAllLogs(page: number = 0): Promise<SystemLog[]> {
+export const fetchAllLogs = async (page: number, token: string | null): Promise<SystemLogResponse> => {
   try {
-    const response = await axiosInstance.get(`/api/v1/queryapplication/logs?page=${page}`);
-    return response.data;
+    const response = await fetch(`${API_BASE_URL}/logs?page=${page}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch logs');
+    }
+
+    return await response.json();
   } catch (error) {
-    console.error('Error fetching logs:', error);
     throw error;
   }
-}
+};
 
-export async function fetchUserLogs(userId: number, page: number = 0): Promise<SystemLog[]> {
+export const fetchUserLogs = async (userId: number, page: number, token: string | null): Promise<SystemLogResponse> => {
   try {
-    const response = await axiosInstance.get(`/api/v1/queryapplication/logs/user/${userId}?page=${page}`);
-    return response.data;
+    const response = await fetch(`${API_BASE_URL}/logs/user/${userId}?page=${page}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch user logs');
+    }
+
+    return await response.json();
   } catch (error) {
-    console.error('Error fetching user logs:', error);
     throw error;
   }
-}
+};
