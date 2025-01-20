@@ -1,215 +1,216 @@
-import React, { useEffect, useState } from 'react';
-import styles from './AddTagPopup.module.css';
+import React, { useEffect, useState } from "react";
+import styles from "./AddTagPopup.module.css";
 import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    TextField,
-} from '@mui/material';
-import { SelectChangeEvent } from '@mui/material';
-import fetchAllTagDetails from '@/app/api/tags/route.ts';
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+} from "@mui/material";
+import { SelectChangeEvent } from "@mui/material";
+import fetchAllTagDetails from "@/app/api/tags/route.ts";
 
 interface AddTagPopupProps {
     open: boolean;
     onClose: () => void;
+    // eslint-disable-next-line no-unused-vars
     onAddTags: (newTags: { group: string; tag: string }) => void;
 }
 
 const AddTagPopup: React.FC<AddTagPopupProps> = ({ open, onClose, onAddTags }) => {
-    const [tagGroups, setTagGroups] = useState<{ tagGroupName: string; tagNames: string[] }[]>([]);
-    const [selectedGroup, setSelectedGroup] = useState('');
-    const [selectedTag, setSelectedTag] = useState('');
-    const [groupSearch, setGroupSearch] = useState('');
-    const [tagSearch, setTagSearch] = useState('');
-    const [newGroupName, setNewGroupName] = useState('');
-    const [newTagName, setNewTagName] = useState('');
+  const [tagGroups, setTagGroups] = useState<{ tagGroupName: string; tagNames: string[] }[]>([]);
+  const [selectedGroup, setSelectedGroup] = useState("");
+  const [selectedTag, setSelectedTag] = useState("");
+  const [groupSearch, setGroupSearch] = useState("");
+  const [tagSearch, setTagSearch] = useState("");
+  const [newGroupName, setNewGroupName] = useState("");
+  const [newTagName, setNewTagName] = useState("");
 
-    useEffect(() => {
-        const fetchTags = async () => {
-            const tags = await fetchAllTagDetails();
-            setTagGroups(tags);
-        };
-        fetchTags();
-    }, []);
-
-    const handleGroupChange = (event: SelectChangeEvent<string>) => {
-        setSelectedGroup(event.target.value || '');
-        setSelectedTag('');
+  useEffect(() => {
+    const fetchTags = async() => {
+      const tags = await fetchAllTagDetails();
+      setTagGroups(tags);
     };
+    fetchTags();
+  }, []);
 
-    const handleTagChange = (event: SelectChangeEvent<string>) => {
-        setSelectedTag(event.target.value || '');
-    };
+  const handleGroupChange = (event: SelectChangeEvent<string>) => {
+    setSelectedGroup(event.target.value || "");
+    setSelectedTag("");
+  };
 
-    const handleAddTag = () => {
-        if (selectedGroup && selectedTag) {
-            onAddTags({ group: selectedGroup, tag: selectedTag });
-            setSelectedGroup('');
-            setSelectedTag('');
+  const handleTagChange = (event: SelectChangeEvent<string>) => {
+    setSelectedTag(event.target.value || "");
+  };
+
+  const handleAddTag = () => {
+    if (selectedGroup && selectedTag) {
+      onAddTags({ group: selectedGroup, tag: selectedTag });
+      setSelectedGroup("");
+      setSelectedTag("");
+    }
+  };
+
+  const handleGroupSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setGroupSearch(event.target.value);
+  };
+
+  const handleTagSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTagSearch(event.target.value);
+  };
+
+  const handleAddTagGroup = () => {
+    if (newGroupName) {
+      setTagGroups([...tagGroups, { tagGroupName: newGroupName, tagNames: [] }]);
+      setNewGroupName("");
+    }
+  };
+
+  const handleAddTagName = () => {
+    if (selectedGroup && newTagName) {
+      const updatedTagGroups = tagGroups.map(group => {
+        if (group.tagGroupName === selectedGroup) {
+          return { ...group, tagNames: [...group.tagNames, newTagName] };
         }
-    };
+        return group;
+      });
+      setTagGroups(updatedTagGroups);
+      setNewTagName("");
+    }
+  };
 
-    const handleGroupSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setGroupSearch(event.target.value);
-    };
+  const filteredTagGroups = tagGroups.filter(group =>
+    group.tagGroupName.toLowerCase().includes(groupSearch.toLowerCase())
+  );
 
-    const handleTagSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setTagSearch(event.target.value);
-    };
-
-    const handleAddTagGroup = () => {
-        if (newGroupName) {
-            setTagGroups([...tagGroups, { tagGroupName: newGroupName, tagNames: [] }]);
-            setNewGroupName('');
-        }
-    };
-
-    const handleAddTagName = () => {
-        if (selectedGroup && newTagName) {
-            const updatedTagGroups = tagGroups.map(group => {
-                if (group.tagGroupName === selectedGroup) {
-                    return { ...group, tagNames: [...group.tagNames, newTagName] };
-                }
-                return group;
-            });
-            setTagGroups(updatedTagGroups);
-            setNewTagName('');
-        }
-    };
-
-    const filteredTagGroups = tagGroups.filter(group =>
-        group.tagGroupName.toLowerCase().includes(groupSearch.toLowerCase())
-    );
-
-    const tagsForSelectedGroup =
+  const tagsForSelectedGroup =
         tagGroups.find((group) => group.tagGroupName === selectedGroup)?.tagNames || [];
 
-    const filteredTags = tagsForSelectedGroup.filter(tag =>
-        tag.toLowerCase().includes(tagSearch.toLowerCase())
-    );
+  const filteredTags = tagsForSelectedGroup.filter(tag =>
+    tag.toLowerCase().includes(tagSearch.toLowerCase())
+  );
 
-    return (
-        <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-            <div className={styles.dialogContainer}>
-                <DialogTitle className={styles.dialogTitle}>Add Tags</DialogTitle>
-                <DialogContent className={styles.dialogContent}>
-                    <FormControl className={styles.formControl} fullWidth>
-                        <InputLabel id="group-label">Tag Group</InputLabel>
-                        <Select
-                            labelId="group-label"
-                            value={selectedGroup || ''}
-                            onChange={handleGroupChange}
-                        >
-                            <MenuItem value="">
-                                <em>None</em>
-                            </MenuItem>
-                            <MenuItem>
-                                <TextField
-                                    className={styles.groupSearchField}
-                                    label="Search Group"
-                                    value={groupSearch}
-                                    onChange={handleGroupSearch}
-                                    fullWidth
-                                    margin="dense"
-                                />
-                            </MenuItem>
-                            {filteredTagGroups.map((group) => (
-                                <MenuItem key={group.tagGroupName} value={group.tagGroupName}>
-                                    {group.tagGroupName}
-                                </MenuItem>
-                            ))}
-                            <MenuItem>
-                                <div className={styles.newGroupContainer}>
-                                    <TextField
-                                        label="New Tag Group"
-                                        value={newGroupName}
-                                        onChange={(e) => setNewGroupName(e.target.value)}
-                                        fullWidth
-                                        margin="dense"
-                                    />
-                                    <button
-                                        className={styles.newGroupButton}
-                                        onClick={handleAddTagGroup}
-                                        disabled={!newGroupName}
-                                    >
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <div className={styles.dialogContainer}>
+        <DialogTitle className={styles.dialogTitle}>Add Tags</DialogTitle>
+        <DialogContent className={styles.dialogContent}>
+          <FormControl className={styles.formControl} fullWidth>
+            <InputLabel id="group-label">Tag Group</InputLabel>
+            <Select
+              labelId="group-label"
+              value={selectedGroup || ""}
+              onChange={handleGroupChange}
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              <MenuItem>
+                <TextField
+                  className={styles.groupSearchField}
+                  label="Search Group"
+                  value={groupSearch}
+                  onChange={handleGroupSearch}
+                  fullWidth
+                  margin="dense"
+                />
+              </MenuItem>
+              {filteredTagGroups.map((group) => (
+                <MenuItem key={group.tagGroupName} value={group.tagGroupName}>
+                  {group.tagGroupName}
+                </MenuItem>
+              ))}
+              <MenuItem>
+                <div className={styles.newGroupContainer}>
+                  <TextField
+                    label="New Tag Group"
+                    value={newGroupName}
+                    onChange={(e) => setNewGroupName(e.target.value)}
+                    fullWidth
+                    margin="dense"
+                  />
+                  <button
+                    className={styles.newGroupButton}
+                    onClick={handleAddTagGroup}
+                    disabled={!newGroupName}
+                  >
                                         Add Tag Group
-                                    </button>
-                                </div>
-                            </MenuItem>
-                        </Select>
-                    </FormControl>
+                  </button>
+                </div>
+              </MenuItem>
+            </Select>
+          </FormControl>
 
-                    <FormControl
-                        className={styles.formControl}
-                        fullWidth
-                        disabled={!tagsForSelectedGroup.length}
-                    >
-                        <InputLabel id="tag-label">Tag Name</InputLabel>
-                        <Select
-                            labelId="tag-label"
-                            value={selectedTag || ''}
-                            onChange={handleTagChange}
-                        >
-                            <MenuItem value="">
-                                <em>None</em>
-                            </MenuItem>
-                            <MenuItem>
-                                <TextField
-                                    className={styles.tagSearchField}
-                                    label="Search Tag"
-                                    value={tagSearch}
-                                    onChange={handleTagSearch}
-                                    fullWidth
-                                    margin="dense"
-                                />
-                            </MenuItem>
-                            {filteredTags.map((tag) => (
-                                <MenuItem key={tag} value={tag}>
-                                    {tag}
-                                </MenuItem>
-                            ))}
-                            <MenuItem>
-                                <div className={styles.newTagContainer}>
-                                    <TextField
-                                        label="New Tag Name"
-                                        value={newTagName}
-                                        onChange={(e) => setNewTagName(e.target.value)}
-                                        fullWidth
-                                        margin="dense"
-                                    />
-                                    <button
-                                        className={styles.newTagButton}
-                                        onClick={handleAddTagName}
-                                        disabled={!selectedGroup || !newTagName}
-                                    >
+          <FormControl
+            className={styles.formControl}
+            fullWidth
+            disabled={!tagsForSelectedGroup.length}
+          >
+            <InputLabel id="tag-label">Tag Name</InputLabel>
+            <Select
+              labelId="tag-label"
+              value={selectedTag || ""}
+              onChange={handleTagChange}
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              <MenuItem>
+                <TextField
+                  className={styles.tagSearchField}
+                  label="Search Tag"
+                  value={tagSearch}
+                  onChange={handleTagSearch}
+                  fullWidth
+                  margin="dense"
+                />
+              </MenuItem>
+              {filteredTags.map((tag) => (
+                <MenuItem key={tag} value={tag}>
+                  {tag}
+                </MenuItem>
+              ))}
+              <MenuItem>
+                <div className={styles.newTagContainer}>
+                  <TextField
+                    label="New Tag Name"
+                    value={newTagName}
+                    onChange={(e) => setNewTagName(e.target.value)}
+                    fullWidth
+                    margin="dense"
+                  />
+                  <button
+                    className={styles.newTagButton}
+                    onClick={handleAddTagName}
+                    disabled={!selectedGroup || !newTagName}
+                  >
                                         Add Tag Name
-                                    </button>
-                                </div>
-                            </MenuItem>
-                        </Select>
-                    </FormControl>
-                </DialogContent>
-                <DialogActions className={styles.dialogActions}>
-                    <button className={styles.cancelButton} onClick={onClose}>
+                  </button>
+                </div>
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions className={styles.dialogActions}>
+          <button className={styles.cancelButton} onClick={onClose}>
                         Cancel
-                    </button>
-                    <button
-                        className={styles.addButton}
-                        onClick={handleAddTag}
-                        disabled={!selectedGroup || !selectedTag}
-                    >
+          </button>
+          <button
+            className={styles.addButton}
+            onClick={handleAddTag}
+            disabled={!selectedGroup || !selectedTag}
+          >
                         Add Tag
-                    </button>
-                </DialogActions>
-            </div>
-        </Dialog>
+          </button>
+        </DialogActions>
+      </div>
+    </Dialog>
 
-    );
+  );
 };
 
 export default AddTagPopup;

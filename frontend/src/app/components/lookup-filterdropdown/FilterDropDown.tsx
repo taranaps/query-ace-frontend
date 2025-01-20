@@ -63,7 +63,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
       {/* Dropdown Trigger */}
       <button
         className={`border rounded p-2 w-48 text-left ${isOpen ? "bg-orange-100" : "bg-white"
-          } hover:bg-orange-100 transition duration-200`}
+        } hover:bg-orange-100 transition duration-200`}
         onClick={() => setIsOpen((prev) => !prev)}
       >
         {label}

@@ -1,17 +1,17 @@
 import QueryAnswerInterface from "@/app/interface/query/postQueryAnswerInterface";
 import QueryQuestionInetface from "@/app/interface/query/postQueryQuestionInterface";
 
-export default async function postQueryWithAnswers(
+export const postQueryWithAnswers = async(
   questionData: QueryQuestionInetface[],
   answersData: QueryAnswerInterface[]
-) {
-  const baseUrl = 'http://localhost:8080/api/v1/queryapplication/queries';
+) => {
+  const baseUrl = "http://localhost:8080/api/v1/queryapplication/queries";
 
   try {
     const queryResponse = await fetch(baseUrl, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(questionData),
     });
@@ -24,12 +24,11 @@ export default async function postQueryWithAnswers(
     const queryId = queryResponseData[0];
 
     if (!queryId) {
-      throw new Error('No ID found in the query response.');
+      throw new Error("No ID found in the query response.");
     }
 
     if (answersData.length > 0) {
       const answersUrl = `${baseUrl}/${queryId}/answers`;
-
 
       const answersWithQueryId = answersData.map((answer) => ({
         ...answer,
@@ -37,9 +36,9 @@ export default async function postQueryWithAnswers(
       }));
 
       const answersResponse = await fetch(answersUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(answersWithQueryId),
       });
@@ -56,7 +55,7 @@ export default async function postQueryWithAnswers(
     if (error instanceof Error) {
       throw new Error(`Failed to complete the operation: ${error.message}`);
     } else {
-      throw new Error('An unknown error occurred.');
+      throw new Error("An unknown error occurred.");
     }
   }
-}
+};

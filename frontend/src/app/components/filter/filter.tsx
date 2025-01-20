@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import './filter.css';
+import "./filter.css";
 
 interface TagData {
   tagGroupName: string;
@@ -7,8 +7,8 @@ interface TagData {
 }
 
 interface FilterProps {
-  label: string; 
-  tagData: TagData[]; 
+  label: string;
+  tagData: TagData[];
   onFilterChange: (selectedTags: string[]) => void;
 }
 
@@ -21,7 +21,6 @@ const Filter: React.FC<FilterProps> = ({ tagData, onFilterChange }) => {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value.toLowerCase());
   };
-
 
   const handleSelect = (tag: string) => {
     const updatedSelection = selectedTags.includes(tag)
@@ -40,8 +39,6 @@ const Filter: React.FC<FilterProps> = ({ tagData, onFilterChange }) => {
     setHoveredGroup(null);
   };
 
-  
-
   return (
     <div className="filter-container">
       <button className="filter-button" onClick={() => setIsPopupOpen(!isPopupOpen)}>
@@ -55,7 +52,7 @@ const Filter: React.FC<FilterProps> = ({ tagData, onFilterChange }) => {
               ✕
             </button>
           </div>
-          
+
           <div className="filter-group-dropdown">
             {tagData.map((group, index) => (
               <div
@@ -65,7 +62,7 @@ const Filter: React.FC<FilterProps> = ({ tagData, onFilterChange }) => {
                 onMouseLeave={handleMouseLeave}
               >
                 <button className="dropdown-toggle">{group.tagGroupName}</button>
-                
+
                 {hoveredGroup === group.tagGroupName && (
                   <ul className="tag-list">
                     {group.tagNames.map((tag, idx) => (

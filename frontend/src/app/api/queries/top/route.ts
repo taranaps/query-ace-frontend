@@ -1,9 +1,7 @@
-// src/app/api/queries/top/route.ts
+import { NextResponse } from "next/server";
+import { API_BASE_URL } from "@/config/apiConfig";
 
-import { NextResponse } from 'next/server';
-import { API_BASE_URL } from '@/config/apiConfig';
-
-export async function GET() {
+export const GET = async() => {
   try {
     const response = await fetch(`${API_BASE_URL}/queries/top`);
     const data = await response.json();
@@ -25,4 +23,4 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
+};

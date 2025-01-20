@@ -9,7 +9,7 @@ const ForgotPasswordPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter(); // Initialize useRouter
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 

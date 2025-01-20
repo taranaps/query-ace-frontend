@@ -54,4 +54,4 @@ const LottieIconButton: React.FC<LottieIconButtonProps> = ({
   );
 };
 
-export default React.memo(LottieIconButton); 
+export default React.memo(LottieIconButton);

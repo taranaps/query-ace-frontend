@@ -1,11 +1,10 @@
-'use client';
-
+"use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const ResetPasswordPage = ({ params }: { params: { token: string } }) => {
   const router = useRouter();
-  const token = params?.token; 
+  const token = params?.token;
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -19,7 +18,7 @@ const ResetPasswordPage = ({ params }: { params: { token: string } }) => {
       return;
     }
 
-    const validateToken = async () => {
+    const validateToken = async() => {
       setLoading(true);
       try {
         const response = await fetch(`/api/auth/reset-password/${token}`, { method: "GET" });
@@ -32,7 +31,7 @@ const ResetPasswordPage = ({ params }: { params: { token: string } }) => {
           setMessage(data.message || "Invalid or expired token.");
           setIsTokenValid(false);
         }
-      } catch (error) {
+      } catch {
         setLoading(false);
         setMessage("Error validating token.");
         setIsTokenValid(false);
@@ -42,7 +41,7 @@ const ResetPasswordPage = ({ params }: { params: { token: string } }) => {
     validateToken();
   }, [token]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -67,13 +66,13 @@ const ResetPasswordPage = ({ params }: { params: { token: string } }) => {
       } else {
         setMessage(data.message || "Error resetting password.");
       }
-    } catch (error) {
+    } catch {
       setLoading(false);
       setMessage("An error occurred while resetting the password.");
     }
   };
 
-  if (isTokenValid === null) return <div>Loading...</div>; 
+  if (isTokenValid === null) return <div>Loading...</div>;
 
   return (
     <div>

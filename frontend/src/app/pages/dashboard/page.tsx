@@ -6,15 +6,12 @@ import { useRouter } from "next/navigation";
 import DataCardDashboard from "@/app/components/dashboard-datacard/DataCardDashboard";
 import styles from "./dashboard.module.css";
 import searchQueryResult from "@/app/interface/query/searchQueryResult";
-import fetchQueryUsingKeyword from "@/app/api/queries/fetchQueryUsingKeyword";
+import { fetchQueryUsingKeyword } from "@/app/api/queries/fetchQueryUsingKeyword";
 import DataPopup from "@/app/components/data-popup/DataPopup";
-import fetchQueryWithAnswers from "@/app/api/questioncard/fetchQueryAnswers";
+import { fetchQueryWithAnswers } from "@/app/api/questioncard/fetchQueryAnswers";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
 import planeanimation from "../../../../public/assets/animatedIcons/Paper Plane (1).json";
 import LottieIconButton from "../../components/lottie-animated-button/LottieIconButton";
-
-
-
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -38,7 +35,7 @@ const Dashboard: React.FC = () => {
 
   const [trendingQueries, setTrendingQueries] = useState<any[]>([]);
 
-  const fetchTrendingQueries = async () => {
+  const fetchTrendingQueries = async() => {
     try {
       const response = await fetch("/api/queries/top");
       if (!response.ok) {
@@ -55,7 +52,7 @@ const Dashboard: React.FC = () => {
     fetchTrendingQueries();
   }, []);
 
-  const handleCardClick = async (event: React.MouseEvent<HTMLElement>, item: any) => {
+  const handleCardClick = async(event: React.MouseEvent<HTMLElement>, item: any) => {
     setSelectedItem(item);
 
     const rect = event.currentTarget.getBoundingClientRect();
@@ -145,8 +142,6 @@ const Dashboard: React.FC = () => {
                     />
                   </div>
                 </div>
-
-
 
                 <div className={styles.queriesContent}>
                   {/* Dummy Data for Trending Queries */}

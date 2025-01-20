@@ -54,7 +54,7 @@ const DataPopupImport = ({
     setTagGroups(updatedTags);
   };
 
-  const handleSave = async () => {
+  const handleSave = async() => {
     const updatedData = {
       id: data.id,
       question: editableQuestion,
@@ -122,45 +122,45 @@ const DataPopupImport = ({
           </div>
         </div>
 
-          <h3 className={styles.tagTitle}>Tags:</h3>
+        <h3 className={styles.tagTitle}>Tags:</h3>
         <div className={styles.dataCardTags}>
-            {tagGroups.length > 0 ? (
-              tagGroups.map((tag: any, index: number) => (
-                <div key={index} className={styles.tag}>
-                  <div className={styles.tagGroup}>{tag.tagGroupName}</div>
-                  <input
-                    type="text"
-                    value={tag.tagName}
-                    onChange={(e) => handleTagChange(index, e.target.value)}
-                    className={styles.editableInput}
-                  />
-                  <button
-                    className={styles.crossButton}
-                    onClick={() => handleRemoveTag(index)}
-                  >
+          {tagGroups.length > 0 ? (
+            tagGroups.map((tag: any, index: number) => (
+              <div key={index} className={styles.tag}>
+                <div className={styles.tagGroup}>{tag.tagGroupName}</div>
+                <input
+                  type="text"
+                  value={tag.tagName}
+                  onChange={(e) => handleTagChange(index, e.target.value)}
+                  className={styles.editableInput}
+                />
+                <button
+                  className={styles.crossButton}
+                  onClick={() => handleRemoveTag(index)}
+                >
                     ✕
-                  </button>
-                </div>
-              ))
-            ) : (
-              <p>No tags available.</p>
-            )}
-            <button
-              className={`${styles.addTagButton} ${styles.tag}`}
-              onClick={handleAddTag}
-            >
+                </button>
+              </div>
+            ))
+          ) : (
+            <p>No tags available.</p>
+          )}
+          <button
+            className={`${styles.addTagButton} ${styles.tag}`}
+            onClick={handleAddTag}
+          >
               Add Tag +
-            </button>
-          </div>
-
-          <div className={styles.saveButtonContainer}>
-            <NewButton variant="custom" onClick={handleSave} width="fit" type="button">
-              Save Changes
-            </NewButton>
-          </div>
+          </button>
         </div>
-      </div >
-      );
+
+        <div className={styles.saveButtonContainer}>
+          <NewButton variant="custom" onClick={handleSave} width="fit" type="button">
+              Save Changes
+          </NewButton>
+        </div>
+      </div>
+    </div >
+  );
 };
 
-      export default DataPopupImport;
+export default DataPopupImport;

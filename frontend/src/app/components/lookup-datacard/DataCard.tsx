@@ -57,23 +57,20 @@ const DataCard: React.FC<DataCardProps> = ({
           </Typography>
         )}
 
-        {/* Details and Buttons */}
         {buttonPosition === "same-row" ? (
-          // Place buttons in the same row as details
           <Box
             sx={{
               display: "flex",
-              justifyContent: "space-between", // Align details and buttons
-              alignItems: "center", // Vertically align items
-              flexWrap: "wrap", // Allow wrapping for smaller screens
-              gap: "1rem", // Added spacing between details and buttons
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "1rem",
               mb: 2,
             }}
           >
-            {/* Details */}
             <Box
               sx={{
-                maxWidth: "70%", 
+                maxWidth: "70%",
                 maxHeight: scrollable ? 100 : "auto",
                 overflowY: scrollable ? "auto" : "visible",
               }}
@@ -85,7 +82,6 @@ const DataCard: React.FC<DataCardProps> = ({
               )}
             </Box>
 
-            {/* Buttons */}
             {buttons && buttons.length > 0 && (
               <Stack direction="row" spacing={1}>
                 {buttons.map((button, index) => (
@@ -106,7 +102,6 @@ const DataCard: React.FC<DataCardProps> = ({
           </Box>
         ) : (
           <Box>
-            {/* Details */}
             <Box
               sx={{
                 maxHeight: scrollable ? 100 : "auto",
@@ -130,8 +125,8 @@ const DataCard: React.FC<DataCardProps> = ({
                     buttonAlignment === "right"
                       ? "flex-end"
                       : buttonAlignment === "center"
-                      ? "center"
-                      : "flex-start",
+                        ? "center"
+                        : "flex-start",
                   mt: 2,
                 }}
               >
