@@ -57,6 +57,17 @@ const eslintConfig = [
       // Enforce consistent newline at the end of files
       "eol-last": ["error", "always"],
 
+    
+        "selector": "property",
+        "format": ["camelCase", "UPPER_CASE"],
+        "leadingUnderscore": "allow",
+     
+    
+        "selector": "property",
+        "format": null,
+        "modifiers": ["requiresQuotes"],
+    
+
       // "@typescript-eslint/naming-convention": [
       //   "error",
       //   {
