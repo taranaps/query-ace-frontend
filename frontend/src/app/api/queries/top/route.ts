@@ -1,27 +1,24 @@
-// src/app/api/queries/top/route.ts
-
 import { NextResponse } from 'next/server';
 import { API_BASE_URL } from '@/config/apiConfig';
+import { headers } from 'next/headers';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const response = await fetch(`${API_BASE_URL}/queries/top`);
+    const token = request.headers.get('Authorization');
+
+    const response = await fetch(`${API_BASE_URL}/queries/trending`, {
+      headers: {
+        'Authorization': token || '',
+        'Content-Type': 'application/json'
+      }
+    });
+
     const data = await response.json();
-
-    if (!response.ok) {
-      return NextResponse.json(data, { status: response.status });
-    }
-
-    return NextResponse.json(data, { status: response.status });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return NextResponse.json(
-        { message: "Error fetching top queries", error: error.message },
-        { status: 500 }
-      );
-    }
+    return NextResponse.json(data);
+    
+  } catch (error) {
     return NextResponse.json(
-      { message: "An unknown error occurred" },
+      { message: "Failed to fetch trending queries" },
       { status: 500 }
     );
   }

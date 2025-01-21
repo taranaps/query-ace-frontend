@@ -247,10 +247,10 @@ const ManageAccountsPage: React.FC = () => {
                     </div>
                 </div>
                 <NewButton
-    variant="custom" // Choose the appropriate variant (e.g., 'submit' or another variant depending on your design)
+    variant="custom" 
     onClick={handleAddAccount}
-    width="fit" // Adjust the width if necessary
-    type="button" // Use 'button' type for a regular button
+    width="fit" 
+    type="button" 
 >
     + Add Account
 </NewButton>

@@ -12,7 +12,7 @@ import fetchQueryWithAnswers from "@/app/api/questioncard/fetchQueryAnswers";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
 import planeanimation from "../../../../public/assets/animatedIcons/Paper Plane (1).json";
 import LottieIconButton from "../../components/lottie-animated-button/LottieIconButton";
-
+import {TrendingQuery} from "types/TrendingQuery";
 
 
 
@@ -36,24 +36,49 @@ const Dashboard: React.FC = () => {
   const [popupPosition, setPopupPosition] = useState<{ top: number, left: number }>({ top: 0, left: 0 });
   const [popupSize, setPopupSize] = useState<{ width: number; height: number }>({ width: 60, height: 20 });
 
-  const [trendingQueries, setTrendingQueries] = useState<any[]>([]);
+  const [trendingQueries, setTrendingQueries] = useState<TrendingQuery[]>([]);
 
-  const fetchTrendingQueries = async () => {
-    try {
-      const response = await fetch("/api/queries/top");
-      if (!response.ok) {
-        throw new Error("Failed to fetch trending queries.");
+  
+const fetchTrendingQueries = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await fetch("/api/queries/trending", {
+      headers: {
+        'Authorization': `Bearer ${token}`
       }
-      const data = await response.json();
-      setTrendingQueries(data);
-    } catch (error) {
-      console.error("Error fetching trending queries:", error);
-    }
-  };
+    });
+    
+    const data = await response.json();
+    console.log('Raw data:', data); // Debug log
+    console.log('Type of data:', typeof data); // Check data type
 
+    // Check if data is an array
+    if (!Array.isArray(data)) {
+      console.error('Received data is not an array:', data);
+      setTrendingQueries([]);
+      return;
+    }
+
+    const formattedData = data.map((query: TrendingQuery) => ({
+      ...query,
+      createdAt: new Date(query.createdAt).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      })
+    }));
+    
+    setTrendingQueries(formattedData);
+  } catch (error) {
+    console.error("Error fetching trending queries:", error);
+    setTrendingQueries([]);
+  }
+};
   useEffect(() => {
-    fetchTrendingQueries();
-  }, []);
+    if (user) {  
+      fetchTrendingQueries();
+    }
+  }, [user]); 
 
   const handleCardClick = async (event: React.MouseEvent<HTMLElement>, item: any) => {
     setSelectedItem(item);
@@ -124,7 +149,7 @@ const Dashboard: React.FC = () => {
         />
         <img src="/assets/icons/search-grey-icon.png" alt="Search" />
       </div>
-
+  
       <div className={styles["dashboard-body"]}>
         {isLoading ? (
           <div className={styles.loaderContainer}>
@@ -132,24 +157,20 @@ const Dashboard: React.FC = () => {
           </div>
         ) : (
           <div className={styles["dashboard-content"]}>
-            {/* Trending Queries Section */}
             {searchKeyword === "" && (
               <div className={styles.trendingQueriesContainer}>
                 <div className={styles.headingContainer}>
                   <h2 className={styles.trendingTitle}>Trending Queries</h2>
-                  <div className=" Lottie">
+                  <div className="Lottie">
                     <LottieIconButton
                       animationData={planeanimation}
                       label="Copy Answer"
-                      onClick={() => { }}
+                      onClick={() => {}}
                     />
                   </div>
                 </div>
-
-
-
+  
                 <div className={styles.queriesContent}>
-                  {/* Dummy Data for Trending Queries */}
                   {trendingQueries.map((query) => (
                     <div className={styles.queryItem} key={query.id}>
                       <div className={styles.queryInfo}>
@@ -167,42 +188,42 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
             )}
-
-            {/* Search Results */}
-            {searchKeyword !== "" && searchResults.length === 0 ? (
-              <div className={styles["image-placeholder"]}>
-                <p>No answers found</p>
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-
-                <a onClick={() => router.push("/pages/add-record")}   >Add new data?</a>
-              </div>
-            ) : (
-              searchResults.map((result) => (
-                <DataCardDashboard
-                  key={result.id}
-                  id={result.id}
-                  question={result.question}
-                  customer={"Customer"}
-                  numberOfAnswers={1}
-                  createdBy={result.usersUsername}
-                  createdAt={result.queryCreatedAt}
-                  answer={result.answers[0]?.answer || "No Answer"}
-                  tags={result.tags}
-                  deleteOn={true}
-                  copyOn={true}
-                  onClick={(e) => handleCardClick(e, result)}
-                />
-              ))
+  
+            {searchKeyword !== "" && (
+              searchResults.length === 0 ? (
+                <div className={styles["image-placeholder"]}>
+                  <p>No answers found</p>
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <a onClick={() => router.push("/pages/add-record")}>Add new data?</a>
+                </div>
+              ) : (
+                searchResults.map((result) => (
+                  <DataCardDashboard
+                    key={result.id}
+                    id={result.id}
+                    question={result.question}
+                    customer={"Customer"}
+                    numberOfAnswers={1}
+                    createdBy={result.usersUsername}
+                    createdAt={result.queryCreatedAt}
+                    answer={result.answers[0]?.answer || "No Answer"}
+                    tags={result.tags}
+                    deleteOn={true}
+                    copyOn={true}
+                    onClick={(e) => handleCardClick(e, result)}
+                  />
+                ))
+              )
             )}
           </div>
         )}
       </div>
-
+  
       {isPopupOpen && selectedItem && (
         <DataPopup
           data={{
@@ -219,10 +240,8 @@ const Dashboard: React.FC = () => {
           position={popupPosition}
           size={popupSize}
         />
-
       )}
     </div>
   );
-};
-
+}
 export default Dashboard;

@@ -114,7 +114,7 @@ const SystemLogPage: React.FC = () => {
      setSelectedUser(username);
      setCurrentPage(0);
      setError(null);
-     await loadLogs(0, username);  // Pass the new username directly
+     await loadLogs(0, username);  
  };
 
  const animateLogs = (logData: SystemLogResponse) => {
