@@ -1,7 +1,24 @@
-import { API_BASE_URL } from '@/config/apiConfig';
-import { UserDTO } from 'types/system-log';
-
-
+// admin/user-names/root.ts
+/**
+ * @function fetchUserNames
+ * @description
+ * Retrieves list of admin usernames for filtering.
+ * Includes extensive logging for debugging.
+ * 
+ * Features:
+ * - Secure data fetching
+ * - Detailed error logging
+ * - Response validation
+ * - Fallback handling
+ * 
+ * Error Cases:
+ * - Returns empty array on error
+ * - Logs all error states
+ * - Maintains app stability
+ * 
+ * @param {string|null} token - Authentication token
+ * @returns {Promise<UserDTO[]>} List of admin users
+ */
 export const fetchUserNames = async (token: string | null): Promise<UserDTO[]> => {
     try {
         console.log('Making request to:', `${API_BASE_URL}/admin/users-names`);
