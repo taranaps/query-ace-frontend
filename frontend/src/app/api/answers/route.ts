@@ -1,19 +1,14 @@
-// src/app/api/answers/route.ts
-
 import { NextResponse } from "next/server";
 import { API_BASE_URL } from "@/config/apiConfig";
 
 export const POST = async(request: Request, { params }: { params: { questionId: string } }) => {
   const questionId = params.questionId;
   const body = await request.json();
-
   const authHeader = request.headers.get("Authorization");
   const token = authHeader && authHeader.split(" ")[1];
-
   if (!token) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
-
   try {
     const response = await fetch(`${API_BASE_URL}/questions/${questionId}/answers`, {
       method: "POST",
@@ -43,7 +38,7 @@ export const POST = async(request: Request, { params }: { params: { questionId: 
       { status: 500 }
     );
   }
-}
+};
 
 export const GET = async(request: Request, { params }: { params: { questionId: string } }) => {
   const questionId = params.questionId;
@@ -79,4 +74,4 @@ export const GET = async(request: Request, { params }: { params: { questionId: s
       { status: 500 }
     );
   }
-}
+};

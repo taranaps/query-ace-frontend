@@ -32,7 +32,7 @@ const AddRecordForm = () => {
   };
 
   const handleAddAnswer = () => handleChange("answers", [...formData.answers, ""]);
-  const handleRemoveAnswer = (index: number) => handleChange("answers", formData.answers.filter((_, i) => i !== index));
+  const handleRemoveAnswer = (index: number) => handleChange("answers", formData.answers.filter((data, i) => i !== index));
 
   const handleAnswerChange = (value: string, index: number) => handleChange(
     "answers",
@@ -44,7 +44,7 @@ const AddRecordForm = () => {
     setIsTagPopupOpen(false);
   };
 
-  const handleRemoveTag = (index: number) => handleChange("tags", formData.tags.filter((_, i) => i !== index));
+  const handleRemoveTag = (index: number) => handleChange("tags", formData.tags.filter((data, i) => i !== index));
 
   const handleSave = async(e: React.FormEvent) => {
     e.preventDefault();

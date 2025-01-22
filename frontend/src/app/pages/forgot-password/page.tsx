@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useRouter } from "next/navigation";
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter(); // Initialize useRouter
+  const router = useRouter();
 
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
@@ -23,8 +23,8 @@ const ForgotPasswordPage = () => {
     if (response.ok) {
       setMessage("Password reset link sent to your email.");
       setTimeout(() => {
-        router.push("/pages/login"); // Redirect to the login page
-      }, 3000); // Optional delay before redirection
+        router.push("/pages/login");
+      }, 3000);
     } else {
       setMessage("Error: " + data.message);
     }

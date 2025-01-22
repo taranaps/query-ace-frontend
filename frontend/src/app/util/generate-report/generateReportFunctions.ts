@@ -12,7 +12,6 @@ export const handleGenerateReportSearch = async(searchData: string[]) => {
 
     if (response.ok) {
       const responseData = await response.json();
-      console.log("Report generated successfully:", responseData);
       return { success: true, data: responseData };
     }
 

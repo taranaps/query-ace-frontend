@@ -27,7 +27,7 @@ interface AddAdminPopupProps {
     onConfirm: (adminData: AdminFormData) => void;
     closePopup: () => void;
     passwordOn?: boolean;
-    formData?: Partial<AdminFormData>; // Allow partial data for initialization
+    formData?: Partial<AdminFormData>;
 }
 
 const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
@@ -36,7 +36,7 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
   onConfirm,
   closePopup,
   passwordOn = true,
-  formData = {}, // Default to an empty object if not provided
+  formData = {},
 }) => {
   const [formState, setFormState] = useState<AdminFormData>({
     firstName: formData.firstName || "",

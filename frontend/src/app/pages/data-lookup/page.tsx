@@ -13,12 +13,12 @@ import FilterDropdown from "@/app/components/lookup-filterdropdown/FilterDropDow
 import fetchAllTagDetails from "@/app/api/tags/route.ts";
 import { handleFilterQuery } from "@/app/util/query/queryFunctionalities";
 
-export const QueryLookup = () => {
+const QueryLookup = () => {
   const [data, setData] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [answers, setAnswers] = useState<any[]>([]);
+  const [answers, setAnswers] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [createdBy, setCreatedBy] = useState<string[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
@@ -203,3 +203,5 @@ export const QueryLookup = () => {
     </div>
   );
 };
+
+export default QueryLookup;

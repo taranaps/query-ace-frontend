@@ -14,8 +14,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <Box sx={{ flexShrink: 0 }}>
         <Sidebar />
       </Box>
-
-      {/* Content Area */}
       <Box
         component="main"
         sx={{

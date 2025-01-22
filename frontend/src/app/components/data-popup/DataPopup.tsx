@@ -120,7 +120,7 @@ const DataPopup = ({
     }
   };
 
-  const handleRemoveTag = (index: number) => handleChange("tags", formData.tags.filter((_, i) => i !== index));
+  const handleRemoveTag = (index: number) => handleChange("tags", formData.tags.filter((data, i) => i !== index));
 
   return (
     <div className={styles.popupOverlay}>

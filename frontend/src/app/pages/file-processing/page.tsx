@@ -24,6 +24,14 @@ import styles from "./fileprocessing.module.css";
 import { handleGenerateReportSearch } from "@/app/util/generate-report/generateReportFunctions";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
 
+/**
+ * Interface that represents a question object.
+ *
+ * @interface Question
+ * @typedef {Object} Question
+ * @property {number} id - Unique identifier for the question.
+ * @property {string} text - Text of the question.
+ */
 interface Question {
     id: number;
     text: string;
@@ -31,12 +39,34 @@ interface Question {
 
 const CACHE_KEY = "fileProcessingCache";
 
-const saveToLocalStorage = (state: any) => {
+/**
+ * Saves the current state of the process to localStorage for caching.
+ *
+ * @param {Object} state - The state object to cache.
+ * @param {Question[]} state.questions - List of questions.
+ * @param {"questions"|"import"|"result"} state.currentPage - Current page identifier.
+ * @param {number} state.currentQuestionIndex - Index of the currently active question.
+ * @param {Record<number, string>} state.selectedAnswers - Map of question IDs to selected answers.
+ * @param {string} state.searchQuery - Current search query.
+ * @param {string[]} state.keywords - List of extracted keywords.
+ */
+const saveToLocalStorage = (state: {
+  questions : Question[],
+  currentPage: "questions" | "import" | "result",
+  currentQuestionIndex: number,
+  selectedAnswers:Record<number, string>,
+  searchQuery:string,
+  keywords:string[],
+}) => {
   const cacheData = { state, timestamp: new Date().getTime() };
-  console.log("Saving to localStorage", cacheData);
   localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
 };
 
+/**
+ * Loads the cached state from localStorage.
+ *
+ * @returns {Object|null} The cached state object or null if no valid cache exists.
+ */
 const loadFromLocalStorage = () => {
   const cacheData = localStorage.getItem(CACHE_KEY);
   const expirationTime = 24 * 60 * 60 * 1000;
@@ -44,7 +74,6 @@ const loadFromLocalStorage = () => {
     const parsedData = JSON.parse(cacheData);
     const currentTime = new Date().getTime();
     if (currentTime - parsedData.timestamp < expirationTime) {
-      console.log("Loaded from localStorage", parsedData.state);
       return parsedData.state;
     } else {
       localStorage.removeItem(CACHE_KEY);
@@ -53,6 +82,11 @@ const loadFromLocalStorage = () => {
   return null;
 };
 
+/**
+ * Description placeholder
+ *
+ * @returns {*}
+ */
 const FileProcessingPage: React.FC = () => {
 
   const cachedState = loadFromLocalStorage();
@@ -64,7 +98,6 @@ const FileProcessingPage: React.FC = () => {
   const [keywords, setKeywords] = useState<string[]>(cachedState?.keywords || []);
   const [answers, setAnswers] = useState<{ id: string, answer: string }[]>(cachedState?.answers || []);
   const [loading, setLoading] = useState<boolean>(false);
-
   const { user } = useAuth();
   const router = useRouter();
 
@@ -92,7 +125,6 @@ const FileProcessingPage: React.FC = () => {
   }, [searchQuery, currentQuestionIndex, questions]);
 
   useEffect(() => {
-    console.log("State changed, saving to localStorage...");
     saveToLocalStorage({
       questions,
       currentPage,
@@ -101,7 +133,7 @@ const FileProcessingPage: React.FC = () => {
       searchQuery,
       keywords,
     });
-  }, [questions, currentPage, currentQuestionIndex, selectedAnswers, searchQuery]);
+  }, [questions, currentPage, currentQuestionIndex, selectedAnswers, searchQuery,keywords]);
 
   useEffect(() => {
     const fetchData = async() => {
@@ -123,6 +155,13 @@ const FileProcessingPage: React.FC = () => {
     fetchData();
   }, [keywords]);
 
+  /**
+ * Extracts keywords from a given text using NLP techniques.
+ * Identifies nouns and adjectives while excluding auxiliary words.
+ *
+ * @param {string} text - The input text from which to extract keywords.
+ * @returns {string[]} An array of keywords extracted from the text.
+ */
   const extractKeywords = (text: string): string[] => {
     const doc = nlp(text);
     const keywords = doc
@@ -136,6 +175,12 @@ const FileProcessingPage: React.FC = () => {
     return filteredKeywords;
   };
 
+  /**
+ * Handles the file input change event, processes the selected file,
+ * and extracts questions from it to update the state.
+ *
+ * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event triggered when a file is selected.
+ */
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
@@ -156,6 +201,10 @@ const FileProcessingPage: React.FC = () => {
     }
   };
 
+  /**
+    * Resets the application state to its initial values by clearing questions, selected answers,
+    * keywords, and cached data. Also resets the current page to the import screen.
+  */
   const handleClear = () => {
     setQuestions([]);
     setCurrentPage("import");
@@ -164,9 +213,14 @@ const FileProcessingPage: React.FC = () => {
     setSearchQuery("");
     setKeywords([]);
     localStorage.removeItem(CACHE_KEY);
-    console.log("State and cache have been cleared.");
   };
 
+  /**
+ * Updates the text of a specific question by its ID.
+ *
+ * @param {number} id - The ID of the question to update.
+ * @param {string} updatedText - The new text for the question.
+ */
   const handleEditQuestion = (id: number, updatedText: string) => {
     setQuestions((prevQuestions) =>
       prevQuestions.map((question) =>
@@ -175,14 +229,28 @@ const FileProcessingPage: React.FC = () => {
     );
   };
 
+  /**
+ * Proceeds to the questions page if there are questions available.
+ */
   const handleProceed = () => {
     if (questions.length > 0) setCurrentPage("questions");
   };
 
+  /**
+ * Selects an answer for a specific question.
+ *
+ * @param {number} questionId - The ID of the question to select an answer for.
+ * @param {string} answer - The selected answer.
+ */
   const handleAnswerSelect = (questionId: number, answer: string) => {
     setSelectedAnswers((prev) => ({ ...prev, [questionId]: answer }));
   };
 
+  /**
+    * Navigates to the next or previous question.
+    *
+    * @param {"next" | "previous"} direction - The direction to navigate ("next" or "previous").
+  */
   const handleNavigation = (direction: "next" | "previous") => {
     setCurrentQuestionIndex((prev: number) =>
       direction === "next"
@@ -192,10 +260,13 @@ const FileProcessingPage: React.FC = () => {
     setSearchQuery("");
   };
 
+  /**
+    * Downloads the questions and selected answers as an Excel file.
+ */
   const handleDownload = () => {
     const resultData = questions.map((question) => ({
-      Question: question.text,
-      Answer: selectedAnswers[question.id] || "No answer selected",
+      question: question.text,
+      answer: selectedAnswers[question.id] || "No answer selected",
     }));
     const worksheet = XLSX.utils.json_to_sheet(resultData);
     const workbook = XLSX.utils.book_new();
@@ -203,6 +274,9 @@ const FileProcessingPage: React.FC = () => {
     XLSX.writeFile(workbook, "questions_and_answers.xlsx");
   };
 
+  /**
+    * Renders the header section of the application, displaying contextual information and controls based on the current page.
+  */
   const renderHeader = () => (
     <div className={styles.header}>
       <div className={styles.headerLeft}>
@@ -241,7 +315,7 @@ const FileProcessingPage: React.FC = () => {
               onClick={() => handleClear()}
               disabled={questions.length === 0}
             >
-                            Clear
+              Clear
             </Button>
           )}
         </div>
@@ -254,7 +328,7 @@ const FileProcessingPage: React.FC = () => {
             onClick={() => handleClear()}
             disabled={questions.length === 0}
           >
-                        Cancel
+            Cancel
           </Button>
         </div>
       )
@@ -262,6 +336,9 @@ const FileProcessingPage: React.FC = () => {
     </div>
   );
 
+  /**
+    * Renders the footer section of the application, providing navigation and action controls based on the current page.
+  */
   const renderFooter = () => (
     <div className={styles.footer}>
       {currentPage === "import" ? (
@@ -273,7 +350,7 @@ const FileProcessingPage: React.FC = () => {
             onClick={handleProceed}
             disabled={questions.length === 0}
           >
-                        Proceed
+            Proceed
           </Button>
         </>
       ) : currentPage === "questions" ? (
@@ -283,7 +360,7 @@ const FileProcessingPage: React.FC = () => {
             onClick={() => handleNavigation("previous")}
             disabled={currentQuestionIndex === 0}
           >
-                        Previous
+            Previous
           </Button>
           <Button
             variant="contained"
@@ -305,25 +382,28 @@ const FileProcessingPage: React.FC = () => {
             onClick={() => handleClear()}
             disabled={questions.length === 0}
           >
-                        Clear
+            Clear
           </Button>
           <Button
             variant="contained"
             color="primary"
             onClick={handleDownload}
           >
-                        Download as Excel
+            Download as Excel
           </Button>
         </>
       )}
     </div>
   );
 
+  /**
+    * Renders the import page, displaying either an image placeholder if no questions are present or a list of question cards for editing and deletion.
+  */
   const renderImportPage = () => (
     <div className={styles.questionsContainer}>
       {questions.length === 0 ? (
         <div className={styles.questionsImage}>
-          <img src="/assets/images/import-clipboard.png" />
+          <img src="/assets/images/import-clipboard.png" alt="clipboard image"/>
         </div>) : (
         questions.map((question) => (
           <QuestionCard
@@ -340,6 +420,10 @@ const FileProcessingPage: React.FC = () => {
     </div>
   );
 
+  /**
+    * Renders the questions page, including progress, the current question, a search bar for answers,
+    * and a section to display matching answers or loading state.
+  */
   const renderQuestionsPage = () => (
     <>
       <div className={styles.progressContainer}>
@@ -402,11 +486,13 @@ const FileProcessingPage: React.FC = () => {
             </RadioGroup>
           )
         )}
-
       </div>
     </>
   );
 
+  /**
+    * Renders the results page with a table showing questions and selected answers.
+  */
   const renderResultPage = () => (
     <TableContainer component={Paper}>
       <Table>

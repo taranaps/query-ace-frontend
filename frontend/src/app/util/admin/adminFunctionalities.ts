@@ -17,19 +17,16 @@ export const handleAddAdmin = async(adminData: {
       body: JSON.stringify(adminData),
     });
 
-    console.log(JSON.stringify(adminData));
-
     if (response.ok) {
-      const result = await response.json();
-      console.log("New admin created successfully:", result);
+      return true;
     } else {
       const errorResult = await response.json();
       console.error("Failed to create admin:", errorResult);
-      alert(`Error: ${errorResult.message || "Failed to create admin."}`);
+      return false;
     }
   } catch (error) {
     console.error("Error creating admin:", error);
-    alert("An unexpected error occurred while creating the admin.");
+    return false;
   }
 };
 
@@ -51,18 +48,15 @@ export const handleEditAdmin = async(
       body: JSON.stringify(adminData),
     });
 
-    console.log(JSON.stringify(adminData));
-
     if (response.ok) {
-      const result = await response.json();
-      console.log("Admin updated successfully:", result);
+      return true;
     } else {
       const errorResult = await response.json();
       console.error("Failed to update admin:", errorResult);
-      alert(`Error: ${errorResult.message || "Failed to update admin."}`);
+      return false;
     }
   } catch (error) {
     console.error("Error updating admin:", error);
-    alert("An unexpected error occurred while updating the admin.");
+    return false;
   }
 };

@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { API_BASE_URL } from "@/config/apiConfig";
 
-export async function POST(request: Request) {
+export const POST = async(request: Request) => {
   const body = await request.json();
-
   try {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
@@ -12,13 +11,10 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify(body),
     });
-
     const data = await response.json();
-
     if (!response.ok) {
       return NextResponse.json(data, { status: response.status });
     }
-
     return NextResponse.json(data, { status: response.status });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -32,4 +28,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
+};
