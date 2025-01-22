@@ -7,6 +7,25 @@ interface SlidingToggleProps {
     onChange: (checked: boolean) => void;
 }
 
+/**
+ * A functional component that renders a sliding toggle switch.
+ * The toggle can be in an "on" or "off" state, and it triggers a callback when clicked.
+ * 
+ * @component
+ * @example
+ * return (
+ *   <SlidingToggle
+ *     checked={true}
+ *     onChange={(checked) => console.log(checked)} 
+ *   />
+ * );
+ * 
+ * @param {Object} props - The component's props.
+ * @param {boolean} props.checked - The current state of the toggle, `true` for "on" and `false` for "off".
+ * @param {function} props.onChange - A callback function that is triggered when the toggle is clicked, providing the new checked state.
+ * 
+ * @returns {React.Element} The rendered sliding toggle component.
+ */
 const SlidingToggle: React.FC<SlidingToggleProps> = ({ checked, onChange }) => {
     return (
         <div

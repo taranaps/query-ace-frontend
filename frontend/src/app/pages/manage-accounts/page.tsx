@@ -1,3 +1,9 @@
+/**
+ * @fileoverview ManageAccountsPage component for managing user accounts.
+ * Handles listing, searching, sorting, pagination, and CRUD operations for admin accounts.
+ * 
+ * @module ManageAccountsPage
+ */
 'use client';
 
 import React, { useState, useEffect } from "react";
@@ -25,6 +31,12 @@ type AdminFormData = {
     userRole: "SUPER_ADMIN" | "ADMIN"; 
 };
 
+/**
+ * Component for managing admin accounts.
+ * 
+ * @component
+ * @returns {React.ReactElement} Rendered ManageAccountsPage component.
+ */
 const ManageAccountsPage: React.FC = () => {
     const [userData, setUserData] = useState<fetchUserInterface[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
@@ -72,11 +84,19 @@ const ManageAccountsPage: React.FC = () => {
         fetchData();
     }, []);
 
+    /**
+     * Handles toggling the status of a user.
+     * @param {string} email - Email of the user to toggle.
+     */
     const handleToggleStatus = (email: string) => {
         setSelectedEmail(email);
         setOpenTogglePopup(true);
     };
 
+
+    /**
+     * Confirms and updates the toggle status of a user.
+     */
     const confirmToggleStatus = async () => {
         if (selectedEmail) {
             const userToUpdate = userData.find((item) => item.email === selectedEmail);

@@ -4,6 +4,25 @@ import React from "react";
 import { TextField, InputAdornment, Box } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
+
+/**
+ * A functional component that renders a search bar with a search icon.
+ * 
+ * @component
+ * @example
+ * return (
+ *   <SearchBar
+ *     onChange={(e) => console.log(e.target.value)} 
+ *     sx={{ margin: "20px 0" }}
+ *   />
+ * );
+ * 
+ * @param {object} props - The component's props.
+ * @param {object} [props.sx] - The styles to apply to the container (optional).
+ * @param {function} props.onChange - The callback function to handle input change events.
+ * 
+ * @returns {React.Element} The rendered search bar component.
+ */
 const SearchBar: React.FC<{ sx?: object; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }> = ({
     sx,
     onChange,

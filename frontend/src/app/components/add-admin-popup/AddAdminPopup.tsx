@@ -11,6 +11,16 @@ import Textfield from "../text-field/TextField";
 import styles from "./AddAdminPopup.module.css";
 import { LottieLoader } from "../lottie-loader/lottieLoader";
 
+/**
+ * Represents the structure of the admin form data.
+ * @typedef {Object} AdminFormData
+ * @property {string} firstName - The admin's first name.
+ * @property {string} email - The admin's email address.
+ * @property {string} location - The admin's location.
+ * @property {string} username - The admin's username.
+ * @property {string} password - The admin's password.
+ * @property {"SUPER_ADMIN" | "ADMIN"} userRole - The admin's role (either SUPER_ADMIN or ADMIN).
+ */
 interface AdminFormData {
     firstName: string;
     email: string;
@@ -20,6 +30,17 @@ interface AdminFormData {
     userRole: "SUPER_ADMIN" | "ADMIN";
 }
 
+
+/**
+ * Props for the AddAdminPopup component.
+ * @typedef {Object} AddAdminPopupProps
+ * @property {string} header - The header text for the popup.
+ * @property {Function} onClose - The function to be called when the popup is closed.
+ * @property {Function} onConfirm - The function to handle the admin data submission.
+ * @property {Function} closePopup - Function to close the popup.
+ * @property {boolean} [passwordOn=true] - Determines if the password field is shown.
+ * @property {Partial<AdminFormData>} [formData={}] - Optional partial data to initialize the form with.
+ */
 interface AddAdminPopupProps {
     header: string;
     onClose: () => void;
@@ -29,6 +50,23 @@ interface AddAdminPopupProps {
     formData?: Partial<AdminFormData>; // Allow partial data for initialization
 }
 
+/**
+ * AddAdminPopup is a modal that allows the creation of a new admin.
+ * It includes fields for first name, email, username, and password.
+ *
+ * @component
+ * @example
+ * // Usage
+ * <AddAdminPopup
+ *   header="Add Admin"
+ *   onClose={handleClose}
+ *   onConfirm={handleCreateAdmin}
+ *   closePopup={handleClosePopup}
+ * />
+ * 
+ * @param {AddAdminPopupProps} props - The properties passed to the component.
+ * @returns {JSX.Element} The AddAdminPopup component.
+ */
 const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
     header,
     onClose,
@@ -46,12 +84,22 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
         userRole: formData.userRole || "ADMIN",
     });
 
+    /**
+     * Handles input changes for the admin form fields.
+     * @param {keyof AdminFormData} field - The field being updated.
+     * @param {string} value - The new value for the field.
+     */
     const handleInputChange = (field: keyof AdminFormData, value: string) => {
         setFormState((prev) => ({ ...prev, [field]: value }));
     };
 
     const [loading, setLoading] = useState(false);
 
+    /**
+     * Handles the form submission to create a new admin.
+     * @async
+     * @function
+     */
     const handleCreate = async () => {
         const { firstName, email, location, username, password } = formState;
 

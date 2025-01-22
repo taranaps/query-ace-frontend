@@ -1,5 +1,16 @@
 import React, { ReactNode } from 'react';
 
+/**
+ * Props for the NewButton component.
+ * @typedef {Object} ButtonProps
+ * @property {'cancel' | 'submit' | 'info' | 'outlined' | 'custom'} variant - The variant style of the button.
+ * @property {'max' | 'fit' | 'fixed'} [width='fit'] - The width of the button. Default is 'fit'.
+ * @property {Function} [onClick] - The function to be called when the button is clicked.
+ * @property {ReactNode} [icon] - An optional icon to be displayed alongside the button text.
+ * @property {ReactNode} children - The content to be displayed inside the button (usually text).
+ * @property {'button' | 'submit' | 'reset'} [type='button'] - The type of the button. Default is 'button'.
+ * @property {boolean} [disabled=false] - Whether the button is disabled.
+ */
 type ButtonProps = {
     variant: 'cancel' | 'submit' | 'info' | 'outlined' | 'custom';
     width?: 'max' | 'fit' | 'fixed';
@@ -10,6 +21,23 @@ type ButtonProps = {
     disabled?: boolean;
 };
 
+/**
+ * A customizable button component that supports different styles, widths, and an optional icon.
+ * 
+ * @component
+ * @example
+ * // Usage
+ * <NewButton 
+ *   variant="submit"
+ *   width="max"
+ *   onClick={handleClick}
+ * >
+ *   Submit
+ * </NewButton>
+ *
+ * @param {ButtonProps} props - The properties passed to the component.
+ * @returns {JSX.Element} The NewButton component.
+ */
 const NewButton: React.FC<ButtonProps> = ({
     variant,
     width = 'fit',
