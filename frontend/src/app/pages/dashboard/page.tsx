@@ -1,4 +1,18 @@
 "use client";
+
+/**
+ * @module Dashboard
+ * @description
+ * Main dashboard component that displays queries and provides search functionality.
+ * Core features include:
+ * - Real-time search with debouncing
+ * - Trending queries display
+ * - Interactive query cards
+ * - Popup for detailed view
+ * - Loading states with animations
+ * - User authentication check
+ */
+
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -12,16 +26,44 @@ import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
 import planeanimation from "../../../../public/assets/animatedIcons/Paper Plane (1).json";
 import LottieIconButton from "../../components/lottie-animated-button/LottieIconButton";
 
+/**
+ * @component Dashboard
+ * @description
+ * The main dashboard component that shows queries and handles user interactions.
+ * Features:
+ * - Authentication protection
+ * - Search functionality
+ * - Trending queries display
+ * - Detailed query view in popup
+ */
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const router = useRouter();
 
+  /**
+   * @function useEffect
+   * @description
+   * Authentication check effect
+   * - Redirects to login if user is not authenticated
+   * - Redirects if user status is inactive
+   */
   useEffect(() => {
     if (!user || user.status === "INACTIVE") {
       router.push("/pages/login");
     }
   }, [user, router]);
 
+  /**
+   * @state
+   * @description
+   * Search and results state management:
+   * searchKeyword - Current search input
+   * searchResults - List of matching queries
+   * selectedItem - Currently selected query for popup
+   * isPopupOpen - Controls popup visibility
+   * answers - List of answers for selected query
+   * isLoading - Loading state indicator
+   */
   const [searchKeyword, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<searchQueryResult[]>([]);
   const [selectedItem, setSelectedItem] = useState<searchQueryResult | null>(null);
@@ -29,11 +71,31 @@ const Dashboard: React.FC = () => {
   const [answers, setAnswers] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * @state
+   * @description
+   * Popup positioning states:
+   * popupPosition - Coordinates for popup placement
+   * popupSize - Dimensions for popup animation
+   */
   const [popupPosition, setPopupPosition] = useState<{ top: number, left: number }>({ top: 0, left: 0 });
   const [popupSize, setPopupSize] = useState<{ width: number; height: number }>({ width: 60, height: 20 });
 
+  /**
+   * @state
+   * @description
+   * State for trending queries display
+   */
   const [trendingQueries, setTrendingQueries] = useState<any[]>([]);
 
+  /**
+   * @function fetchTrendingQueries
+   * @description
+   * Fetches trending queries from the server:
+   * - Makes API request for top queries
+   * - Updates trending queries state
+   * - Handles error cases
+   */
   const fetchTrendingQueries = async() => {
     try {
       const response = await fetch("/api/queries/top");
@@ -47,10 +109,27 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  /**
+   * @function useEffect
+   * @description
+   * Loads trending queries on component mount
+   */
   useEffect(() => {
     fetchTrendingQueries();
   }, []);
 
+  /**
+   * @function handleCardClick
+   * @description
+   * Handles query card click event:
+   * - Sets the selected item
+   * - Calculates popup position
+   * - Opens popup
+   * - Fetches answers for the query
+   * 
+   * @param {React.MouseEvent<HTMLElement>} event - Click event
+   * @param {searchQueryResult} item - Selected query data
+   */
   const handleCardClick = async(event: React.MouseEvent<HTMLElement>, item: searchQueryResult) => {
     setSelectedItem(item);
 
@@ -80,6 +159,15 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  /**
+   * @function useEffect
+   * @description
+   * Handles search functionality:
+   * - Implements debouncing for search
+   * - Shows loading state while fetching
+   * - Updates search results
+   * - Handles error cases
+   */
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (searchKeyword) {
@@ -96,10 +184,22 @@ const Dashboard: React.FC = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [searchKeyword]);
 
+  /**
+   * @function handleSearchChange
+   * @description
+   * Updates search query as user types
+   * 
+   * @param {React.ChangeEvent<HTMLInputElement>} event - Input change event
+   */
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
+  /**
+   * @function clearSearch
+   * @description
+   * Clears search input and results
+   */
   const clearSearch = () => {
     setSearchQuery("");
   };

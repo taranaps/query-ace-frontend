@@ -1,3 +1,34 @@
+/**
+ * @module fetchQueryWithAnswers
+ * @description
+ * API function that retrieves a query along with its answers.
+ * Features:
+ * - Input validation
+ * - Detailed error logging
+ * - Status code handling
+ * - Type checking
+ * - Graceful error recovery
+ */
+
+/**
+ * @function fetchQueryWithAnswers
+ * @description
+ * Gets detailed information about a query including its answers.
+ * Handles multiple scenarios:
+ * - Validates input ID
+ * - Handles 404 not found cases
+ * - Processes server errors
+ * - Manages network failures
+ * 
+ * Error Handling:
+ * - Returns null for invalid ID
+ * - Returns null for 404 errors
+ * - Returns null for network failures
+ * - Logs all errors for debugging
+ * 
+ * @param {number} id - ID of the query to fetch
+ * @returns {Promise<Object|null>} Query data with answers or null if error
+ */
 export const fetchQueryWithAnswers = async(id: number) => {
   if (!id || typeof id !== "number") {
     console.error("Invalid ID passed to fetch function:", id);

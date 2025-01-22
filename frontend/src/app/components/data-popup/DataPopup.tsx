@@ -1,4 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+/**
+ * @module DataPopup
+ * @description
+ * A popup component that shows detailed query information.
+ * Features:
+ * - Displays full question and answers
+ * - Allows adding new answers
+ * - Manages tags
+ * - Smooth opening animation
+ * - Error handling
+ * - Loading states
+ */
+
 import React, { useState, useEffect } from "react";
 import LottieIconButton from "../lottie-animated-button/LottieIconButton";
 import styles from "./popup.module.css";
@@ -12,6 +26,22 @@ import { formatDate } from "@/app/util/formatDate";
 import { handleAddNewTagToExistingQuery } from "@/app/util/tags/tagFunctionalities";
 import NewButton from "../../components/new-button/NewButton";
 
+/**
+ * @component DataPopup
+ * @description
+ * Displays detailed information about a query including:
+ * - Full question text
+ * - List of answers with author info
+ * - Tag management
+ * - Add/delete functionality
+ * 
+ * @param {Object} props - Component properties
+ * @param {any} props.data - Query data including answers and tags
+ * @param {Function} props.onClose - Function to close the popup
+ * @param {any} props.user - Current user information
+ * @param {Object} props.position - Initial position for animation
+ * @param {Object} props.size - Initial size for animation
+ */
 const DataPopup = ({
   data,
   onClose,
@@ -25,6 +55,10 @@ const DataPopup = ({
     position: { top: number; left: number };
     size: { width: number; height: number };
 }) => {
+  /**
+   * @state
+   * @description Main state management for popup content
+   */
   const [answers, setAnswers] = useState(data.answers);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newAnswer, setNewAnswer] = useState<string>("");
@@ -33,18 +67,34 @@ const DataPopup = ({
   const [isAddTagPopupOpen, setIsAddTagPopupOpen] = useState(false);
   const [tagGroups, setTagGroups] = useState<{ tagGroupName: string; tagNames: string }[]>([]);
 
+  /**
+   * @state
+   * @description Animation state for smooth opening
+   */
   const [isTransitionComplete, setIsTransitionComplete] = useState(false);
 
+  /**
+   * @state
+   * @description Form data management
+   */
   const [formData, setFormData] = useState({
     question: "",
     answers: [] as string[],
     tags: [] as { group: string; tag: string }[],
   });
 
+  /**
+   * @function handleChange
+   * @description Updates form data for given field
+   */
   const handleChange = (field: string, value: string | string[] | { group: string; tag: string }[]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  /**
+   * @function useEffect
+   * @description Sets up initial data and animation
+   */
   useEffect(() => {
     setTimeout(() => {
       setIsTransitionComplete(true);
@@ -53,6 +103,10 @@ const DataPopup = ({
     setTagGroups(data.tags || []);
   }, [data]);
 
+  /**
+   * @function handleConfirmDelete
+   * @description Processes answer deletion
+   */
   const handleConfirmDelete = async(itemId: number) => {
     const result = await handleDeleteQueryAnswer(itemId);
     if (result) {
@@ -60,6 +114,10 @@ const DataPopup = ({
     }
   };
 
+  /**
+   * @function handleAddAnswer
+   * @description Handles adding new answer with validation
+   */
   const handleAddAnswer = async() => {
     if (!newAnswer.trim()) {
       setError("Please enter an answer before submitting.");
@@ -92,11 +150,19 @@ const DataPopup = ({
     }
   };
 
+  /**
+   * @function handleCancelAdd
+   * @description Cancels adding new answer
+   */
   const handleCancelAdd = () => {
     setNewAnswer("");
     setIsAddModalOpen(false);
   };
 
+  /**
+   * @function handleAddTags
+   * @description Processes adding new tags
+   */
   const handleAddTags = async(newTag: { group: string; tag: string }) => {
     const tagPayload = { tagGroupName: newTag.group, tagName: newTag.tag };
 
@@ -120,6 +186,10 @@ const DataPopup = ({
     }
   };
 
+  /**
+   * @function handleRemoveTag
+   * @description Removes tag from display
+   */
   const handleRemoveTag = (index: number) => handleChange("tags", formData.tags.filter((data, i) => i !== index));
 
   return (
