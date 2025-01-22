@@ -12,7 +12,7 @@ import {
     TextField,
 } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material';
-import fetchAllTagDetails from '@/app/api/tags/route.ts';
+import fetchAllTagDetails from '@/app/api/tags/route';
 
 interface AddTagPopupProps {
     open: boolean;

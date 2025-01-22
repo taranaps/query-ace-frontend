@@ -149,7 +149,6 @@ const Dashboard: React.FC = () => {
 
 
                 <div className={styles.queriesContent}>
-                  {/* Dummy Data for Trending Queries */}
                   {trendingQueries.map((query) => (
                     <div className={styles.queryItem} key={query.id}>
                       <div className={styles.queryInfo}>

@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "jsdoc": "jsdoc ./src/**/*.js -d docs",
+    "shadcn": "npx shadcn-ui@latest",
     "test": "jest",
     "jest": {
       "setupFilesAfterEnv": [
@@ -32,8 +34,11 @@
     "react": "^18.3.1",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^18.3.1",
+    "react-hot-toast": "^2.5.1",
     "react-select": "^5.9.0",
     "recharts": "^2.15.0",
+    "shadcn-ui": "^0.9.4",
+    "uuid": "^11.0.5",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
@@ -41,6 +46,7 @@
     "@babel/plugin-syntax-jsx": "^7.25.9",
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-react": "^7.26.3",
+    "@shadcn/ui": "^0.0.4",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
@@ -60,6 +66,8 @@
     "jest-environment-jsdom": "^29.7.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-mock": "^29.7.0",
+    "jsdoc": "^4.0.4",
+    "minami": "^1.2.3",
     "msw": "^2.7.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",

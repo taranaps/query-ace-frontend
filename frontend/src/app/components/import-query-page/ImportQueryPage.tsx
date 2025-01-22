@@ -8,7 +8,7 @@ import DataCardImport from '../import-datacard/DataCardImport';
 import QueryTagInterface from '@/app/interface/query/queryTagInterface';
 import { handleAddNewBulkQueryAndAnswer } from '@/app/util/query/queryFunctionalities';
 import { useAuth } from '@/context/AuthContext';
-import fetchAllTagDetails from '@/app/api/tags/route.ts';
+import fetchAllTagDetails from '@/app/api/tags/route';
 import { handleAddNewTag } from '@/app/util/tags/tagFunctionalities';
 import NewButton from '../new-button/NewButton';
 import DataPopupImport from '../data-popup-import/DataPopupImport';
