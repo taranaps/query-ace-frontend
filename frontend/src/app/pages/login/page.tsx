@@ -1,9 +1,23 @@
 "use client";
 
+/**
+ * @file LoginPage.tsx
+ * @description A functional component for handling user login. It includes a form for email and password, 
+ * validates user credentials via an API, and redirects to the dashboard upon successful login.
+ */
+
+
 import React, { useState, useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import styles from "./login.module.css";
+
+/**
+ * LoginPage component renders the login form and handles user authentication.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered login page.
+ */
 
 const LoginPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -13,12 +27,26 @@ const LoginPage: React.FC = () => {
   const { login } = useContext(AuthContext);
   const router = useRouter();
 
+  /**
+    * Handles input changes and updates the form data.
+    *
+    * @param {React.ChangeEvent<HTMLInputElement>} e - The event triggered on input change.
+    */
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
     }));
   };
+
+/**
+     * Handles form submission, sends login credentials to the server, and processes the response.
+     *
+     * @async
+     * @param {React.FormEvent} e - The event triggered on form submission.
+     * @returns {Promise<void>} Resolves after handling the login process.
+     */
 
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
