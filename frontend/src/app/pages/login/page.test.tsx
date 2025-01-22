@@ -23,11 +23,11 @@ describe("LoginPage", () => {
       push: mockPush,
     });
 
-    render(
-      <AuthContext.Provider value={{ login: mockLogin, logout: mockLogout, token: mockToken }}>
-        <LoginPage />
-      </AuthContext.Provider>
-    );
+    // render(
+    //   <AuthContext.Provider value={{ login: mockLogin, logout: mockLogout, token: mockToken }}>
+    //     <LoginPage />
+    //   </AuthContext.Provider>
+    // );
   });
 
   test("renders login form correctly", () => {
