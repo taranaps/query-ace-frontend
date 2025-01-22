@@ -4,15 +4,11 @@ import { API_BASE_URL } from "@/config/apiConfig";
 export const GET = async(request: Request, { params }: { params: { id: string } }) => {
   try {
     const { id } = params;
-
     const response = await fetch(`${API_BASE_URL}/admin/users/${id}`);
-
     const data = await response.json();
-
     if (!response.ok) {
       return NextResponse.json(data, { status: response.status });
     }
-
     return NextResponse.json(data, { status: response.status });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -32,7 +28,6 @@ export const PATCH = async(request: Request, { params }: { params: { id: string 
   try {
     const { id } = params;
     const requestBody = await request.json();
-
     const response = await fetch(`${API_BASE_URL}/admin/users/${id}`, {
       method: "PATCH",
       headers: {
@@ -42,7 +37,6 @@ export const PATCH = async(request: Request, { params }: { params: { id: string 
     });
 
     const data = await response.json();
-
     if (!response.ok) {
       return NextResponse.json(data, { status: response.status });
     }

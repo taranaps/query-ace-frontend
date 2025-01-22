@@ -4,9 +4,6 @@ import { NextResponse } from "next/server";
 export const POST = async(request: Request) => {
   try {
     const requestBody = await request.json();
-
-    console.log(JSON.stringify(requestBody));
-
     const response = await fetch(`${API_BASE_URL}/queries/tags`, {
       method: "POST",
       headers: {

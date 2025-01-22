@@ -41,9 +41,11 @@ const DataCard: React.FC<DataCardProps> = ({
   const [editableDescription, setEditableDescription] = useState(description);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(editableText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (!copied) {
+      navigator.clipboard.writeText(editableText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   const handleSave = () => {

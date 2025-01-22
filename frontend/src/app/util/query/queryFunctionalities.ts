@@ -13,7 +13,6 @@ export const handleDeleteQuery = async(id: number) => {
       console.error(`Failed to delete query. Status: ${response.status}, Message: ${response.statusText}`);
       return false;
     }
-    console.log(`Query with ID ${id} deleted successfully.`);
     return true;
   } catch (error) {
     console.error("Error deleting query:", error);
@@ -33,7 +32,6 @@ export const handleDeleteQueryAnswer = async(id: number) => {
       console.error(`Failed to delete query answer. Status: ${response.status}, Message: ${response.statusText}`);
       return false;
     }
-    console.log(`Query answer with ID ${id} deleted successfully.`);
     return true;
   } catch (error) {
     console.error("Error deleting query answer:", error);
@@ -62,7 +60,6 @@ export const handleEditQuery = async(
     });
 
     if (response.ok) {
-      console.log("Edit query answer successful");
       return true;
     }
 
@@ -90,9 +87,6 @@ export const handleCopyQuery = async(id: number) => {
       console.error(`Failed to copy query. Status: ${response.status}, Message: ${response.statusText}`);
       return;
     }
-
-    const result = await response.json();
-    console.log("Copy query result:", result);
   } catch (error) {
     console.error("Error copying query:", error);
   }
@@ -113,8 +107,6 @@ export const handleAddNewQueryAnswer = async(
       }
     ];
 
-    console.log(JSON.stringify(requestBody));
-
     const response = await fetch("/api/queries/id/answers", {
       method: "POST",
       headers: {
@@ -130,7 +122,6 @@ export const handleAddNewQueryAnswer = async(
     }
 
     const responseData = await response.json();
-    console.log("New query answer added:", responseData);
     return { success: true, data: responseData };
   } catch (error: unknown) {
     console.error("Error occurred while adding query answer:", error);
@@ -161,9 +152,6 @@ export const handleAddNewBulkQueryAndAnswer = async(
       alert(`Failed to add queries: ${errorData.message || "Unknown error"}`);
       return false;
     }
-
-    const responseData = await response.json();
-    console.log("Response Data:", responseData);
     alert("Queries and answers added successfully!");
     return true;
 
@@ -184,8 +172,6 @@ export const handleFilterQuery = async(
     tags.forEach(tag => queryParams.append("tags", tag));
     const apiUrl = `${API_BASE_URL}/queries/filters?${queryParams.toString()}`;
 
-    console.log("API URL:", apiUrl);
-
     const response = await fetch(apiUrl, {
       method: "GET",
       headers: {
@@ -199,7 +185,6 @@ export const handleFilterQuery = async(
     }
 
     const responseData = await response.json();
-    console.log("Filtered queries:", responseData);
     return { success: true, data: responseData };
 
   } catch (error) {

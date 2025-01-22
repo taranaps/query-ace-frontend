@@ -1,11 +1,10 @@
 import { useRouter, usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 
 import styles from "./sidebar.module.css";
 
-const Sidebar = React.memo(() => {
-  console.log("Sidebar rendered");
+export const Sidebar = memo(() => {
 
   const router = useRouter();
   const pathname = usePathname();
@@ -31,7 +30,7 @@ const Sidebar = React.memo(() => {
   useEffect(() => {
     const index = navItems.findIndex((item) => item.navigationPath === pathname);
     if (index !== -1) setActiveIndex(index);
-  }, [pathname]);
+  }, [pathname,navItems]);
 
   const navigateTo = (path: string, index: number) => {
     setActiveIndex(index);
@@ -102,4 +101,4 @@ const Sidebar = React.memo(() => {
   );
 });
 
-export { Sidebar };
+Sidebar.displayName = "Sidebar";

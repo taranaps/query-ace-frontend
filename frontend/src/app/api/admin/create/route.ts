@@ -3,8 +3,6 @@ import { API_BASE_URL } from "@/config/apiConfig";
 
 export const POST = async(request: Request) => {
   const body = await request.json();
-  console.log("body-------", body);
-
   try {
     const response = await fetch(`${API_BASE_URL}/admin/create`, {
       method: "POST",

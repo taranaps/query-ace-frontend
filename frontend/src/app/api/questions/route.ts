@@ -36,7 +36,6 @@ export const POST = async(request: Request) => {
 
 export const GET = async(request: Request) => {
   const query = new URL(request.url).searchParams;
-
   const pageNo = query.get("pageNo") || "0";
   const pageSize = query.get("pageSize") || "3";
   const sortBy = query.get("sortBy") || "id";

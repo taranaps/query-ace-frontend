@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
-import Lottie from "lottie-react";
+import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import styles from "./lottiebutton.module.css";
 
 interface LottieIconButtonProps {
@@ -17,7 +17,8 @@ const LottieIconButton: React.FC<LottieIconButtonProps> = ({
   onClick,
   disabled = false,
 }) => {
-  const lottieRef = useRef<any>(null);
+
+  const lottieRef = useRef<LottieRefCurrentProps | null>(null);
 
   const handleMouseEnter = () => {
     if (lottieRef.current) {
