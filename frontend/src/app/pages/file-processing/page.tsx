@@ -32,10 +32,10 @@ import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
  * @property {number} id - Unique identifier for the question.
  * @property {string} text - Text of the question.
  */
-interface Question {
+interface Question{
     id: number;
     text: string;
-}
+};
 
 const CACHE_KEY = "fileProcessingCache";
 

@@ -2,11 +2,32 @@ import React from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import styles from "./AdminTogglePopup.module.css";
 
+/**
+ * Props for the AdminTogglePopup component.
+ * @typedef {Object} AddAdminPopupProps
+ * @property {Function} onClose - The function to be called when the popup is closed.
+ * @property {Function} onConfirm - The function to be called when the confirmation action is triggered.
+ */
 interface AddAdminPopupProps {
     onClose: () => void;
     onConfirm: () => void;
 }
 
+/**
+ * AdminTogglePopup is a modal that confirms whether the user is sure about changing the account status.
+ * It includes buttons for canceling or confirming the action.
+ *
+ * @component
+ * @example
+ * // Usage
+ * <AdminTogglePopup
+ *   onClose={handleClose}
+ *   onConfirm={handleToggleAdminStatus}
+ * />
+ * 
+ * @param {AddAdminPopupProps} props - The properties passed to the component.
+ * @returns {JSX.Element} The AdminTogglePopup component.
+ */
 const AdminTogglePopup: React.FC<AddAdminPopupProps> = ({ onClose, onConfirm }) => {
 
   return (

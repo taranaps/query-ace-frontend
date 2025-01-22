@@ -6,7 +6,6 @@
  * validates user credentials via an API, and redirects to the dashboard upon successful login.
  */
 
-
 import React, { useState, useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
