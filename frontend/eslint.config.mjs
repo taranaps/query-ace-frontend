@@ -96,7 +96,6 @@ const eslintConfig = [
           modifiers: ["requiresQuotes"],
         },
       ]
-
     },
   }),
 ];

@@ -82,7 +82,7 @@ const ManageAccountsPage: React.FC = () => {
       const userToUpdate = userData.find((item) => item.email === selectedEmail);
 
       if (userToUpdate) {
-        const updatedStatus: "ACTIVE" | "INACTIVE" = !userToUpdate.isActive ? "ACTIVE" : "INACTIVE";
+        const updatedStatus: "ACTIVE"   | "INACTIVE" = !userToUpdate.isActive ? "ACTIVE" : "INACTIVE";
 
         try {
           const url = `/api/admin/toggle-status/${userToUpdate.id}`.trim();

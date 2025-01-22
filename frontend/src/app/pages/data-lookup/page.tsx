@@ -22,7 +22,8 @@ const QueryLookup = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [createdBy, setCreatedBy] = useState<string[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
-  const [sortOrder, setSortOrder] = useState<"newest" | "earliest">("newest");
+  const [sortOrder] = useState<"newest" | "earliest">("newest"); //change done;
+
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
   const [selectedCreatedBy, setSelectedCreatedBy] = useState<string[]>([]);
   const [tagGroups, setTagGroups] = useState<{ tagGroupName: string; tagNames: string[] }[]>([]);
