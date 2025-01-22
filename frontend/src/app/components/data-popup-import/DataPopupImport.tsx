@@ -32,7 +32,7 @@ const DataPopupImport = ({
   };
 
   const handleRemoveAnswer = (index: number) => {
-    const updatedAnswers = answers.filter((_: any, i: number) => i !== index);
+    const updatedAnswers = answers.filter((answer: string, i: number) => i !== index);
     setAnswers(updatedAnswers);
   };
 
@@ -50,7 +50,7 @@ const DataPopupImport = ({
   };
 
   const handleRemoveTag = (index: number) => {
-    const updatedTags = tagGroups.filter((_: any, i: number) => i !== index);
+    const updatedTags = tagGroups.filter((data: { tags: [] }, i: number) => i !== index);
     setTagGroups(updatedTags);
   };
 
@@ -99,7 +99,7 @@ const DataPopupImport = ({
         <div className={styles.answerContainer}>
           <div className={styles.answerList}>
             {answers.length > 0 ? (
-              answers.map((answer: any, index: number) => (
+              answers.map((answer: { id:number, answer: string} , index: number) => (
                 <div key={answer.id || index} className={styles.answerItem}>
                   <input
                     type="text"
@@ -125,7 +125,7 @@ const DataPopupImport = ({
         <h3 className={styles.tagTitle}>Tags:</h3>
         <div className={styles.dataCardTags}>
           {tagGroups.length > 0 ? (
-            tagGroups.map((tag: any, index: number) => (
+            tagGroups.map((tag: { tagName:string, tagGroupName:string }, index: number) => (
               <div key={index} className={styles.tag}>
                 <div className={styles.tagGroup}>{tag.tagGroupName}</div>
                 <input

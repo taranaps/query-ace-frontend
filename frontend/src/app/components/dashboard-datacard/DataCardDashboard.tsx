@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback } from "react";
+import React, { useCallback, memo } from "react";
 import { formatDate } from "@/app/util/formatDate";
 import LottieIconButton from "../lottie-animated-button/LottieIconButton";
 import copyAnimation from "../../../../public/assets/animatedIcons/copyv3.json";
@@ -28,7 +28,7 @@ const truncateText = (text: string | undefined, limit: number): string =>
     ? `${text.split(" ").slice(0, limit).join(" ")}...`
     : text || "";
 
-const DataCardDashboard: React.FC<DataCardProps> = React.memo(
+const DataCardDashboard: React.FC<DataCardProps> = memo(
   ({
     id,
     question,
@@ -68,12 +68,8 @@ const DataCardDashboard: React.FC<DataCardProps> = React.memo(
                 height: "4px",
               }}
             ></div>
-
-            {/* <div className={styles.divider}></div> */}
-
             <div className={styles.dataCardAnswerContainer}>
               <p className={styles.dataCardAnswerHeader}>Answers: ({numberOfAnswers})</p>
-
               <div className={styles.dataCardAnswer}>
                 <p>
                   {truncateText(answer, MAX_ANSWER_WORDS)}
@@ -115,5 +111,7 @@ const DataCardDashboard: React.FC<DataCardProps> = React.memo(
     );
   }
 );
+
+DataCardDashboard.displayName = "DataCardDashboard";
 
 export default DataCardDashboard;

@@ -10,8 +10,7 @@ export const formatDate = (dateString: string) => {
   }).format(date);
 
   let [time, period] = formattedDate.split(", ");
-
   period = period.toUpperCase();
-
+  time = time.toUpperCase();
   return `${time} ${period}`;
 };

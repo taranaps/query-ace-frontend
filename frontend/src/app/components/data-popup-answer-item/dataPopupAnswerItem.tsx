@@ -99,7 +99,7 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
   const handleClickOutside = (e: MouseEvent) => {
     const target = e.target as Element | null;
     if (target && !target.closest(`.${styles.answerItem}`)) {
-      handleCloseContextMenu;
+      handleCloseContextMenu();
     }
   };
 
@@ -108,6 +108,7 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

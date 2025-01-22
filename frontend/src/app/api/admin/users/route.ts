@@ -3,13 +3,10 @@ import { API_BASE_URL } from "@/config/apiConfig";
 export const GET = async() => {
   try {
     const response = await fetch(`${API_BASE_URL}/admin/users`);
-
     const data = await response.json();
-
     if (!response.ok) {
       return NextResponse.json(data, { status: response.status });
     }
-
     return NextResponse.json(data, { status: response.status });
   } catch (error: unknown) {
     if (error instanceof Error) {

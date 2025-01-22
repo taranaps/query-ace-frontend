@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 export const POST = async(request: Request) => {
   try {
     const requestBody = await request.json();
-
     const response = await fetch(`${API_BASE_URL}/queries/bulk`, {
       method: "POST",
       headers: {
@@ -19,7 +18,6 @@ export const POST = async(request: Request) => {
         { status: 200 }
       );
     }
-
     return NextResponse.json(
       { message: `Failed to add queries and answers. Status: ${response.status}` },
       { status: response.status }

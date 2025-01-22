@@ -15,7 +15,7 @@ const eslintConfig = [
     plugins: ["prefer-arrow", "@typescript-eslint"],
     rules: {
       indent: ["error", 2],
-      "no-mixed-spaces-and-tabs": "error",
+      // "no-mixed-spaces-and-tabs": "error",
       semi: ["error", "always"],
       "object-curly-spacing": ["error", "always"],
       "space-before-function-paren": ["error", "never"],
@@ -28,6 +28,11 @@ const eslintConfig = [
           singleReturnOnly: false,
           classPropertiesAllowed: false,
         },
+      ],
+
+      "no-console": [
+        "error",
+        { allow: ["warn", "error"] }
       ],
 
       // Disallow unused variables
@@ -57,45 +62,40 @@ const eslintConfig = [
       // Enforce consistent newline at the end of files
       "eol-last": ["error", "always"],
 
-    
-        "selector": "property",
-        "format": ["camelCase", "UPPER_CASE"],
-        "leadingUnderscore": "allow",
-     
-    
-        "selector": "property",
-        "format": null,
-        "modifiers": ["requiresQuotes"],
-    
-
-      // "@typescript-eslint/naming-convention": [
-      //   "error",
-      //   {
-      //     selector: "variable",
-      //     format: ["camelCase", "UPPER_CASE", "PascalCase"],
-      //   },
-      //   {
-      //     selector: "function",
-      //     format: ["camelCase", "PascalCase"],
-      //   },
-      //   {
-      //     selector: "typeLike",
-      //     format: ["camelCase", "PascalCase"],
-      //   },
-      //   {
-      //     selector: "property",
-      //     format: ["camelCase", "PascalCase"],
-      //     leadingUnderscore: "allow",
-      //   },
-      //   {
-      //     selector: "method",
-      //     format: ["camelCase", "PascalCase"],
-      //   },
-      //   {
-      //     selector: "default",
-      //     format: ["camelCase", "PascalCase"],
-      //   },
-      // ]
+      "@typescript-eslint/naming-convention": [
+        "error",
+        {
+          selector: "variable",
+          format: ["camelCase", "UPPER_CASE", "PascalCase"],
+          leadingUnderscore: "allow",
+        },
+        {
+          selector: "function",
+          format: ["camelCase", "PascalCase"],
+        },
+        {
+          selector: "typeLike",
+          format: ["camelCase", "PascalCase"],
+        },
+        {
+          selector: "method",
+          format: ["camelCase", "PascalCase"],
+        },
+        {
+          selector: "default",
+          format: ["camelCase", "PascalCase"],
+        },
+        {
+          selector: "property",
+          format: ["camelCase", "UPPER_CASE", "PascalCase"],
+          leadingUnderscore: "allow",
+        },
+        {
+          selector: "property",
+          format: null,
+          modifiers: ["requiresQuotes"],
+        },
+      ]
 
     },
   }),

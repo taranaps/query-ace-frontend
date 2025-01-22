@@ -1,5 +1,4 @@
 "use client";
-
 import "./globals.css";
 import { ThemeProvider } from "@mui/material/styles";
 import { AuthProvider } from "@/context/AuthContext";
@@ -8,7 +7,7 @@ import theme from "./theme/theme";
 import MainLayout from "../app/components/main-layout/MainLayout";
 import { usePathname } from "next/navigation";
 
-export const RootLayout = ({ children }: { children: React.ReactNode }) => {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const pagesWithoutLayout = ["/pages/login", "/pages/forgot-password", "/pages/reset-password"];
   return (<html lang="en">
@@ -24,3 +23,5 @@ export const RootLayout = ({ children }: { children: React.ReactNode }) => {
   </html>
   );
 };
+
+export default RootLayout;

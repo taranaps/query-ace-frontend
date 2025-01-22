@@ -235,9 +235,6 @@ const ImportQueryPage = () => {
   };
 
   const handlePopupSave = (updatedData: ProcessedDataType) => {
-    console.log("Updated Data:", updatedData);
-    console.log(" Data:", questions);
-
     setQuestions((prev) =>
       prev.map((question) =>
         question.id === updatedData.id ? { ...question, ...updatedData } : question
@@ -257,7 +254,7 @@ const ImportQueryPage = () => {
               question={question.question}
               answers={question.answers}
               tags={question.tags}
-              onDelete={() => setQuestions((prev) => prev.filter((_, i) => i !== index))}
+              onDelete={() => setQuestions((prev) => prev.filter((data, i) => i !== index))}
               onClick={() => handleCardClick(question)}
             />
           ))

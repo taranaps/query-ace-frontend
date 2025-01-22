@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -25,9 +24,9 @@ const Dashboard: React.FC = () => {
 
   const [searchKeyword, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<searchQueryResult[]>([]);
-  const [selectedItem, setSelectedItem] = useState<any | null>(null);
+  const [selectedItem, setSelectedItem] = useState<searchQueryResult | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [answers, setAnswers] = useState<any[]>([]);
+  const [answers, setAnswers] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const [popupPosition, setPopupPosition] = useState<{ top: number, left: number }>({ top: 0, left: 0 });
@@ -52,7 +51,7 @@ const Dashboard: React.FC = () => {
     fetchTrendingQueries();
   }, []);
 
-  const handleCardClick = async(event: React.MouseEvent<HTMLElement>, item: any) => {
+  const handleCardClick = async(event: React.MouseEvent<HTMLElement>, item: searchQueryResult) => {
     setSelectedItem(item);
 
     const rect = event.currentTarget.getBoundingClientRect();
