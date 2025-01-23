@@ -19,6 +19,8 @@
  * @param {string|null} token - Authentication token
  * @returns {Promise<UserDTO[]>} List of admin users
  */
+import {API_BASE_URL} from "src/config/apiConfig";
+import {UserDTO} from "types/system-log";
 export const fetchUserNames = async (token: string | null): Promise<UserDTO[]> => {
     try {
         console.log('Making request to:', `${API_BASE_URL}/admin/users-names`);
