@@ -34,7 +34,7 @@ import NewButton from "../../components/new-button/NewButton";
  * - List of answers with author info
  * - Tag management
  * - Add/delete functionality
- * 
+ *
  * @param {Object} props - Component properties
  * @param {any} props.data - Query data including answers and tags
  * @param {Function} props.onClose - Function to close the popup
@@ -125,7 +125,6 @@ const DataPopup = ({
     }
 
     setLoading(true);
-    setError("");
 
     const result = await handleAddNewQueryAnswer(newAnswer, user.id, data.id);
     setLoading(false);
@@ -136,7 +135,7 @@ const DataPopup = ({
         {
           id: Date.now(),
           answer: newAnswer,
-          createdAt: formatDate(new Date().toString()),
+          createdAt: new Date().toString(),
           email: user.email,
           firstName: user.firstName,
           roleName: user.roles[0].roleName,
@@ -165,10 +164,6 @@ const DataPopup = ({
    */
   const handleAddTags = async(newTag: { group: string; tag: string }) => {
     const tagPayload = { tagGroupName: newTag.group, tagName: newTag.tag };
-
-    console.log(tagGroups);
-    console.log(tagPayload);
-
     const result = await handleAddNewTagToExistingQuery(data.id, tagPayload);
 
     if (result.success) {
@@ -177,9 +172,6 @@ const DataPopup = ({
         updatedTagGroups.push({ tagGroupName: newTag.group, tagNames: newTag.tag });
         return updatedTagGroups;
       });
-
-      console.log(tagGroups);
-
       setIsAddTagPopupOpen(false);
     } else {
       console.error("Failed to add tag to the backend.");

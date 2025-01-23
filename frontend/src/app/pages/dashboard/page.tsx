@@ -126,7 +126,7 @@ const Dashboard: React.FC = () => {
    * - Calculates popup position
    * - Opens popup
    * - Fetches answers for the query
-   * 
+   *
    * @param {React.MouseEvent<HTMLElement>} event - Click event
    * @param {searchQueryResult} item - Selected query data
    */
@@ -188,7 +188,7 @@ const Dashboard: React.FC = () => {
    * @function handleSearchChange
    * @description
    * Updates search query as user types
-   * 
+   *
    * @param {React.ChangeEvent<HTMLInputElement>} event - Input change event
    */
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -228,7 +228,6 @@ const Dashboard: React.FC = () => {
           </div>
         ) : (
           <div className={styles["dashboard-content"]}>
-            {/* Trending Queries Section */}
             {searchKeyword === "" && (
               <div className={styles.trendingQueriesContainer}>
                 <div className={styles.headingContainer}>
@@ -243,7 +242,6 @@ const Dashboard: React.FC = () => {
                 </div>
 
                 <div className={styles.queriesContent}>
-                  {/* Dummy Data for Trending Queries */}
                   {trendingQueries.map((query) => (
                     <div className={styles.queryItem} key={query.id}>
                       <div className={styles.queryInfo}>
@@ -258,11 +256,11 @@ const Dashboard: React.FC = () => {
                       <div className={styles.queryViews}>{query.highestCopyCount}</div>
                     </div>
                   ))}
+
                 </div>
               </div>
             )}
 
-            {/* Search Results */}
             {searchKeyword !== "" && searchResults.length === 0 ? (
               <div className={styles["image-placeholder"]}>
                 <p>No answers found</p>
