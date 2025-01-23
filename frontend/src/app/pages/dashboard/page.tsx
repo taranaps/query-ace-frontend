@@ -1,14 +1,27 @@
 "use client";
 
+/**
+ * @module Dashboard
+ * @description
+ * Main dashboard component that displays queries and provides search functionality.
+ * Core features include:
+ * - Real-time search with debouncing
+ * - Trending queries display
+ * - Interactive query cards
+ * - Popup for detailed view
+ * - Loading states with animations
+ * - User authentication check
+ */
+
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import DataCardDashboard from "@/app/components/dashboard-datacard/DataCardDashboard";
 import styles from "./dashboard.module.css";
 import searchQueryResult from "@/app/interface/query/searchQueryResult";
-import fetchQueryUsingKeyword from "@/app/api/queries/fetchQueryUsingKeyword";
+import { fetchQueryUsingKeyword } from "@/app/api/queries/fetchQueryUsingKeyword";
 import DataPopup from "@/app/components/data-popup/DataPopup";
-import fetchQueryWithAnswers from "@/app/api/questioncard/fetchQueryAnswers";
+import { fetchQueryWithAnswers } from "@/app/api/questioncard/fetchQueryAnswers";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
 import planeanimation from "../../../../public/assets/animatedIcons/Paper Plane (1).json";
 import LottieIconButton from "../../components/lottie-animated-button/LottieIconButton";
@@ -20,19 +33,44 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const router = useRouter();
 
+  /**
+   * @function useEffect
+   * @description
+   * Authentication check effect
+   * - Redirects to login if user is not authenticated
+   * - Redirects if user status is inactive
+   */
   useEffect(() => {
     if (!user || user.status === "INACTIVE") {
       router.push("/pages/login");
     }
   }, [user, router]);
 
+  /**
+   * @state
+   * @description
+   * Search and results state management:
+   * searchKeyword - Current search input
+   * searchResults - List of matching queries
+   * selectedItem - Currently selected query for popup
+   * isPopupOpen - Controls popup visibility
+   * answers - List of answers for selected query
+   * isLoading - Loading state indicator
+   */
   const [searchKeyword, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<searchQueryResult[]>([]);
-  const [selectedItem, setSelectedItem] = useState<any | null>(null);
+  const [selectedItem, setSelectedItem] = useState<searchQueryResult | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [answers, setAnswers] = useState<any[]>([]);
+  const [answers, setAnswers] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * @state
+   * @description
+   * Popup positioning states:
+   * popupPosition - Coordinates for popup placement
+   * popupSize - Dimensions for popup animation
+   */
   const [popupPosition, setPopupPosition] = useState<{ top: number, left: number }>({ top: 0, left: 0 });
   const [popupSize, setPopupSize] = useState<{ width: number; height: number }>({ width: 60, height: 20 });
 
@@ -74,13 +112,23 @@ const fetchTrendingQueries = async () => {
     setTrendingQueries([]);
   }
 };
-  useEffect(() => {
-    if (user) {  
-      fetchTrendingQueries();
-    }
-  }, [user]); 
+useEffect(() => {
+  fetchTrendingQueries();
+}, []);
 
-  const handleCardClick = async (event: React.MouseEvent<HTMLElement>, item: any) => {
+  /**
+   * @function handleCardClick
+   * @description
+   * Handles query card click event:
+   * - Sets the selected item
+   * - Calculates popup position
+   * - Opens popup
+   * - Fetches answers for the query
+   *
+   * @param {React.MouseEvent<HTMLElement>} event - Click event
+   * @param {searchQueryResult} item - Selected query data
+   */
+  const handleCardClick = async(event: React.MouseEvent<HTMLElement>, item: searchQueryResult) => {
     setSelectedItem(item);
 
     const rect = event.currentTarget.getBoundingClientRect();
@@ -109,6 +157,15 @@ const fetchTrendingQueries = async () => {
     }
   };
 
+  /**
+   * @function useEffect
+   * @description
+   * Handles search functionality:
+   * - Implements debouncing for search
+   * - Shows loading state while fetching
+   * - Updates search results
+   * - Handles error cases
+   */
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (searchKeyword) {
@@ -125,10 +182,22 @@ const fetchTrendingQueries = async () => {
     return () => clearTimeout(delayDebounceFn);
   }, [searchKeyword]);
 
+  /**
+   * @function handleSearchChange
+   * @description
+   * Updates search query as user types
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} event - Input change event
+   */
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
+  /**
+   * @function clearSearch
+   * @description
+   * Clears search input and results
+   */
   const clearSearch = () => {
     setSearchQuery("");
   };
@@ -185,6 +254,7 @@ const fetchTrendingQueries = async () => {
                       <div className={styles.queryViews}>{query.highestCopyCount}</div>
                     </div>
                   ))}
+
                 </div>
               </div>
             )}

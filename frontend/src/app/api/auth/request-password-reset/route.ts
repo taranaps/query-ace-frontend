@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
 import { API_BASE_URL } from "@/config/apiConfig";
 
-export async function POST(request: Request) {
+export const POST = async(request: Request) => {
   const url = new URL(request.url);
   const email = url.searchParams.get("email");
 
-  console.log("Received email:", email);
-
   if (!email) {
-    console.log("No email provided");
     return NextResponse.json({ message: "Email is required" }, { status: 400 });
   }
 
@@ -16,10 +13,9 @@ export async function POST(request: Request) {
     const response = await fetch(
       `${API_BASE_URL}/auth/request-password-reset?email=${email}`,
       {
-        method: "POST", 
+        method: "POST",
       }
     );
-
 
     const contentType = response.headers.get("Content-Type");
 
@@ -29,8 +25,6 @@ export async function POST(request: Request) {
     } else {
       data = await response.text();
     }
-
-    console.log("API Response:", data);
 
     if (!response.ok) {
       return NextResponse.json(data, { status: response.status });
@@ -50,4 +44,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
+};

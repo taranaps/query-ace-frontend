@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { jwtDecode } from 'jwt-decode';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { jwtDecode } from "jwt-decode";
 
 interface DecodedToken {
     sub: string;
@@ -8,8 +8,8 @@ interface DecodedToken {
     exp: number;
 }
 
-export function middleware(request: NextRequest) {
-    const { pathname } = request.nextUrl;
+export const middleware = (request: NextRequest) => {
+  const { pathname } = request.nextUrl;
 
     if (pathname.startsWith('/login') || 
         pathname.startsWith('/register') || 
@@ -20,13 +20,13 @@ export function middleware(request: NextRequest) {
     const authHeader = request.headers.get('Authorization');
     const token = authHeader?.split(' ')[1] || request.cookies.get('token')?.value;
 
-    if (!token) {
-        return NextResponse.redirect(new URL('/login', request.url));
-    }
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
 
-    try {
-        const decoded: DecodedToken = jwtDecode(token);
-        const currentTime = Date.now() / 1000;
+  try {
+    const decoded: DecodedToken = jwtDecode(token);
+    const currentTime = Date.now() / 1000;
 
         if (decoded.exp < currentTime) {
             const response = NextResponse.redirect(new URL('/login', request.url));
