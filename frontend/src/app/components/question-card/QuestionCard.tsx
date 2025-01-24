@@ -1,9 +1,6 @@
 "use client";
-
 import React, { useState } from "react";
-import CustomButton from "../custom-button/CustomButton";
 import styles from "./questioncard.module.css";
-
 import editAnimation from "../../../../public/assets/animatedIcons/editv2.json";
 import deleteAnimation from "../../../../public/assets/animatedIcons/delete.json";
 import saveAnimation from "../../../../public/assets/animatedIcons/save.json";
@@ -49,7 +46,6 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ id, text, onDelete, onEdit 
       ) : (
         <p className={styles.questionText}>{editableQuestion}</p>
       )}
-
 
       <div className={styles.cardActions}>
         <div className={styles.dataCardActionButtons}>

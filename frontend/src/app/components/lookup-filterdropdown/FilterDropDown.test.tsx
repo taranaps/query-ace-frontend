@@ -2,6 +2,8 @@ import React from 'react';
 import { render, screen, fireEvent,waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FilterDropdown from '../lookup-filterdropdown/FilterDropDown';
+import '@testing-library/jest-dom';
+
 
 describe('FilterDropdown', () => {
   const defaultProps = {

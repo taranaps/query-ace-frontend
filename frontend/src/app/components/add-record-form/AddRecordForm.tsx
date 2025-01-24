@@ -1,30 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from "react";
 import {
   TextField,
-  Button,
   IconButton,
   Chip,
   Typography,
-} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
-import AddTagPopup from '../add-tag-popup/AddTagPopup';
-import styles from './AddRecordForm.module.css';
-import fetchAllTagDetails from '@/app/api/tags/route.ts';
-import postQueryWithAnswers from '@/app/api/queries/postQueryWithAnswers';
-import PostQueryQuestionInetface from '@/app/interface/query/postQueryQuestionInterface';
-import PostQueryAnswerInterface from '@/app/interface/query/postQueryAnswerInterface';
-import { LottieLoader } from '../lottie-loader/lottieLoader';
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import AddTagPopup from "../add-tag-popup/AddTagPopup";
+import styles from "./AddRecordForm.module.css";
+import { postQueryWithAnswers } from "@/app/api/queries/postQueryWithAnswers";
+import PostQueryQuestionInetface from "@/app/interface/query/postQueryQuestionInterface";
+import PostQueryAnswerInterface from "@/app/interface/query/postQueryAnswerInterface";
+import { LottieLoader } from "../lottie-loader/lottieLoader";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
-import NewButton from '../new-button/NewButton';
+import NewButton from "../new-button/NewButton";
 
 const AddRecordForm = () => {
-
   const { user } = useAuth();
-
   const [formData, setFormData] = useState({
-    question: '',
+    question: "",
     answers: [] as string[],
     tags: [] as { group: string; tag: string }[],
   });
@@ -32,32 +27,31 @@ const AddRecordForm = () => {
   const [isTagPopupOpen, setIsTagPopupOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-
   const handleChange = (field: string, value: string | string[] | { group: string; tag: string }[]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleAddAnswer = () => handleChange('answers', [...formData.answers, '']);
-  const handleRemoveAnswer = (index: number) => handleChange('answers', formData.answers.filter((_, i) => i !== index));
+  const handleAddAnswer = () => handleChange("answers", [...formData.answers, ""]);
+  const handleRemoveAnswer = (index: number) => handleChange("answers", formData.answers.filter((data, i) => i !== index));
 
   const handleAnswerChange = (value: string, index: number) => handleChange(
-    'answers',
+    "answers",
     formData.answers.map((answer, i) => (i === index ? value : answer))
   );
 
   const handleAddTag = (tag: { group: string; tag: string }) => {
-    handleChange('tags', [...formData.tags, tag]);
+    handleChange("tags", [...formData.tags, tag]);
     setIsTagPopupOpen(false);
   };
 
-  const handleRemoveTag = (index: number) => handleChange('tags', formData.tags.filter((_, i) => i !== index));
+  const handleRemoveTag = (index: number) => handleChange("tags", formData.tags.filter((data, i) => i !== index));
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = async(e: React.FormEvent) => {
     e.preventDefault();
     const { question, answers, tags } = formData;
 
     if (!question || answers.length === 0) {
-      alert('Please fill in all required fields!');
+      alert("Please fill in all required fields!");
       return;
     }
 
@@ -83,13 +77,13 @@ const AddRecordForm = () => {
       await postQueryWithAnswers(questionData, answersData);
       handleClear();
     } catch (error) {
-      console.error('Error submitting data:', error);
+      console.error("Error submitting data:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleClear = () => setFormData({ question: '', answers: [], tags: [] });
+  const handleClear = () => setFormData({ question: "", answers: [], tags: [] });
 
   return (
     <form className={styles.addRecordForm} onSubmit={handleSave}>
@@ -100,7 +94,7 @@ const AddRecordForm = () => {
             variant="outlined"
             fullWidth
             value={formData.question}
-            onChange={(e) => handleChange('question', e.target.value)}
+            onChange={(e) => handleChange("question", e.target.value)}
             className={styles.inputField}
           />
 
@@ -119,11 +113,11 @@ const AddRecordForm = () => {
                   onDelete={() => handleRemoveTag(index)}
                   className={styles.tagItem}
                   sx={{
-                    '& .MuiChip-deleteIcon': {
-                      color: '#ff4d4f',
+                    "& .MuiChip-deleteIcon": {
+                      color: "#ff4d4f",
                     },
-                    '&:hover .MuiChip-deleteIcon': {
-                      color: 'white',
+                    "&:hover .MuiChip-deleteIcon": {
+                      color: "white",
                     },
                   }}
                 />

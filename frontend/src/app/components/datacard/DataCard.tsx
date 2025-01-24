@@ -1,14 +1,12 @@
 "use client";
-
 import React, { useState } from "react";
 import LottieIconButton from "../lottie-animated-button/LottieIconButton";
 import styles from "./datacard.module.css";
-
-import copyAnimation from "../../../../public/assets/animatedIcons/copyv3.json"
-import saveAnimation from "../../../../public/assets/animatedIcons/save.json"
-import cancelAnimation from "../../../../public/assets/animatedIcons/Close.json"
-import editAnimation from "../../../../public/assets/animatedIcons/editv2.json"
-import deleteAnimation from "../../../../public/assets/animatedIcons/delete.json"
+import copyAnimation from "../../../../public/assets/animatedIcons/copyv3.json";
+import saveAnimation from "../../../../public/assets/animatedIcons/save.json";
+import cancelAnimation from "../../../../public/assets/animatedIcons/Close.json";
+import editAnimation from "../../../../public/assets/animatedIcons/editv2.json";
+import deleteAnimation from "../../../../public/assets/animatedIcons/delete.json";
 
 interface DataCardProps {
   id: number;
@@ -43,9 +41,11 @@ const DataCard: React.FC<DataCardProps> = ({
   const [editableDescription, setEditableDescription] = useState(description);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(editableText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (!copied) {
+      navigator.clipboard.writeText(editableText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   const handleSave = () => {

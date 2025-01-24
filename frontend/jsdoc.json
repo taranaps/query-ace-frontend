@@ -1,0 +1,13 @@
+{
+    "source": {
+      "include": ["src/app/pages/","src/app/components/"],
+      "exclude": ["node_modules"],
+      "includePattern": ".+\\.(js|ts|tsx)$",
+      "excludePattern": "(^|\\/|\\\\)_|\\.test\\.(ts|tsx)$|\\.spec\\.(ts|tsx)$"
+    },
+    "opts": {
+      "destination": "./docs",
+      "recurse": true
+    }
+  }
+  

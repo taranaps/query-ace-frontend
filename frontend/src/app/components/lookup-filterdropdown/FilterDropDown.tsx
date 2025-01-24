@@ -8,7 +8,7 @@ interface FilterDropdownProps {
     tagGroupName: string;
     tagNames: string[];
   }[];
-  options?: string[];
+  options?: string[] | { username: string }[]; 
   selectedOptions: string[];
   onChange: (selectedOptions: string[]) => void;
 }
@@ -24,10 +24,12 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const filterTags = (tags: string[]) =>
-    tags.filter((tag) =>
-      tag.toLowerCase().includes(search.toLowerCase())
-    );
+  const filterTags = (items: string[] | { username: string }[]) =>
+    items
+      .map(item => typeof item === 'string' ? item : item.username)
+      .filter((tag) =>
+        tag.toLowerCase().includes(search.toLowerCase())
+      );
 
   const handleCheckboxChange = (option: string) => {
     if (selectedOptions.includes(option)) {
@@ -60,10 +62,9 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* Dropdown Trigger */}
       <button
         className={`border rounded p-2 w-48 text-left ${isOpen ? "bg-orange-100" : "bg-white"
-          } hover:bg-orange-100 transition duration-200`}
+        } hover:bg-orange-100 transition duration-200`}
         onClick={() => setIsOpen((prev) => !prev)}
       >
         {label}
@@ -72,7 +73,6 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
 
       {isOpen && (
         <div className="absolute z-10 mt-1 w-48 bg-white border rounded shadow-lg">
-          {/* Search Bar */}
           <input
             type="text"
             placeholder="Search..."

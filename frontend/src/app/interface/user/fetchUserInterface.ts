@@ -2,7 +2,7 @@ export interface fetchUserInterface {
     id: number;
     firstName: string;
     email: string;
-    username: string;
+    username:string;
     location: string;
     status: "ACTIVE" | "INACTIVE";
     isActive: boolean;

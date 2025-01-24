@@ -1,9 +1,5 @@
 "use client";
-
-import { formatDate } from "@/app/util/formatDate";
-
 import LottieIconButton from "../lottie-animated-button/LottieIconButton";
-import editAnimation from "../../../../public/assets/animatedIcons/editv2.json";
 import deleteAnimation from "../../../../public/assets/animatedIcons/delete.json";
 import styles from "./datacard.module.css";
 
@@ -25,9 +21,7 @@ const truncateText = (text: string | undefined, limit: number): string => {
   return words.length > limit ? `${words.slice(0, limit).join(" ")}...` : text;
 };
 
-
 const DataCardImport: React.FC<DataCardProps> = ({
-  id,
   question,
   answers,
   tags,
