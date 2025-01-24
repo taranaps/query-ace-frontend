@@ -1,3 +1,5 @@
+import { API_BASE_URL } from "@/config/apiConfig";
+
 export const handleAddAdmin = async(adminData: {
     firstName: string;
     email: string;
@@ -7,12 +9,15 @@ export const handleAddAdmin = async(adminData: {
     userRole: string;
 }) => {
   try {
-    const url = "/api/admin/create";
+    const token = localStorage.getItem('token'); 
 
+    const url = `${API_BASE_URL}/admin/create`;  
     const response = await fetch(url, {
       method: "POST",
+      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(adminData),
     });
@@ -30,23 +35,23 @@ export const handleAddAdmin = async(adminData: {
   }
 };
 
-export const handleEditAdmin = async(
-  id: string,
-  adminData: Partial<{
-    firstName: string;
-    email: string;
-    username: string;
+export const handleEditAdmin = async(id: string, adminData: Partial<{
+  firstName: string;
+  email: string;
+  username: string;
 }>) => {
-  try {
-    const url = `/api/admin/users/${id}`;
+try {
+  const token = localStorage.getItem('token');
+  const url = `/api/admin/users/${id}`;  
 
-    const response = await fetch(url, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(adminData),
-    });
+  const response = await fetch(url, {
+    method: "PATCH", 
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(adminData),
+  });
 
     if (response.ok) {
       return true;

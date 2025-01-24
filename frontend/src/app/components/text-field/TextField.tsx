@@ -1,20 +1,20 @@
 import React, { useState, ChangeEvent } from "react";
 import styles from "../text-field/TextField.module.css";
 
-interface TextfieldProps {
-  label?: string;
-  placeholder?: string;
-  value?: string;
-  onChange?: (value: string) => void;
+interface TextFieldProps {
+  id?: string;  // Add ID prop
+  placeholder: string;
+  value: string;
   type?: string;
+  onChange: (value: string) => void;
 }
 
-const Textfield: React.FC<TextfieldProps> = ({
-  label,
+const Textfield: React.FC<TextFieldProps> = ({
+  id,
   placeholder,
   value,
+  type = "text",
   onChange,
-  type = "text"
 }) => {
   const [inputValue, setInputValue] = useState(value || "");
 
@@ -25,18 +25,16 @@ const Textfield: React.FC<TextfieldProps> = ({
     }
   };
 
+  
   return (
-    <div>
-      {label && <label htmlFor="input">{label}</label>}
-      <input
-        type={type}
-        id="input"
-        className={styles.inputField}
-        placeholder={placeholder}
-        value={inputValue}
-        onChange={handleChange}
-      />
-    </div>
+    <input
+      id={id || `${placeholder.toLowerCase()}-input`}  // Generate unique IDs
+      className={styles.inputField}
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
   );
 };
 

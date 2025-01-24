@@ -126,7 +126,7 @@ const DataPopup = ({
 
     setLoading(true);
 
-    const result = await handleAddNewQueryAnswer(newAnswer, user.id, data.id);
+    const result = await handleAddNewQueryAnswer(newAnswer, user.userId, data.id);
     setLoading(false);
 
     if (result.success) {

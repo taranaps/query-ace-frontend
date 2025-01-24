@@ -124,36 +124,32 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
             </DialogTitle>
             <DialogContent>
               <div className={styles.addAdminPopUpFields}>
+              <Textfield
+                id="fullname-input"
+                placeholder="Full name"
+                value={formState.firstName}
+                onChange={(value) => handleInputChange("firstName", value)}
+              />
+              <Textfield
+                id="email-input"
+                placeholder="Email"
+                value={formState.email}
+                onChange={(value) => handleInputChange("email", value)}
+              />
+              <Textfield
+                id="username-input"
+                placeholder="Username"
+                value={formState.username}
+                onChange={(value) => handleInputChange("username", value)}
+              />
+              {passwordOn && (
                 <Textfield
-                  placeholder="Full name"
-                  value={formState.firstName}
-                  onChange={(value) =>
-                    handleInputChange("firstName", value)
-                  }
+                  id="password-input"
+                  type="password"
+                  placeholder="Password"
+                  value={formState.password}
+                  onChange={(value) => handleInputChange("password", value)}
                 />
-                <Textfield
-                  placeholder="Email"
-                  value={formState.email}
-                  onChange={(value) =>
-                    handleInputChange("email", value)
-                  }
-                />
-                <Textfield
-                  placeholder="Username"
-                  value={formState.username}
-                  onChange={(value) =>
-                    handleInputChange("username", value)
-                  }
-                />
-                {passwordOn && (
-                  <Textfield
-                    type="password"
-                    placeholder="Password"
-                    value={formState.password}
-                    onChange={(value) =>
-                      handleInputChange("password", value)
-                    }
-                  />
                 )}
               </div>
             </DialogContent>

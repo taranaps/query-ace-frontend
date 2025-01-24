@@ -23,6 +23,7 @@ import styles from "./ManageAccountsPage.module.css";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
 import { handleAddAdmin } from "@/app/util/admin/adminFunctionalities";
 import NewButton from "../../components/new-button/NewButton";
+import { API_BASE_URL } from "@/config/apiConfig";
 
 /**
 * Represents the data structure for an admin form.
@@ -108,49 +109,42 @@ const ManageAccountsPage: React.FC = () => {
       /**
      * Confirms and updates the toggle status of a user.
      */
-  const confirmToggleStatus = async() => {
-    if (selectedEmail) {
-      const userToUpdate = userData.find((item) => item.email === selectedEmail);
-
-      if (userToUpdate) {
-        const updatedStatus: "ACTIVE"   | "INACTIVE" = !userToUpdate.isActive ? "ACTIVE" : "INACTIVE";
-
-        try {
-          const url = `/api/admin/toggle-status/${userToUpdate.id}`.trim();
-
-          console.log(url);
-
-          const response = await fetch(url, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              isActive: !userToUpdate.isActive,
-              status: updatedStatus,
-            }),
-          });
-
-          const result = await response.json();
-
-          if (response.ok) {
-            const updatedData = userData.map((item) =>
-              item.email === selectedEmail ? { ...item, isActive: !item.isActive, status: updatedStatus } : item
-            );
-            setUserData(updatedData);
-          } else {
-            console.error("Failed to update user status", result);
+      const confirmToggleStatus = async() => {
+        if (selectedEmail) {
+          const userToUpdate = userData.find((item) => item.email === selectedEmail);
+      
+          if (userToUpdate) {
+            try {
+              const response = await fetch(`${API_BASE_URL}/admin/toggle-status/${userToUpdate.id}`, {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({
+                  userId: userToUpdate.id  // Match backend expectation
+                })
+              });
+      
+              if (response.ok) {
+                const updatedData = userData.map((item) =>
+                  item.email === selectedEmail 
+                    ? { 
+                        ...item, 
+                        status: item.status === "ACTIVE" ? "INACTIVE" as const : "ACTIVE" as const 
+                      } as fetchUserInterface
+                    : item
+                );
+                setUserData(updatedData);
+              }
+            } catch (error) {
+              console.error("Error updating status:", error);
+            }
           }
-        } catch (error) {
-          console.error("Error updating user status:", error);
         }
-      }
-    }
-
-    setOpenTogglePopup(false);
-    setSelectedEmail(null);
-  };
-
+        setOpenTogglePopup(false);
+        setSelectedEmail(null);
+      };
   const handleAddAccount = () => setOpenAddPopup(true);
   const handleEditAccount = async(id: number) => {
     try {
@@ -170,33 +164,26 @@ const ManageAccountsPage: React.FC = () => {
 
   const handleUpdateAdmin = async(updatedAdminData: AdminFormData) => {
     if (!selectedAdmin) return;
-
+  
     try {
-      const response = await fetch(`/api/admin/users/${selectedAdmin.id}`, {
+      const response = await fetch(`${API_BASE_URL}/admin/edit`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify(updatedAdminData),
+        body: JSON.stringify({
+          userId: selectedAdmin.id,
+          ...updatedAdminData
+        })
       });
-      console.log("sel admin:",selectedAdmin);
-      if (!response.ok) {
-        console.error("Failed to update admin:", response.statusText);
-        return;
-      }
-
-      const result = await response.json();
-      console.log("Updated admin response:", result);
-
-      if (result) {
-        const updatedUserData = userData.map((admin) =>
-          admin.id === selectedAdmin.id ? { ...admin, ...updatedAdminData } : admin
-        );
-        setUserData(updatedUserData);
+  
+      if (response.ok) {
+        const result = await response.json();
+        setUserData(userData.map((admin) => 
+          admin.id === selectedAdmin.id ? { ...admin, ...result } : admin
+        ));
         setOpenEditPopup(false);
-        console.log(updatedAdminData);
-      } else {
-        console.error("Failed to update admin:", result);
       }
     } catch (error) {
       console.error("Error updating admin:", error);

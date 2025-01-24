@@ -92,40 +92,41 @@ export const handleCopyQuery = async(id: number) => {
   }
 };
 
-export const handleAddNewQueryAnswer = async(
-  answer: string,
-  userId: number,
+export const handleAddNewQueryAnswer = async (
+  answer: string, 
+  userId: number, 
   queryId: number
 ) => {
   try {
+    const payload = [{
+      answer: answer,
+      userId: userId,
+      queryId: queryId
+    }];
 
-    const requestBody = [
-      {
-        answer,
-        userId,
-        queryId,
-      }
-    ];
-
-    const response = await fetch("/api/queries/id/answers", {
-      method: "POST",
+    const response = await fetch('http://localhost:8080/api/v1/queryapplication/admin/query-answers', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(requestBody),
+      body: JSON.stringify(payload)
     });
 
     if (!response.ok) {
-      const errorResponse = await response.json();
-      console.error("Error adding query answer:", errorResponse);
-      return { success: false, message: "Failed to add query answer" };
+      throw new Error('Failed to add answer');
     }
 
-    const responseData = await response.json();
-    return { success: true, data: responseData };
-  } catch (error: unknown) {
-    console.error("Error occurred while adding query answer:", error);
-    return { success: false, message: "An error occurred while processing the request" };
+    const result = await response.json();
+    return {
+      success: true,
+      data: result // Return full array of answer responses
+    };
+  } catch (error) {
+    console.error('Error adding answer:', error);
+    return { 
+      success: false, 
+      message: error instanceof Error ? error.message : 'Unknown error' 
+    };
   }
 };
 

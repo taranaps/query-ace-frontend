@@ -8,7 +8,7 @@ interface FilterDropdownProps {
     tagGroupName: string;
     tagNames: string[];
   }[];
-  options?: string[];
+  options?: string[] | { username: string }[]; 
   selectedOptions: string[];
   onChange: (selectedOptions: string[]) => void;
 }
@@ -24,10 +24,12 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const filterTags = (tags: string[]) =>
-    tags.filter((tag) =>
-      tag.toLowerCase().includes(search.toLowerCase())
-    );
+  const filterTags = (items: string[] | { username: string }[]) =>
+    items
+      .map(item => typeof item === 'string' ? item : item.username)
+      .filter((tag) =>
+        tag.toLowerCase().includes(search.toLowerCase())
+      );
 
   const handleCheckboxChange = (option: string) => {
     if (selectedOptions.includes(option)) {
