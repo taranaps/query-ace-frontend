@@ -50,6 +50,7 @@ const AddRecordForm = () => {
     e.preventDefault();
     const { question, answers, tags } = formData;
 
+
     if (!question || answers.length === 0) {
       alert("Please fill in all required fields!");
       return;
@@ -58,7 +59,7 @@ const AddRecordForm = () => {
     const questionData: PostQueryQuestionInetface[] = [
       {
         question,
-        userId: user.id,
+        userId: user.userId,
         tags: tags.map((tag) => ({
           tagName: tag.tag,
           tagGroupName: tag.group,
@@ -70,6 +71,9 @@ const AddRecordForm = () => {
       answer,
       userId: 1,
     }));
+    console.log('User:', user); // Check user object
+    console.log('Question Data:', questionData); // Check data structure
+    console.log('Answers Data:', answersData); 
 
     setIsLoading(true);
 
