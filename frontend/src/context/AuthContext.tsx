@@ -1,30 +1,18 @@
-/**
- * @module AuthContext
- * @description
- * Handles user authentication state management across the application.
- * Provides login, logout functionality and maintains user session.
- * Features:
- * - Persistent authentication using localStorage
- * - Token management
- * - User role handling
- * - Session management
- * - Protected route access
- */
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 
-/**
- * @interface AuthContextProps
- * @description
- * Defines the shape of authentication context data and methods.
- * 
- * @property {any} user - Current user data
- * @property {string|null} token - Authentication token
- * @property {Function} login - Method to handle user login
- * @property {Function} logout - Method to handle user logout
- */
+// Add token utility
+const isTokenExpired = (token: string): boolean => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return Date.now() >= payload.exp * 1000;
+  } catch {
+    return true;
+  }
+};
+
 interface AuthContextProps {
    user: any;
    token: string | null;
@@ -32,12 +20,6 @@ interface AuthContextProps {
    logout: () => void;
 }
 
-/**
- * @constant AuthContext
- * @description
- * Creates the authentication context with default values.
- * Used by components to access authentication state.
- */
 export const AuthContext = createContext<AuthContextProps>({
    user: null,
    token: null,
@@ -45,52 +27,53 @@ export const AuthContext = createContext<AuthContextProps>({
    logout: () => {}
 });
 
-/**
- * @component AuthProvider
- * @description
- * Wraps the application to provide authentication context.
- * Manages:
- * - User session persistence
- * - Token storage and retrieval
- * - Loading states
- * - Navigation after auth changes
- * 
- * @param {Object} props - Component props
- * @param {ReactNode} props.children - Child components to wrap
- */
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
    const [token, setToken] = useState<string | null>(null);
    const [user, setUser] = useState<any>(null);
    const [isLoading, setIsLoading] = useState(true);
    const router = useRouter();
 
-   /**
-    * @function useEffect
-    * @description
-    * Initializes authentication state from localStorage on component mount.
-    * Checks for existing session and restores it if found.
-    * Sets up cookie for cross-tab authentication.
-    */
    useEffect(() => {
        const storedToken = localStorage.getItem('token');
        const storedUser = localStorage.getItem('user');
        
        if (storedToken && storedUser) {
-           setToken(storedToken);
-           setUser(JSON.parse(storedUser));
-           document.cookie = `token=${storedToken}; path=/`;
+           if (isTokenExpired(storedToken)) {
+               handleUnauthorized();
+           } else {
+               setToken(storedToken);
+               setUser(JSON.parse(storedUser));
+               document.cookie = `token=${storedToken}; path=/`;
+           }
        }
        setIsLoading(false);
    }, []);
 
-   /**
-    * @function handleUnauthorized
-    * @description
-    * Handles unauthorized access attempts.
-    * - Clears local storage
-    * - Resets auth state
-    * - Redirects to login
-    */
+   // Add response interceptor for 401s
+   useEffect(() => {
+     const originalFetch = window.fetch;
+     window.fetch = async (...args) => {
+       const response = await originalFetch(...args);
+       if (response.status === 401) {
+         handleUnauthorized();
+       }
+       return response;
+     };
+   }, []);
+
+   // Check token expiry periodically
+   useEffect(() => {
+     const checkTokenExpiry = () => {
+       const storedToken = localStorage.getItem('token');
+       if (storedToken && isTokenExpired(storedToken)) {
+         handleUnauthorized();
+       }
+     };
+
+     const interval = setInterval(checkTokenExpiry, 60000);
+     return () => clearInterval(interval);
+   }, []);
+
    const handleUnauthorized = () => {
        localStorage.removeItem('token');
        localStorage.removeItem('user');
@@ -99,21 +82,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
        router.push('/pages/login');
    };
 
-   /**
-    * @function login
-    * @description
-    * Processes successful login attempts.
-    * - Stores authentication data
-    * - Updates context state
-    * - Sets up cookies
-    * - Structures user data
-    * 
-    * @param {Object} response - Login response from server
-    * @param {string} response.token - Authentication token
-    * @param {string} response.type - User type
-    * @param {string} response.role - User role
-    * @param {string} response.userId - User identifier
-    */
    const login = async (response: any) => {
        const { token, type, role, userId } = response;
        
@@ -130,21 +98,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
        setUser(userData);
    };
 
-   /**
-    * @function logout
-    * @description
-    * Handles user logout process.
-    * - Calls logout API
-    * - Cleans up local storage
-    * - Removes cookies
-    * - Resets auth state
-    * - Redirects to login
-    * 
-    * Error Handling:
-    * - Logs API failures
-    * - Ensures cleanup even if API fails
-    * - Forces logout on client side
-    */
    const logout = async () => {
        try {
            const response = await fetch('/api/auth/logout', {
@@ -176,16 +129,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
    );
 };
 
-/**
- * @hook useAuth
- * @description
- * Custom hook to access authentication context.
- * Ensures component is within AuthProvider before allowing access.
- * Provides easy access to auth functions and state.
- * 
- * @throws {Error} If used outside of AuthProvider
- * @returns {AuthContextProps} Authentication context values and methods
- */
 export const useAuth = () => {
    const context = useContext(AuthContext);
    if (!context) {
@@ -193,4 +136,3 @@ export const useAuth = () => {
    }
    return context;
 };
-
