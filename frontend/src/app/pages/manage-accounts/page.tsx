@@ -107,7 +107,7 @@ const ManageAccountsPage: React.FC = () => {
               "Authorization": `Bearer ${localStorage.getItem('token')}`
             },
             body: JSON.stringify({
-              status: userToUpdate.status === "ACTIVE" ? "INACTIVE" : "ACTIVE"
+              userId: userToUpdate.id 
             })
           });
     
