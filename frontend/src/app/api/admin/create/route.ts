@@ -3,11 +3,18 @@ import { API_BASE_URL } from "@/config/apiConfig";
 
 export const POST = async(request: Request) => {
   const body = await request.json();
+  const token = localStorage.getItem('token');
+
   try {
+    if (!token) {
+      throw new Error('Authorization token missing');
+    }
     const response = await fetch(`${API_BASE_URL}/admin/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+
       },
       body: JSON.stringify({
         firstName: body.firstName,

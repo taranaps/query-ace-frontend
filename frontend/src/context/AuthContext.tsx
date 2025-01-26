@@ -2,137 +2,158 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import { API_BASE_URL } from '@/config/apiConfig';
 
-// Add token utility
-const isTokenExpired = (token: string): boolean => {
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return Date.now() >= payload.exp * 1000;
-  } catch {
-    return true;
-  }
-};
+interface User {
+  id: number;
+  role: "SUPER_ADMIN" | "ADMIN";
+  status?: "ACTIVE" | "INACTIVE";
+  username?: string;
+  email?: string;
+}
 
 interface AuthContextProps {
-   user: any;
-   token: string | null;
-   login: (response: any) => void;
-   logout: () => void;
+  user: User | null;
+  token: string | null;
+  login: (response: LoginResponse) => void;
+  logout: () => Promise<void>;
+}
+
+interface LoginResponse {
+  token: string;
+  role: "SUPER_ADMIN" | "ADMIN";
+  userId: number;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
-   user: null,
-   token: null,
-   login: () => {},
-   logout: () => {}
+  user: null,
+  token: null,
+  login: () => {},
+  logout: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-   const [token, setToken] = useState<string | null>(null);
-   const [user, setUser] = useState<any>(null);
-   const [isLoading, setIsLoading] = useState(true);
-   const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
-   useEffect(() => {
-       const storedToken = localStorage.getItem('token');
-       const storedUser = localStorage.getItem('user');
-       
-       if (storedToken && storedUser) {
-           if (isTokenExpired(storedToken)) {
-               handleUnauthorized();
-           } else {
-               setToken(storedToken);
-               setUser(JSON.parse(storedUser));
-               document.cookie = `token=${storedToken}; path=/`;
-           }
-       }
-       setIsLoading(false);
-   }, []);
+  // Initial auth check
+  useEffect(() => {
+    const initializeAuth = async () => {
+      const storedToken = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
 
-   // Add response interceptor for 401s
-   useEffect(() => {
-     const originalFetch = window.fetch;
-     window.fetch = async (...args) => {
-       const response = await originalFetch(...args);
-       if (response.status === 401) {
-         handleUnauthorized();
-       }
-       return response;
-     };
-   }, []);
+      if (storedToken && storedUser) {
+        if (isTokenExpired(storedToken)) {
+          handleUnauthorized();
+          return;
+        }
+        setUser(JSON.parse(storedUser));
+        setToken(storedToken);
+      }
+      setIsLoading(false);
+    };
 
-   // Check token expiry periodically
-   useEffect(() => {
-     const checkTokenExpiry = () => {
-       const storedToken = localStorage.getItem('token');
-       if (storedToken && isTokenExpired(storedToken)) {
-         handleUnauthorized();
-       }
-     };
+    initializeAuth();
+  }, []);
 
-     const interval = setInterval(checkTokenExpiry, 60000);
-     return () => clearInterval(interval);
-   }, []);
+  const isTokenExpired = (token: string): boolean => {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return Date.now() >= payload.exp * 1000;
+    } catch {
+      return true;
+    }
+  };
 
-   const handleUnauthorized = () => {
-       localStorage.removeItem('token');
-       localStorage.removeItem('user');
-       setToken(null);
-       setUser(null);
-       router.push('/pages/login');
-   };
+  const handleUnauthorized = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setToken(null);
+    setUser(null);
+    router.push('/pages/login');
+  };
 
-   const login = async (response: any) => {
-       const { token, type, role, userId } = response;
-       
-       const userData = {
-           userId,
-           role,
-           roles: [{ roleName: role }]  
-       };
-   
-       localStorage.setItem('token', token);
-       localStorage.setItem('user', JSON.stringify(userData));
-       document.cookie = `token=${token}; path=/`;
-       setToken(token);
-       setUser(userData);
-   };
+  useEffect(() => {
+    const originalFetch = window.fetch;
+    
+    window.fetch = async (...args) => {
+      const [input, init] = args;
+      const response = await originalFetch(input, {
+        ...init,
+        headers: {
+          ...init?.headers,
+          Authorization: token ? `Bearer ${token}` : '',
+        },
+      });
 
-   const logout = async () => {
-       try {
-           const response = await fetch('/api/auth/logout', {
-               method: 'POST',
-               headers: {
-                   'Authorization': `Bearer ${token}`
-               }
-           });
+      if (response.status === 401) {
+        handleUnauthorized();
+      }
+      return response;
+    };
 
-           if (!response.ok) {
-               console.error('Logout failed');
-           }
-       } catch (error) {
-           console.error('Logout error:', error);
-       } finally {
-           localStorage.removeItem('token');
-           localStorage.removeItem('user');
-           document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-           setToken(null);
-           setUser(null);
-           router.push('/pages/login');
-       }
-   };
+    return () => {
+      window.fetch = originalFetch;
+    };
+  }, [token]);
 
-   return (
-       <AuthContext.Provider value={{ user, token, login, logout }}>
-           {!isLoading && children}
-       </AuthContext.Provider>
-   );
+  // Token expiration check
+  useEffect(() => {
+    const checkTokenExpiry = () => {
+      if (token && isTokenExpired(token)) {
+        handleUnauthorized();
+      }
+    };
+
+    const interval = setInterval(checkTokenExpiry, 60000);
+    return () => clearInterval(interval);
+  }, [token]);
+
+  const login = (response: LoginResponse) => {
+    const userData = {
+      id: response.userId,
+      role: response.role,
+      status: "ACTIVE" as const,
+    };
+
+    localStorage.setItem('token', response.token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setToken(response.token);
+    setUser(userData);
+  };
+
+  const logout = async () => {
+    try {
+      if (token) {
+        await fetch(`${API_BASE_URL}/auth/logout`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setToken(null);
+      setUser(null);
+      router.push('/pages/login');
+    }
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, token, login, logout }}>
+      {!isLoading && children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {
-   const context = useContext(AuthContext);
-   if (!context) {
-       throw new Error('useAuth must be used within an AuthProvider');
-   }
-   return context;
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };

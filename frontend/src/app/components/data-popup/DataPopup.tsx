@@ -22,10 +22,9 @@ import { handleDeleteQueryAnswer } from "@/app/util/query/queryFunctionalities";
 import { handleAddNewQueryAnswer } from "@/app/util/query/queryFunctionalities";
 import { LottieLoader } from "../lottie-loader/lottieLoader";
 import AddTagPopup from "../add-tag-popup/AddTagPopup";
-import { formatDate } from "@/app/util/formatDate";
 import { handleAddNewTagToExistingQuery } from "@/app/util/tags/tagFunctionalities";
 import NewButton from "../../components/new-button/NewButton";
-
+import {formatDate} from "../../util/formatDate";
 /**
  * @component DataPopup
  * @description
@@ -42,6 +41,17 @@ import NewButton from "../../components/new-button/NewButton";
  * @param {Object} props.position - Initial position for animation
  * @param {Object} props.size - Initial size for animation
  */
+interface Answer {
+  id: number;
+  answer: string;
+  createdAt: string;
+  updatedAt: string;
+  email?: string;
+  firstName?: string;
+  roleName?: string;
+  usersId?: number;
+  usersUsername?: string;
+}
 const DataPopup = ({
   data,
   onClose,
@@ -59,7 +69,7 @@ const DataPopup = ({
    * @state
    * @description Main state management for popup content
    */
-  const [answers, setAnswers] = useState(data.answers);
+  const [answers, setAnswers] = useState<Answer[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newAnswer, setNewAnswer] = useState<string>("");
   const [loading, setLoading] = useState(false);
@@ -103,6 +113,12 @@ const DataPopup = ({
     setTagGroups(data.tags || []);
   }, [data]);
 
+  useEffect(() => {
+    if (data?.answers) {
+      setAnswers(data.answers);
+    }
+  }, [data]);
+
   /**
    * @function handleConfirmDelete
    * @description Processes answer deletion
@@ -118,34 +134,40 @@ const DataPopup = ({
    * @function handleAddAnswer
    * @description Handles adding new answer with validation
    */
-  const handleAddAnswer = async() => {
+  const handleAddAnswer = async () => {
     if (!newAnswer.trim()) {
       setError("Please enter an answer before submitting.");
       return;
     }
-
+    if (!user?.id) {
+      setError("User information not available");
+      return;
+    }
+  
     setLoading(true);
-
-    const result = await handleAddNewQueryAnswer(newAnswer, user.userId, data.id);
-    setLoading(false);
-
-    if (result.success) {
-      setAnswers((prevAnswers: any[]) => [
-        ...prevAnswers,
-        {
-          id: Date.now(),
-          answer: newAnswer,
-          createdAt: new Date().toString(),
-          email: user.email,
-          firstName: user.firstName,
-          roleName: user.roles[0].roleName,
-          updatedAt: formatDate(new Date().toString()),
-          usersId: user.id,
-          usersUsername: user.username,
-        },
-      ]);
-      setNewAnswer("");
-      setIsAddModalOpen(false);
+  
+    try {
+      const result = await handleAddNewQueryAnswer(
+        newAnswer,
+        user.id,
+        data.id
+      );
+  
+      if (result.success && result.data?.[0]) {
+        setAnswers((prev: Answer[]) => [
+          ...prev,
+          {
+            ...result.data[0],
+            updatedAt: formatDate(new Date().toString())
+          }
+        ]);
+        setNewAnswer("");
+        setIsAddModalOpen(false);
+      } else {
+        setError(result.message || "Failed to add answer");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 

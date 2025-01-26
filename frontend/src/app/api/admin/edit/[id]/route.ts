@@ -3,8 +3,13 @@ import { API_BASE_URL } from '@/config/apiConfig';
 
 export async function PATCH(request: Request, { params }: { params: { id: number } }) {
     console.log("PATCH API invoked");
+    const token = localStorage.getItem('token');
+
 
     try {
+        if (!token) {
+            throw new Error('Authorization token missing');
+          }
         const { id } = params;
         console.log("Params received:", params);
         console.log("Request received with ID:", id);
@@ -31,6 +36,8 @@ export async function PATCH(request: Request, { params }: { params: { id: number
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                "Authorization": `Bearer ${token}`
+
             },
             body: JSON.stringify({
                 firstName: requestBody.firstName,

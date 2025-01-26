@@ -26,6 +26,7 @@ import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
 import planeanimation from "../../../../public/assets/animatedIcons/Paper Plane (1).json";
 import LottieIconButton from "../../components/lottie-animated-button/LottieIconButton";
 import {TrendingQuery} from "types/TrendingQuery";
+import { API_BASE_URL } from "@/config/apiConfig";
 
 
 
@@ -80,12 +81,24 @@ const Dashboard: React.FC = () => {
 const fetchTrendingQueries = async () => {
   try {
     const token = localStorage.getItem('token');
-    const response = await fetch("/api/queries/trending", {
+    if (!token) {
+      router.push('/pages/login');
+      return;
+    }
+    const response = await fetch(`${API_BASE_URL}/queries/top`, {
       headers: {
-        'Authorization': `Bearer ${token}`
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${token}` 
       }
     });
-    
+    if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        router.push('/pages/login');
+        return;
+      }
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
     const data = await response.json();
     console.log('Raw data:', data); // Debug log
     console.log('Type of data:', typeof data); // Check data type
@@ -241,7 +254,7 @@ useEffect(() => {
   
                 <div className={styles.queriesContent}>
                   {trendingQueries.map((query) => (
-                    <div className={styles.queryItem} key={query.id}>
+                    <div className={styles.queryItem} key={query.question + query.createdAt}>
                       <div className={styles.queryInfo}>
                         <div className={styles.queryIcon}>
                           <i className="fas fa-shield-alt"></i>
@@ -254,7 +267,6 @@ useEffect(() => {
                       <div className={styles.queryViews}>{query.highestCopyCount}</div>
                     </div>
                   ))}
-
                 </div>
               </div>
             )}

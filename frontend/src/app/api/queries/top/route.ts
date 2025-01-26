@@ -5,16 +5,22 @@ import { headers } from 'next/headers';
 export async function GET(request: Request) {
   try {
     const token = request.headers.get('Authorization');
+    if (!token) {
+      return NextResponse.json(
+        { message: "Authorization token missing" },
+        { status: 401 }
+      );
+    }
 
-    const response = await fetch(`${API_BASE_URL}/queries/trending`, {
+    const response = await fetch(`${API_BASE_URL}/queries/top`, {
       headers: {
-        'Authorization': token || '',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': token,
       }
     });
 
     const data = await response.json();
-    return NextResponse.json(data);
+    return NextResponse.json(data, { status: response.status });
     
   } catch (error) {
     return NextResponse.json(

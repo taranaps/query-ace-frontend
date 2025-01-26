@@ -10,6 +10,8 @@
  */
 
 import searchQueryResult from "@/app/interface/query/searchQueryResult";
+import { API_BASE_URL } from "@/config/apiConfig";
+
 
 /**
  * @function fetchQueryUsingKeyword
@@ -32,13 +34,20 @@ import searchQueryResult from "@/app/interface/query/searchQueryResult";
  * @throws {Error} When request fails or response is invalid
  */
 export const fetchQueryUsingKeyword = async(keyword: string): Promise<searchQueryResult[]> => {
-  const url = "http://localhost:8080/api/v1/queryapplication/queries/search";
+  const url = `${API_BASE_URL}/queries/search`;
+  const token = localStorage.getItem('token');
 
   try {
+    if (!token) {
+      throw new Error('Authorization token missing');
+    }
     const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+
+
       },
       body: JSON.stringify({ keyword }),
     });

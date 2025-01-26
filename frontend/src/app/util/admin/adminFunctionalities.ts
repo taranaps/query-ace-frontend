@@ -19,7 +19,10 @@ export const handleAddAdmin = async(adminData: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`
       },
-      body: JSON.stringify(adminData),
+      body: JSON.stringify({
+        ...adminData,
+        userRole: adminData.userRole 
+      }),
     });
 
     if (response.ok) {

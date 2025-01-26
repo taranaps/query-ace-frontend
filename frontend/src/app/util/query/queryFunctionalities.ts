@@ -1,13 +1,19 @@
 import QueryTagInterface from "@/app/interface/query/queryTagInterface";
 import { API_BASE_URL } from "@/config/apiConfig";
 
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  };
+};
+
 export const handleDeleteQuery = async(id: number) => {
   try {
-    const response = await fetch(`/api/queries/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/api/queries/${id}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: getAuthHeaders(),
     });
     if (!response.ok) {
       console.error(`Failed to delete query. Status: ${response.status}, Message: ${response.statusText}`);
@@ -19,13 +25,11 @@ export const handleDeleteQuery = async(id: number) => {
   }
 };
 
-export const handleDeleteQueryAnswer = async(id: number) => {
+export const handleDeleteQueryAnswer = async(answerId: number) => {
   try {
-    const response = await fetch(`/api/queries/answers/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/queries/answers/${answerId}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: getAuthHeaders(),
     });
 
     if (!response.ok) {
@@ -39,17 +43,15 @@ export const handleDeleteQueryAnswer = async(id: number) => {
 };
 
 export const handleEditQuery = async(
-  id: number,
+  answerId: number,
   newAnswer: string,
   userId: number,
   queryId: number
 ) => {
   try {
-    const response = await fetch(`/api/queries/answers/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/queries/answers/${answerId}`, {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers:getAuthHeaders(),
       body: JSON.stringify([
         {
           "answer": newAnswer,
@@ -73,13 +75,11 @@ export const handleEditQuery = async(
   }
 };
 
-export const handleCopyQuery = async(id: number) => {
+export const handleCopyQuery = async(answerId: number) => {
   try {
-    const response = await fetch(`/api/queries/answers/${id}/copy`, {
+    const response = await fetch(`${API_BASE_URL}/queries/answers/${answerId}/copy`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify({}),
     });
 
@@ -104,11 +104,9 @@ export const handleAddNewQueryAnswer = async (
       queryId: queryId
     }];
 
-    const response = await fetch('http://localhost:8080/api/v1/queryapplication/admin/query-answers', {
+    const response = await fetch(`${API_BASE_URL}/queries/${queryId}/answers`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers:getAuthHeaders(),
       body: JSON.stringify(payload)
     });
 
@@ -141,9 +139,7 @@ export const handleAddNewBulkQueryAndAnswer = async(
   try {
     const response = await fetch("/api/queries/bulk", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify(queries),
     });
 
@@ -175,9 +171,7 @@ export const handleFilterQuery = async(
 
     const response = await fetch(apiUrl, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: getAuthHeaders(),
     });
 
     if (!response.ok) {

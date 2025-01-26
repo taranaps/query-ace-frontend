@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import nlp from "compromise";
@@ -24,49 +24,26 @@ import styles from "./fileprocessing.module.css";
 import { handleGenerateReportSearch } from "@/app/util/generate-report/generateReportFunctions";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
 
-/**
- * Interface that represents a question object.
- *
- * @interface Question
- * @typedef {Object} Question
- * @property {number} id - Unique identifier for the question.
- * @property {string} text - Text of the question.
- */
-interface Question{
-    id: number;
-    text: string;
-};
+interface Question {
+  id: number;
+  text: string;
+  searchQuery?: string;
+  keywords?: string[];
+  answers?: { id: string; answer: string }[];
+}
 
 const CACHE_KEY = "fileProcessingCache";
 
-/**
- * Saves the current state of the process to localStorage for caching.
- *
- * @param {Object} state - The state object to cache.
- * @param {Question[]} state.questions - List of questions.
- * @param {"questions"|"import"|"result"} state.currentPage - Current page identifier.
- * @param {number} state.currentQuestionIndex - Index of the currently active question.
- * @param {Record<number, string>} state.selectedAnswers - Map of question IDs to selected answers.
- * @param {string} state.searchQuery - Current search query.
- * @param {string[]} state.keywords - List of extracted keywords.
- */
 const saveToLocalStorage = (state: {
-  questions : Question[],
-  currentPage: "questions" | "import" | "result",
-  currentQuestionIndex: number,
-  selectedAnswers:Record<number, string>,
-  searchQuery:string,
-  keywords:string[],
+  questions: Question[];
+  currentPage: "questions" | "import" | "result";
+  currentQuestionIndex: number;
+  selectedAnswers: Record<number, string>;
 }) => {
   const cacheData = { state, timestamp: new Date().getTime() };
   localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
 };
 
-/**
- * Loads the cached state from localStorage.
- *
- * @returns {Object|null} The cached state object or null if no valid cache exists.
- */
 const loadFromLocalStorage = () => {
   const cacheData = localStorage.getItem(CACHE_KEY);
   const expirationTime = 24 * 60 * 60 * 1000;
@@ -75,29 +52,25 @@ const loadFromLocalStorage = () => {
     const currentTime = new Date().getTime();
     if (currentTime - parsedData.timestamp < expirationTime) {
       return parsedData.state;
-    } else {
-      localStorage.removeItem(CACHE_KEY);
     }
+    localStorage.removeItem(CACHE_KEY);
   }
   return null;
 };
 
-/**
- * Description placeholder
- *
- * @returns {*}
- */
 const FileProcessingPage: React.FC = () => {
-
   const cachedState = loadFromLocalStorage();
   const [questions, setQuestions] = useState<Question[]>(cachedState?.questions || []);
-  const [currentPage, setCurrentPage] = useState<"import" | "questions" | "result">(cachedState?.currentPage || "import");
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(cachedState?.currentQuestionIndex || 0);
-  const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>(cachedState?.selectedAnswers || {});
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [keywords, setKeywords] = useState<string[]>(cachedState?.keywords || []);
-  const [answers, setAnswers] = useState<{ id: string, answer: string }[]>(cachedState?.answers || []);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<"import" | "questions" | "result">(
+    cachedState?.currentPage || "import"
+  );
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(
+    cachedState?.currentQuestionIndex || 0
+  );
+  const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>(
+    cachedState?.selectedAnswers || {}
+  );
+  const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const router = useRouter();
 
@@ -107,83 +80,78 @@ const FileProcessingPage: React.FC = () => {
     }
   }, [user, router]);
 
-  useEffect(() => {
-    const delayDebounce = setTimeout(() => {
-      if (searchQuery.trim()) {
-        const searchKeywords = searchQuery.trim().split(/\s+/);
-        setKeywords(searchKeywords);
-      } else if (questions[currentQuestionIndex]) {
-        const currentQuestionText = questions[currentQuestionIndex].text;
-        const extractedKeywords = extractKeywords(currentQuestionText);
-        setKeywords(extractedKeywords);
-      }
-    }, 300);
-
-    return () => {
-      clearTimeout(delayDebounce);
-    };
-  }, [searchQuery, currentQuestionIndex, questions]);
-
-  useEffect(() => {
-    saveToLocalStorage({
-      questions,
-      currentPage,
-      currentQuestionIndex,
-      selectedAnswers,
-      searchQuery,
-      keywords,
-    });
-  }, [questions, currentPage, currentQuestionIndex, selectedAnswers, searchQuery,keywords]);
-
-  useEffect(() => {
-    const fetchData = async() => {
-      if (keywords.length > 0) {
-        try {
-          setLoading(true);
-          const result = await handleGenerateReportSearch(keywords);
-          setLoading(false);
-          if (result.success) {
-            setAnswers(result.data);
-          } else {
-            console.error("Error:", result.message);
-          }
-        } catch (error) {
-          console.error("An error occurred:", error);
-        }
-      }
-    };
-    fetchData();
-  }, [keywords]);
-
-  /**
- * Extracts keywords from a given text using NLP techniques.
- * Identifies nouns and adjectives while excluding auxiliary words.
- *
- * @param {string} text - The input text from which to extract keywords.
- * @returns {string[]} An array of keywords extracted from the text.
- */
-  const extractKeywords = (text: string): string[] => {
+  const extractKeywords = useCallback((text: string): string[] => {
     const doc = nlp(text);
     const keywords = doc
       .match("#Noun+")
       .out("array")
       .concat(doc.match("#Adjective+").out("array"));
-    const filteredKeywords = keywords.filter((keyword: string) => {
-      const wordDoc = nlp(keyword);
-      return !wordDoc.has("#Auxiliary");
-    });
-    return filteredKeywords;
-  };
+    return keywords.filter((keyword: string) => !nlp(keyword).has("#Auxiliary"));
+  }, []);
 
-  /**
- * Handles the file input change event, processes the selected file,
- * and extracts questions from it to update the state.
- *
- * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event triggered when a file is selected.
- */
+  useEffect(() => {
+    const currentQuestion = questions[currentQuestionIndex];
+    if (!currentQuestion) return;
+
+    const delayDebounce = setTimeout(() => {
+      const searchText = currentQuestion.searchQuery || "";
+      const newKeywords = searchText.trim()
+        ? searchText.trim().split(/\s+/)
+        : extractKeywords(currentQuestion.text);
+
+      if (JSON.stringify(newKeywords) !== JSON.stringify(currentQuestion.keywords)) {
+        setQuestions((prev: Question[]) =>
+          prev.map(q =>
+            q.id === currentQuestion.id ? { ...q, keywords: newKeywords } : q
+          )
+        );
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [currentQuestionIndex, questions, extractKeywords]);
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    const currentQuestion = questions[currentQuestionIndex];
+    
+    const fetchAnswers = async () => {
+      if (!currentQuestion?.keywords?.length) return;
+
+      try {
+        setLoading(true);
+        const result = await handleGenerateReportSearch(currentQuestion.keywords, {
+          signal: abortController.signal
+         });
+
+        if (!abortController.signal.aborted) {
+          setQuestions((prev: Question[]) =>
+            prev.map(q =>
+              q.id === currentQuestion.id ? { ...q, answers: result.data } : q
+            )
+          );
+        }
+      } catch (error) {
+        if (!abortController.signal.aborted) {
+          console.error("Error fetching answers:", error);
+        }
+      } finally {
+        if (!abortController.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchAnswers();
+
+    return () => {
+      abortController.abort();
+    };
+  }, [currentQuestionIndex, questions[currentQuestionIndex]?.keywords?.join('|')]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
+    const file = e.target.files?.[0];
+    if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
         const data = new Uint8Array(event.target?.result as ArrayBuffer);
@@ -196,87 +164,52 @@ const FileProcessingPage: React.FC = () => {
         }));
         setQuestions(processedQuestions);
       };
-      reader.onerror = () => alert("Error processing file. Please try again.");
-      reader.readAsArrayBuffer(selectedFile);
+      reader.onerror = () => alert("Error processing file");
+      reader.readAsArrayBuffer(file);
     }
   };
 
-  /**
-    * Resets the application state to its initial values by clearing questions, selected answers,
-    * keywords, and cached data. Also resets the current page to the import screen.
-  */
   const handleClear = () => {
     setQuestions([]);
     setCurrentPage("import");
     setCurrentQuestionIndex(0);
     setSelectedAnswers({});
-    setSearchQuery("");
-    setKeywords([]);
     localStorage.removeItem(CACHE_KEY);
   };
 
-  /**
- * Updates the text of a specific question by its ID.
- *
- * @param {number} id - The ID of the question to update.
- * @param {string} updatedText - The new text for the question.
- */
-  const handleEditQuestion = (id: number, updatedText: string) => {
-    setQuestions((prevQuestions) =>
-      prevQuestions.map((question) =>
-        question.id === id ? { ...question, text: updatedText } : question
-      )
+  const handleEditQuestion = (id: number, text: string) => {
+    setQuestions((prev: Question[]) =>
+      prev.map(q => q.id === id ? { ...q, text } : q)
     );
   };
 
-  /**
- * Proceeds to the questions page if there are questions available.
- */
   const handleProceed = () => {
     if (questions.length > 0) setCurrentPage("questions");
   };
 
-  /**
- * Selects an answer for a specific question.
- *
- * @param {number} questionId - The ID of the question to select an answer for.
- * @param {string} answer - The selected answer.
- */
   const handleAnswerSelect = (questionId: number, answer: string) => {
-    setSelectedAnswers((prev) => ({ ...prev, [questionId]: answer }));
+    setSelectedAnswers(prev => ({ ...prev, [questionId]: answer }));
   };
 
-  /**
-    * Navigates to the next or previous question.
-    *
-    * @param {"next" | "previous"} direction - The direction to navigate ("next" or "previous").
-  */
   const handleNavigation = (direction: "next" | "previous") => {
     setCurrentQuestionIndex((prev: number) =>
       direction === "next"
         ? Math.min(prev + 1, questions.length - 1)
         : Math.max(prev - 1, 0)
     );
-    setSearchQuery("");
   };
 
-  /**
-    * Downloads the questions and selected answers as an Excel file.
- */
   const handleDownload = () => {
-    const resultData = questions.map((question) => ({
-      question: question.text,
-      answer: selectedAnswers[question.id] || "No answer selected",
+    const data = questions.map(q => ({
+      Question: q.text,
+      Answer: selectedAnswers[q.id] || "No answer selected"
     }));
-    const worksheet = XLSX.utils.json_to_sheet(resultData);
+    const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Answers");
-    XLSX.writeFile(workbook, "questions_and_answers.xlsx");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Results");
+    XLSX.writeFile(workbook, "questions_answers.xlsx");
   };
 
-  /**
-    * Renders the header section of the application, displaying contextual information and controls based on the current page.
-  */
   const renderHeader = () => (
     <div className={styles.header}>
       <div className={styles.headerLeft}>
@@ -296,7 +229,7 @@ const FileProcessingPage: React.FC = () => {
               <a href="/assets/templates/File Processing Template.xlsx">Download Template</a>
               <label htmlFor="fileInput">
                 <Button variant="contained" component="span">
-                                    Import File
+                  Import File
                 </Button>
                 <input
                   id="fileInput"
@@ -308,11 +241,10 @@ const FileProcessingPage: React.FC = () => {
               </label>
             </>
           ) : (
-
             <Button
               variant="contained"
               color="primary"
-              onClick={() => handleClear()}
+              onClick={handleClear}
               disabled={questions.length === 0}
             >
               Clear
@@ -321,24 +253,19 @@ const FileProcessingPage: React.FC = () => {
         </div>
       ) : currentPage === "questions" && (
         <div className={styles.headerRight}>
-
           <Button
             variant="contained"
             color="primary"
-            onClick={() => handleClear()}
+            onClick={handleClear}
             disabled={questions.length === 0}
           >
             Cancel
           </Button>
         </div>
-      )
-      }
+      )}
     </div>
   );
 
-  /**
-    * Renders the footer section of the application, providing navigation and action controls based on the current page.
-  */
   const renderFooter = () => (
     <div className={styles.footer}>
       {currentPage === "import" ? (
@@ -379,7 +306,7 @@ const FileProcessingPage: React.FC = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => handleClear()}
+            onClick={handleClear}
             disabled={questions.length === 0}
           >
             Clear
@@ -396,23 +323,19 @@ const FileProcessingPage: React.FC = () => {
     </div>
   );
 
-  /**
-    * Renders the import page, displaying either an image placeholder if no questions are present or a list of question cards for editing and deletion.
-  */
   const renderImportPage = () => (
     <div className={styles.questionsContainer}>
       {questions.length === 0 ? (
         <div className={styles.questionsImage}>
           <img src="/assets/images/import-clipboard.png" alt="clipboard image"/>
-        </div>) : (
-        questions.map((question) => (
+        </div>
+      ) : (
+        questions.map(question => (
           <QuestionCard
             key={question.id}
             id={question.id}
             text={question.text}
-            onDelete={() =>
-              setQuestions(questions.filter((q) => q.id !== question.id))
-            }
+            onDelete={() => setQuestions(questions.filter(q => q.id !== question.id))}
             onEdit={handleEditQuestion}
           />
         ))
@@ -420,79 +343,73 @@ const FileProcessingPage: React.FC = () => {
     </div>
   );
 
-  /**
-    * Renders the questions page, including progress, the current question, a search bar for answers,
-    * and a section to display matching answers or loading state.
-  */
-  const renderQuestionsPage = () => (
-    <>
-      <div className={styles.progressContainer}>
-        <p>Progress</p>
-        <LinearProgress
-          sx={{
-            backgroundColor: "rgba(255, 255, 255, 0.74)",
-          }}
-          className={styles.ProgressBar}
-          variant="determinate"
-          value={((currentQuestionIndex + 1) / questions.length) * 100}
-        />
-        <p>
-          {currentQuestionIndex + 1}/{questions.length}
-        </p>
-      </div>
-      <div className={styles.question}>
-        <p>
-          {questions[currentQuestionIndex]?.text}
-        </p>
-      </div>
-      <div className={styles.searchBar}>
-        <p>Not found the answer you are looking for ?</p>
-        <input
-          type="text"
-          className={styles.searchArea}
-          placeholder="Search here..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </div>
-      <div className={styles.questionSection}>
-        {loading ? (
-          <div className={styles.questionSectionFiller}>
-            <LottieLoader size={"180px"} />
-          </div>
-        ) : (
-          answers.length === 0 ? (
+  const renderQuestionsPage = () => {
+    const currentQuestion = questions[currentQuestionIndex] || {};
+    const selectedAnswer = selectedAnswers[currentQuestion.id] || "";
+    const answersToShow = selectedAnswer 
+  ? [{ id: `selected-${currentQuestion.id}`, answer: selectedAnswer }]
+  : currentQuestion.answers || [];
+
+    return (
+      <>
+        <div className={styles.progressContainer}>
+          <p>Progress</p>
+          <LinearProgress
+            sx={{ backgroundColor: "rgba(255, 255, 255, 0.74)" }}
+            className={styles.ProgressBar}
+            variant="determinate"
+            value={((currentQuestionIndex + 1) / questions.length) * 100}
+          />
+          <p>{currentQuestionIndex + 1}/{questions.length}</p>
+        </div>
+        <div className={styles.question}>
+          <p>{currentQuestion.text}</p>
+        </div>
+        <div className={styles.searchBar}>
+          <p>Not found the answer you are looking for?</p>
+          <input
+            type="text"
+            className={styles.searchArea}
+            placeholder="Search here..."
+            value={currentQuestion.searchQuery || ""}
+            onChange={(e) => setQuestions((prev: Question[]) =>
+              prev.map((q, idx) =>
+                idx === currentQuestionIndex ? { ...q, searchQuery: e.target.value } : q
+              )
+            )}
+          />
+        </div>
+        <div className={styles.questionSection}>
+          {loading ? (
             <div className={styles.questionSectionFiller}>
-              <p>No matching answers found in the database </p>
+              <LottieLoader size="180px" />
+            </div>
+          ) : answersToShow.length === 0 ? (
+            <div className={styles.questionSectionFiller}>
+              <p>No matching answers found in the database</p>
             </div>
           ) : (
             <RadioGroup
               className={styles.answersFormDiv}
-              value={selectedAnswers[questions[currentQuestionIndex].id] || ""}
-              onChange={(e) =>
-                handleAnswerSelect(questions[currentQuestionIndex].id, e.target.value)
-              }
+              value={selectedAnswer}
+              onChange={(e) => handleAnswerSelect(currentQuestion.id, e.target.value)}
             >
-              {answers.map((answer) => (
+              {answersToShow.map((answer) => (
                 <FormControlLabel
+                  key={`${currentQuestion.id}-${answer.id}`}
                   className={styles.answersForm}
-                  key={answer.id}
                   value={answer.answer}
                   control={<Radio />}
                   label={answer.answer}
                 />
               ))}
-
             </RadioGroup>
-          )
-        )}
-      </div>
-    </>
-  );
+          )}
+        </div>
+      </>
+    );
+  };
 
-  /**
-    * Renders the results page with a table showing questions and selected answers.
-  */
   const renderResultPage = () => (
     <TableContainer component={Paper}>
       <Table>
@@ -503,7 +420,7 @@ const FileProcessingPage: React.FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {questions.map((question) => (
+          {questions.map(question => (
             <TableRow key={question.id}>
               <TableCell>{question.text}</TableCell>
               <TableCell>{selectedAnswers[question.id] || "No answer selected"}</TableCell>
@@ -513,6 +430,15 @@ const FileProcessingPage: React.FC = () => {
       </Table>
     </TableContainer>
   );
+
+  useEffect(() => {
+    saveToLocalStorage({
+      questions,
+      currentPage,
+      currentQuestionIndex,
+      selectedAnswers,
+    });
+  }, [questions, currentPage, currentQuestionIndex, selectedAnswers]);
 
   return (
     <div className={styles.fileProcessingPage}>

@@ -12,7 +12,16 @@ import { fetchCreatedByUsers } from "@/app/api/companies/fetchCreatedByUsers";
 import FilterDropdown from "@/app/components/lookup-filterdropdown/FilterDropDown";
 import fetchAllTagDetails from "@/app/api/tags/route.ts";
 import { handleFilterQuery } from "@/app/util/query/queryFunctionalities";
-
+interface QueryItem {
+  id: string;
+  createdAt?: string;
+  usersUsername?: string;
+  question: string;
+  answers: Array<{ answer: string }>;
+  customer?: string;
+  queryCreatedAt?: string;
+  tags?: string[];
+}
 const QueryLookup = () => {
   const [data, setData] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -53,6 +62,11 @@ const QueryLookup = () => {
         const filteredQueriesResponse = await handleFilterQuery(selectedCreatedBy, selectedCompanies);
 
         if (filteredQueriesResponse.success) {
+          const formattedData = filteredQueriesResponse.data.map((item: QueryItem)=> ({
+            ...item,
+            createdAt: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "Unknown",
+            usersUsername: item.usersUsername || "Unknown"
+          }));
           setData(filteredQueriesResponse.data);
           setFilteredData(filteredQueriesResponse.data);
         } else {
@@ -154,7 +168,7 @@ const QueryLookup = () => {
           paginatedData.map((item) => (
             <div className={styles.dataItem} key={item.id}>
               <DataCardDashboard
-                key={item.id}
+                {...item}
                 id={item.id}
                 question={item.question || "No question provided"}
                 answer={item.answers[0]?.answer || "No answer provided"}
