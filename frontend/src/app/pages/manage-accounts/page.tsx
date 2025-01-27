@@ -24,12 +24,11 @@ import NewButton from "../../components/new-button/NewButton";
 import { API_BASE_URL } from "@/config/apiConfig";
 
 type AdminFormData = {
-    firstName: string;
-    email: string;
-    location: string;
-    username: string;
-    password: string;
-    userRole: "SUPER_ADMIN" | "ADMIN";
+  firstName: string;
+  email: string;
+  username: string;
+  password: string;
+  userRole: "SUPER_ADMIN" | "ADMIN";
 };
 
 const ManageAccountsPage: React.FC = () => {
@@ -285,7 +284,6 @@ const ManageAccountsPage: React.FC = () => {
           formData={{
             firstName: selectedAdmin.firstName,
             email: selectedAdmin.email,
-            location: selectedAdmin.location,
             username: selectedAdmin.username,
             password: "",
             userRole: (selectedAdmin.roles[0]?.roleName === "SUPER_ADMIN" 

@@ -78,22 +78,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const originalFetch = window.fetch;
     
-    window.fetch = async (...args) => {
-      const [input, init] = args;
+    window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
       const response = await originalFetch(input, {
         ...init,
         headers: {
           ...init?.headers,
           Authorization: token ? `Bearer ${token}` : '',
+          'Content-Type': 'application/json',
         },
       });
-
+  
       if (response.status === 401) {
         handleUnauthorized();
       }
       return response;
     };
-
+  
     return () => {
       window.fetch = originalFetch;
     };

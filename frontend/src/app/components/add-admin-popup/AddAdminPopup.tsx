@@ -23,7 +23,6 @@ import { LottieLoader } from "../lottie-loader/lottieLoader";
 interface AdminFormData {
     firstName: string;
     email: string;
-    location: string;
     username: string;
     password: string;
     userRole: "SUPER_ADMIN" | "ADMIN";
@@ -77,7 +76,6 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
   const [formState, setFormState] = useState<AdminFormData>({
     firstName: formData.firstName || "",
     email: formData.email || "",
-    location: formData.location || "TRIVANDRUM",
     username: formData.username || "",
     password: formData.password || "",
     userRole: formData.userRole || "ADMIN",
@@ -100,9 +98,9 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
      * @function
      */
   const handleCreate = async() => {
-    const { firstName, email, location, username, password } = formState;
+    const { firstName, email, username, password } = formState;
 
-    if (firstName && email && location && username && (password || !passwordOn)) {
+    if (firstName && email  && username && (password || !passwordOn)) {
       setLoading(true);
       await onConfirm(formState);
       setLoading(false);
