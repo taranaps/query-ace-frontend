@@ -51,7 +51,7 @@ export const handleEditAdmin = async(id: string, adminData: Partial<{
 }>) => {
 try {
   const token = localStorage.getItem('token');
-  const url = `/api/admin/users/${id}`;  
+  const url = `${API_BASE_URL}/admin/edit`;  
 
   const response = await fetch(url, {
     method: "PATCH", 
