@@ -25,6 +25,8 @@ import AddTagPopup from "../add-tag-popup/AddTagPopup";
 import { handleAddNewTagToExistingQuery } from "@/app/util/tags/tagFunctionalities";
 import NewButton from "../../components/new-button/NewButton";
 import {formatDate} from "../../util/formatDate";
+import { useAuth } from "@/context/AuthContext";
+
 /**
  * @component DataPopup
  * @description
@@ -58,7 +60,7 @@ interface DataPopupProps {
 const DataPopup = ({
   data,
   onClose,
-  user,
+  // user,
   position,
   size,
   onDataChange
@@ -80,7 +82,8 @@ const DataPopup = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isAddTagPopupOpen, setIsAddTagPopupOpen] = useState(false);
-  const [tagGroups, setTagGroups] = useState<{ tagGroupName: string; tagNames: string }[]>([]);
+  const [tagGroups, setTagGroups] = useState<{ tagGroupName: string; tagName: string }[]>([]);
+  const { user } = useAuth(); 
 
   /**
    * @state
@@ -198,7 +201,7 @@ const DataPopup = ({
 
       setTagGroups((prevTagGroups) => {
         const updatedTagGroups = [...prevTagGroups];
-        updatedTagGroups.push({ tagGroupName: newTag.group, tagNames: newTag.tag });
+        updatedTagGroups.push({ tagGroupName: newTag.group, tagName: newTag.tag });
         return updatedTagGroups;
       });
       setIsAddTagPopupOpen(false);
@@ -272,7 +275,7 @@ const DataPopup = ({
         <div className={styles.dataCardTags}>
           {tagGroups.length > 0 ? (
             tagGroups.map((tag: any, index: number) => (
-              <div key={index} className={styles.tag}>
+              <div key={`${tag.tagGroupName}-${index}`} className={styles.tag}>
                 <div className={styles.tagGroup}>
                   {tag.tagGroupName}
                 </div>
