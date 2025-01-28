@@ -7,9 +7,9 @@ import {
   Button
 } from "@mui/material";
 import Textfield from "../text-field/TextField";
-
 import styles from "./AddAdminPopup.module.css";
 import { LottieLoader } from "../lottie-loader/lottieLoader";
+import MessagePopup from "../message-popup/MessagePopup";
 
 /**
  * Represents the structure of the admin form data.
@@ -44,7 +44,7 @@ interface AddAdminPopupProps {
     header: string;
     onClose: () => void;
     // eslint-disable-next-line no-unused-vars
-    onConfirm: (adminData: AdminFormData) => void;
+    onConfirm: (adminData: AdminFormData) => boolean;
     closePopup: () => void;
     passwordOn?: boolean;
     formData?: Partial<AdminFormData>;
@@ -63,7 +63,7 @@ interface AddAdminPopupProps {
  *   onConfirm={handleCreateAdmin}
  *   closePopup={handleClosePopup}
  * />
- * 
+ *
  * @param {AddAdminPopupProps} props - The properties passed to the component.
  * @returns {JSX.Element} The AddAdminPopup component.
  */
@@ -84,7 +84,7 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
     userRole: formData.userRole || "ADMIN",
   });
 
-      /**
+  /**
      * Handles input changes for the admin form fields.
      * @param {keyof AdminFormData} field - The field being updated.
      * @param {string} value - The new value for the field.
@@ -94,8 +94,9 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
   };
 
   const [loading, setLoading] = useState(false);
+  const [loadingAnimationState, setLoadingAnimationState] = useState("loading");
 
-      /**
+  /**
      * Handles the form submission to create a new admin.
      * @async
      * @function
@@ -105,19 +106,25 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
 
     if (firstName && email && location && username && (password || !passwordOn)) {
       setLoading(true);
-      await onConfirm(formState);
+      const confirmSave = await onConfirm(formState);
+      if (!confirmSave) {
+        MessagePopup({ message:"Failed to create admin", buttonLabel: "OK",buttonFunction: () => {} });
+      } else {
+        setLoadingAnimationState("success");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
       setLoading(false);
       closePopup();
     } else {
-      alert("Please fill all required fields before creating an account.");
-    }
+      MessagePopup({ message:"Please fill in all the fields", buttonLabel: "OK",buttonFunction: () => {} });
+    };
   };
 
   return (
     <Dialog open onClose={onClose} className={styles.addAdminPopUp}>
       <div className={styles.addAdminPopUpBody}>
         {loading ? (
-          <LottieLoader size={"180px"} />
+          <LottieLoader size={"180px"} state={loadingAnimationState}/>
         ) : (
           <>
             <DialogTitle className={styles.addAdminPopUpHeader}>

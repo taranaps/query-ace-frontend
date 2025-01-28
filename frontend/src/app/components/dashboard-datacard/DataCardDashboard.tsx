@@ -21,7 +21,7 @@ import styles from "./datacard.module.css";
  * @interface DataCardProps
  * @description
  * Properties required for the DataCardDashboard component
- * 
+ *
  * @property {number} id - Unique identifier for the query
  * @property {string} question - The query question text
  * @property {string} answer - The query answer text
@@ -64,7 +64,7 @@ const MAX_ANSWER_WORDS = 20;
  * @function truncateText
  * @description
  * Truncates text to a specified word limit and adds ellipsis
- * 
+ *
  * @param {string} text - Text to truncate
  * @param {number} limit - Maximum number of words to show
  * @returns {string} Truncated text with ellipsis if needed
@@ -83,7 +83,7 @@ const truncateText = (text: string | undefined, limit: number): string =>
  * - Copy functionality
  * - Tags
  * - Creation metadata
- * 
+ *
  * Uses memo for performance optimization
  */
 const DataCardDashboard: React.FC<DataCardProps> = memo(
@@ -107,7 +107,7 @@ const DataCardDashboard: React.FC<DataCardProps> = memo(
      * - Records copy action
      * - Copies text
      * - Shows success message
-     * 
+     *
      * @param {React.MouseEvent} event - Click event object
      */
     const handleCopy = useCallback(
@@ -115,7 +115,6 @@ const DataCardDashboard: React.FC<DataCardProps> = memo(
         event.stopPropagation();
         await handleCopyQuery(id);
         navigator.clipboard.writeText(answer);
-        alert("Copied to clipboard!");
       },
       [id, answer]
     );

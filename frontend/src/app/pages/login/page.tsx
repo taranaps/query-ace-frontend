@@ -2,7 +2,7 @@
 
 /**
  * @file LoginPage.tsx
- * @description A functional component for handling user login. It includes a form for email and password, 
+ * @description A functional component for handling user login. It includes a form for email and password,
  * validates user credentials via an API, and redirects to the dashboard upon successful login.
  */
 
@@ -39,13 +39,13 @@ const LoginPage: React.FC = () => {
     }));
   };
 
-/**
+  /**
      * Handles form submission, sends login credentials to the server, and processes the response.
      *
      * @async
      * @param {React.FormEvent} e - The event triggered on form submission.
      * @returns {Promise<void>} Resolves after handling the login process.
-     */
+  */
 
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
@@ -63,14 +63,12 @@ const LoginPage: React.FC = () => {
 
       if (response.ok) {
         login(data);
-        alert("Logged in Successfully!");
         router.push("/pages/dashboard");
       } else {
-        alert(`Error: ${data.message}`);
+        // alert(`Error: ${data.message}`);
       }
     } catch (error) {
       console.error("Login Error:", error);
-      alert("An error occurred. Please try again.");
     }
   };
 

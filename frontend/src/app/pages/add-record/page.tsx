@@ -1,11 +1,12 @@
 "use client";
+
 /**
  * @module AddRecordPage
  *
+ * .
  * Represents the page for adding records in the application. This module handles user authentication
  * checks and conditionally renders the page or redirects unauthorized users.
  */
-
 import React, { useEffect } from "react";
 import NavigationTabs from "@/app/components/navigation-tabs/NavigationTabs";
 import { useAuth } from "@/context/AuthContext";

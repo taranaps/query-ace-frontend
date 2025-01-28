@@ -95,8 +95,8 @@ const eslintConfig = [
           format: null,
           modifiers: ["requiresQuotes"],
         },
-      ]
-
+      ],
+      "no-alert": "error",
     },
   }),
 ];

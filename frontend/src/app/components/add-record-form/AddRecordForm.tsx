@@ -26,6 +26,7 @@ const AddRecordForm = () => {
 
   const [isTagPopupOpen, setIsTagPopupOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingAnimationState, setLoadingAnimationState] = useState("loading");
 
   const handleChange = (field: string, value: string | string[] | { group: string; tag: string }[]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -51,7 +52,7 @@ const AddRecordForm = () => {
     const { question, answers, tags } = formData;
 
     if (!question || answers.length === 0) {
-      alert("Please fill in all required fields!");
+      // MessagePopup({"Please fill in the question and at least one answer", "OK", () => {}});
       return;
     }
 
@@ -68,15 +69,20 @@ const AddRecordForm = () => {
 
     const answersData: PostQueryAnswerInterface[] = answers.map((answer) => ({
       answer,
-      userId: 1,
+      userId: user.id,
     }));
 
+    setLoadingAnimationState("loading");
     setIsLoading(true);
 
     try {
       await postQueryWithAnswers(questionData, answersData);
+      setLoadingAnimationState("success");
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       handleClear();
     } catch (error) {
+      setLoadingAnimationState("failed");
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       console.error("Error submitting data:", error);
     } finally {
       setIsLoading(false);
@@ -87,7 +93,12 @@ const AddRecordForm = () => {
 
   return (
     <form className={styles.addRecordForm} onSubmit={handleSave}>
-      {isLoading ? (<LottieLoader size={"240px"} />) : (
+      {isLoading ? (
+        <LottieLoader
+          size={"240px"}
+          state={loadingAnimationState}
+        />
+      ) : (
         <>
           <TextField
             label="Question"

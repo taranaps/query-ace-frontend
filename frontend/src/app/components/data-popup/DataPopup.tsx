@@ -62,10 +62,11 @@ const DataPopup = ({
   const [answers, setAnswers] = useState(data.answers);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newAnswer, setNewAnswer] = useState<string>("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isAddTagPopupOpen, setIsAddTagPopupOpen] = useState(false);
   const [tagGroups, setTagGroups] = useState<{ tagGroupName: string; tagNames: string }[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [loadingAnimationState, setLoadingAnimationState] = useState("loading");
 
   /**
    * @state
@@ -123,11 +124,9 @@ const DataPopup = ({
       setError("Please enter an answer before submitting.");
       return;
     }
-
+    setLoadingAnimationState("loading");
     setLoading(true);
-
     const result = await handleAddNewQueryAnswer(newAnswer, user.id, data.id);
-    setLoading(false);
 
     if (result.success) {
       setAnswers((prevAnswers: any[]) => [
@@ -146,7 +145,10 @@ const DataPopup = ({
       ]);
       setNewAnswer("");
       setIsAddModalOpen(false);
+      setLoadingAnimationState("success");
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     }
+    setLoading(false);
   };
 
   /**
@@ -163,15 +165,20 @@ const DataPopup = ({
    * @description Processes adding new tags
    */
   const handleAddTags = async(newTag: { group: string; tag: string }) => {
+    setLoadingAnimationState("loading");
+    setLoading(true);
     const tagPayload = { tagGroupName: newTag.group, tagName: newTag.tag };
     const result = await handleAddNewTagToExistingQuery(data.id, tagPayload);
 
     if (result.success) {
+      setLoadingAnimationState("success");
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       setTagGroups((prevTagGroups) => {
         const updatedTagGroups = [...prevTagGroups];
         updatedTagGroups.push({ tagGroupName: newTag.group, tagNames: newTag.tag });
         return updatedTagGroups;
       });
+      setLoading(false);
       setIsAddTagPopupOpen(false);
     } else {
       console.error("Failed to add tag to the backend.");
@@ -273,7 +280,7 @@ const DataPopup = ({
         {isAddModalOpen && (
           <div className={styles.addAnswerModal}>
             <div className={styles.modalContent}>
-              {loading ? (<LottieLoader />) : (
+              {loading ? (<LottieLoader state={loadingAnimationState} />) : (
                 <>
                   <h3>Add a New Answer</h3>
                   <textarea

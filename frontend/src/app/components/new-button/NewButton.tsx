@@ -23,15 +23,14 @@ type ButtonProps = {
 
 /**
  * A customizable button component that supports different styles, widths, and an optional icon.
- * 
+ *
  * @component
  * @example
  * // Usage
- * <NewButton 
+ * <NewButton
  *   variant="submit"
  *   width="max"
- *   onClick={handleClick}
- * >
+ *   onClick={handleClick} >
  *   Submit
  * </NewButton>
  *

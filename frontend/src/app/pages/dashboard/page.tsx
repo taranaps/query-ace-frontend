@@ -12,7 +12,6 @@
  * - Loading states with animations
  * - User authentication check
  */
-
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -205,7 +204,7 @@ const Dashboard: React.FC = () => {
   };
 
   if (!user) {
-    return <LottieLoader />;
+    return <LottieLoader size={"250px"} state="Loading" />;
   }
 
   return (
@@ -224,7 +223,7 @@ const Dashboard: React.FC = () => {
       <div className={styles["dashboard-body"]}>
         {isLoading ? (
           <div className={styles.loaderContainer}>
-            <LottieLoader size={"240px"} />
+            <LottieLoader size={"240px"} state="Loading" />
           </div>
         ) : (
           <div className={styles["dashboard-content"]}>
@@ -280,7 +279,7 @@ const Dashboard: React.FC = () => {
                   id={result.id}
                   question={result.question}
                   customer={"Customer"}
-                  numberOfAnswers={1}
+                  numberOfAnswers={result.answers.length}
                   createdBy={result.usersUsername}
                   createdAt={result.queryCreatedAt}
                   answer={result.answers[0]?.answer || "No Answer"}
