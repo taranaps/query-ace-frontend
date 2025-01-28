@@ -10,6 +10,7 @@ interface User {
   status?: "ACTIVE" | "INACTIVE";
   username?: string;
   email?: string;
+  userId?:number;
 }
 
 interface AuthContextProps {

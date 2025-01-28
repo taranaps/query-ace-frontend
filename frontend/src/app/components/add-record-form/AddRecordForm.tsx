@@ -59,7 +59,7 @@ const AddRecordForm = () => {
     const questionData: PostQueryQuestionInetface[] = [
       {
         question,
-        userId: user.userId,
+        userId: user?.id || user?.userId || 1, 
         tags: tags.map((tag) => ({
           tagName: tag.tag,
           tagGroupName: tag.group,

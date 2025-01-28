@@ -31,7 +31,7 @@ const QueryLookup = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [createdBy, setCreatedBy] = useState<string[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
-  const [sortOrder] = useState<"newest" | "earliest">("newest"); //change done;
+  const [sortOrder] = useState<"newest" | "earliest">("newest"); 
 
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
   const [selectedCreatedBy, setSelectedCreatedBy] = useState<string[]>([]);
@@ -40,6 +40,8 @@ const QueryLookup = () => {
   const itemsPerPage = 10;
   const [popupPosition, setPopupPosition] = useState<{ top: number, left: number }>({ top: 0, left: 0 });
   const [popupSize, setPopupSize] = useState<{ width: number; height: number }>({ width: 60, height: 20 });
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
 
   const { user } = useAuth();
   const router = useRouter();
@@ -81,7 +83,7 @@ const QueryLookup = () => {
     };
 
     fetchData();
-  }, [selectedCompanies, selectedCreatedBy]);
+  }, [selectedCompanies, selectedCreatedBy, refreshTrigger]);
 
   const handleFilterChange = async() => {
     setLoading(true);
@@ -211,6 +213,8 @@ const QueryLookup = () => {
             setSelectedItem(null);
             setAnswers([]);
           }}
+          onDataChange={() => setRefreshTrigger(prev => prev + 1)} 
+
           position={popupPosition}
           size={popupSize}
         />

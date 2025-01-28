@@ -1,3 +1,5 @@
+import { API_BASE_URL } from "@/config/apiConfig";
+
 export const handleAddNewTag = async(
   tag: {
         tagGroupName: string, tagNames: string
@@ -6,10 +8,13 @@ export const handleAddNewTag = async(
 
   try {
     const requestBody =  tag ;
-    const response = await fetch("/api/queries/tags", {
+    const token = localStorage.getItem('token'); 
+
+    const response = await fetch(`${API_BASE_URL}/queries/tags`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`  
       },
       body: JSON.stringify(requestBody),
     });
@@ -33,11 +38,14 @@ export const handleAddNewTagToExistingQuery = async(
   tags: { tagGroupName: string; tagName: string }
 ) => {
   try {
+    const token = localStorage.getItem('token'); 
+
     const requestBody =  tags;
-    const response = await fetch(`/api/queries/${id}/tags/add`, {
+    const response = await fetch(`${API_BASE_URL}/queries/${id}/tags/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`  
       },
       body: JSON.stringify(requestBody),
     });

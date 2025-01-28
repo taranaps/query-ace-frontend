@@ -52,18 +52,23 @@ interface Answer {
   usersId?: number;
   usersUsername?: string;
 }
+interface DataPopupProps {
+  onDataChange?: () => void; 
+}
 const DataPopup = ({
   data,
   onClose,
   user,
   position,
-  size
+  size,
+  onDataChange
 }: {
     data: any;
     onClose: () => void;
     user?: any;
     position: { top: number; left: number };
     size: { width: number; height: number };
+    onDataChange?: () => void;
 }) => {
   /**
    * @state
@@ -189,6 +194,8 @@ const DataPopup = ({
     const result = await handleAddNewTagToExistingQuery(data.id, tagPayload);
 
     if (result.success) {
+      onDataChange?.();
+
       setTagGroups((prevTagGroups) => {
         const updatedTagGroups = [...prevTagGroups];
         updatedTagGroups.push({ tagGroupName: newTag.group, tagNames: newTag.tag });
