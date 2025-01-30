@@ -1,17 +1,20 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import * as XLSX from "xlsx";
-import { Typography } from "@mui/material";
-import styles from "./ImportQueryPage.module.css";
-import DataCardImport from "../import-datacard/DataCardImport";
-import QueryTagInterface from "@/app/interface/query/queryTagInterface";
-import { handleAddNewBulkQueryAndAnswer } from "@/app/util/query/queryFunctionalities";
-import { useAuth } from "@/context/AuthContext";
-import fetchAllTagDetails from "@/app/api/tags/route.ts";
-import { handleAddNewTag } from "@/app/util/tags/tagFunctionalities";
-import NewButton from "../new-button/NewButton";
-import DataPopupImport from "../data-popup-import/DataPopupImport";
-import { v4 as uuidv4 } from "uuid";
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import * as XLSX from 'xlsx';
+import { Button, Typography } from '@mui/material';
+import styles from './ImportQueryPage.module.css';
+import DataCardImport from '../import-datacard/DataCardImport';
+import QueryTagInterface from '@/app/interface/query/queryTagInterface';
+import { handleAddNewBulkQueryAndAnswer } from '@/app/util/query/queryFunctionalities';
+import { useAuth } from '@/context/AuthContext';
+import fetchAllTagDetails from '@/app/api/tags/route';
+import { handleAddNewTag } from '@/app/util/tags/tagFunctionalities';
+import NewButton from '../new-button/NewButton';
+import DataPopupImport from '../data-popup-import/DataPopupImport';
+import { v4 as uuidv4 } from 'uuid';
+import { log } from 'console';
+
 
 interface ProcessedDataType {
   id: string;
