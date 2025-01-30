@@ -1,8 +1,15 @@
-'use client';
+/**
+ * @fileoverview ManageAccountsPage component for managing user accounts.
+ * Handles listing, searching, sorting, pagination, and CRUD operations for admin accounts.
+ * 
+ * @module ManageAccountsPage
+ */
+
+"use client";
 
 import React, { useState, useEffect } from "react";
-import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 import SearchBar from "../../components/search-bar/SearchBar";
 import SortFilterButton from "../../components/sort-filter-button/SortFilterButton";
 import TableWrapper from "../../components/table/Table";
@@ -13,278 +20,301 @@ import { fetchUserInterface } from "@/app/interface/user/fetchUserInterface";
 
 import styles from "./ManageAccountsPage.module.css";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
-import { handleAddAdmin, handleEditAdmin } from "@/app/util/admin/adminFunctionalities";
-import NewButton from '../../components/new-button/NewButton';
+import { handleAddAdmin } from "@/app/util/admin/adminFunctionalities";
+import NewButton from "../../components/new-button/NewButton";
 
+/**
+* Represents the data structure for an admin form.
+* @typedef {Object} AdminFormData
+* @property {string} firstName - The first name of the admin.
+* @property {string} email - The email address of the admin.
+* @property {string} location - The location of the admin.
+* @property {string} username - The username of the admin.
+* @property {string} password - The password for the admin account.
+* @property {"SUPER_ADMIN" | "ADMIN"} userRole - The role of the admin, either "SUPER_ADMIN" or "ADMIN".
+*/
 type AdminFormData = {
     firstName: string;
     email: string;
     location: string;
     username: string;
-    password: string; 
-    userRole: "SUPER_ADMIN" | "ADMIN"; 
+    password: string;
+    userRole: "SUPER_ADMIN" | "ADMIN";
 };
 
+/**
+ * Component for managing admin accounts.
+ * 
+ * @component
+ * @returns {React.ReactElement} Rendered ManageAccountsPage component.
+ */
 const ManageAccountsPage: React.FC = () => {
-    const [userData, setUserData] = useState<fetchUserInterface[]>([]);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [sortOrder, setSortOrder] = useState<"newest" | "earliest">("newest");
-    const [openAddPopup, setOpenAddPopup] = useState(false);
-    const [openEditPopup, setOpenEditPopup] = useState(false);
-    const [openTogglePopup, setOpenTogglePopup] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [selectedAdmin, setSelectedAdmin] = useState<fetchUserInterface | null>(null);
-    const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState<fetchUserInterface[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState<"newest" | "earliest">("newest");
+  const [openAddPopup, setOpenAddPopup] = useState(false);
+  const [openEditPopup, setOpenEditPopup] = useState(false);
+  const [openTogglePopup, setOpenTogglePopup] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedAdmin, setSelectedAdmin] = useState<fetchUserInterface | null>(null);
+  const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-    const itemsPerPage = 8;
+  const itemsPerPage = 8;
 
-    const { user } = useAuth();
-    const router = useRouter();
+  const { user } = useAuth();
+  const router = useRouter();
 
-    useEffect(() => {
-        if (!user || user.status === 'INACTIVE') {
-            router.push('/pages/login');
-        } else if (user.roles[0]?.roleName !== 'SUPER_ADMIN') {
-            router.back();
+  useEffect(() => {
+    if (!user || user.status === "INACTIVE") {
+      router.push("/pages/login");
+    } else if (user.roles[0]?.roleName !== "SUPER_ADMIN") {
+      router.back();
+    }
+  }, [user, router]);
+
+  useEffect(() => {
+    const fetchData = async() => {
+      try {
+        const response = await fetch("/api/admin/users");
+        const result = await response.json();
+        console.log(result);
+
+        if (Array.isArray(result)) {
+          setUserData(result);
+        } else {
+          console.error("Fetched data is not an array:", result);
         }
-    }, [user, router]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch("/api/admin/users");
-                const result = await response.json();
-                console.log(result);
-
-                if (Array.isArray(result)) {
-                    setUserData(result);
-                } else {
-                    console.error('Fetched data is not an array:', result);
-                }
-            } catch (error) {
-                console.error("Error fetching users:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    const handleToggleStatus = (email: string) => {
-        setSelectedEmail(email);
-        setOpenTogglePopup(true);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    const confirmToggleStatus = async () => {
-        if (selectedEmail) {
-            const userToUpdate = userData.find((item) => item.email === selectedEmail);
+    fetchData();
+  }, []);
 
-            if (userToUpdate) {
-                const updatedStatus: "ACTIVE" | "INACTIVE" = !userToUpdate.isActive ? "ACTIVE" : "INACTIVE";
+      /**
+     * Handles toggling the status of a user.
+     * @param {string} email - Email of the user to toggle.
+     */
+  const handleToggleStatus = (email: string) => {
+    setSelectedEmail(email);
+    setOpenTogglePopup(true);
+  };
 
-                try {
-                    const url = `/api/admin/toggle-status/${userToUpdate.id}`.trim();
+      /**
+     * Confirms and updates the toggle status of a user.
+     */
+  const confirmToggleStatus = async() => {
+    if (selectedEmail) {
+      const userToUpdate = userData.find((item) => item.email === selectedEmail);
 
-                    console.log(url);
+      if (userToUpdate) {
+        const updatedStatus: "ACTIVE"   | "INACTIVE" = !userToUpdate.isActive ? "ACTIVE" : "INACTIVE";
 
-                    const response = await fetch(url, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            isActive: !userToUpdate.isActive,
-                            status: updatedStatus,
-                        }),
-                    });
-
-                    const result = await response.json();
-
-                    if (response.ok) {
-                        const updatedData = userData.map((item) =>
-                            item.email === selectedEmail ? { ...item, isActive: !item.isActive, status: updatedStatus } : item
-                        );
-                        setUserData(updatedData);
-                    } else {
-                        console.error('Failed to update user status', result);
-                    }
-                } catch (error) {
-                    console.error('Error updating user status:', error);
-                }
-            }
-        }
-
-        setOpenTogglePopup(false);
-        setSelectedEmail(null);
-    };
-
-    const handleAddAccount = () => setOpenAddPopup(true);
-    const handleEditAccount = async (id: number) => {
         try {
-            const response = await fetch(`/api/admin/users/${id}`);
-            const adminDetails = await response.json();
+          const url = `/api/admin/toggle-status/${userToUpdate.id}`.trim();
 
-            if (response.ok) {
-                setSelectedAdmin(adminDetails);
-                setOpenEditPopup(true);
-            } else {
-                console.error('Failed to fetch admin details:', adminDetails);
-            }
+          console.log(url);
+
+          const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              isActive: !userToUpdate.isActive,
+              status: updatedStatus,
+            }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            const updatedData = userData.map((item) =>
+              item.email === selectedEmail ? { ...item, isActive: !item.isActive, status: updatedStatus } : item
+            );
+            setUserData(updatedData);
+          } else {
+            console.error("Failed to update user status", result);
+          }
         } catch (error) {
-            console.error('Error fetching admin details:', error);
+          console.error("Error updating user status:", error);
         }
-    };
+      }
+    }
 
-    const handleUpdateAdmin = async (updatedAdminData: AdminFormData) => {
-        if (!selectedAdmin) return;
-    
-        try {
-            const response = await fetch(`/api/admin/users/${selectedAdmin.id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updatedAdminData),
-            });
-            console.log('sel admin:',selectedAdmin);
-            if (!response.ok) {
-                console.error('Failed to update admin:', response.statusText);
-                return;
-            }
-    
-            const result = await response.json();
-            console.log('Updated admin response:', result);
-    
-            if (result) {
-                const updatedUserData = userData.map((admin) =>
-                    admin.id === selectedAdmin.id ? { ...admin, ...updatedAdminData } : admin
-                );
-                setUserData(updatedUserData);  
-                setOpenEditPopup(false);  
-                console.log(updatedAdminData); 
-            } else {
-                console.error('Failed to update admin:', result);
-            }
-        } catch (error) {
-            console.error('Error updating admin:', error);
-        }
-    };
+    setOpenTogglePopup(false);
+    setSelectedEmail(null);
+  };
 
-    const handleCloseAddPopup = () => setOpenAddPopup(false);
-    const handleCloseEditPopup = () => setOpenEditPopup(false);
+  const handleAddAccount = () => setOpenAddPopup(true);
+  const handleEditAccount = async(id: number) => {
+    try {
+      const response = await fetch(`/api/admin/users/${id}`);
+      const adminDetails = await response.json();
 
-    const handleCloseTogglePopup = () => setOpenTogglePopup(false);
+      if (response.ok) {
+        setSelectedAdmin(adminDetails);
+        setOpenEditPopup(true);
+      } else {
+        console.error("Failed to fetch admin details:", adminDetails);
+      }
+    } catch (error) {
+      console.error("Error fetching admin details:", error);
+    }
+  };
 
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value);
-    const handlePageChange = (page: number) => setCurrentPage(page);
+  const handleUpdateAdmin = async(updatedAdminData: AdminFormData) => {
+    if (!selectedAdmin) return;
 
-    const sortedData = [...userData].sort((a, b) => {
-        const timestampA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-        const timestampB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-        return sortOrder === "newest" ? timestampB - timestampA : timestampA - timestampB;
-    });
+    try {
+      const response = await fetch(`/api/admin/users/${selectedAdmin.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedAdminData),
+      });
+      console.log("sel admin:",selectedAdmin);
+      if (!response.ok) {
+        console.error("Failed to update admin:", response.statusText);
+        return;
+      }
 
-    const filteredData = sortedData.filter(
-        (item) =>
-            item.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      const result = await response.json();
+      console.log("Updated admin response:", result);
+
+      if (result) {
+        const updatedUserData = userData.map((admin) =>
+          admin.id === selectedAdmin.id ? { ...admin, ...updatedAdminData } : admin
+        );
+        setUserData(updatedUserData);
+        setOpenEditPopup(false);
+        console.log(updatedAdminData);
+      } else {
+        console.error("Failed to update admin:", result);
+      }
+    } catch (error) {
+      console.error("Error updating admin:", error);
+    }
+  };
+
+  const handleCloseAddPopup = () => setOpenAddPopup(false);
+  const handleCloseEditPopup = () => setOpenEditPopup(false);
+
+  const handleCloseTogglePopup = () => setOpenTogglePopup(false);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value);
+  const handlePageChange = (page: number) => setCurrentPage(page);
+
+  const sortedData = [...userData].sort((a, b) => {
+    const timestampA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const timestampB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return sortOrder === "newest" ? timestampB - timestampA : timestampA - timestampB;
+  });
+
+  const filteredData = sortedData.filter(
+    (item) =>
+      item.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
             item.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
             item.location.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  );
 
-    const paginatedData = filteredData.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-    );
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
-    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-    const startItem = (currentPage - 1) * itemsPerPage + 1;
-    const endItem = Math.min(currentPage * itemsPerPage, sortedData.length);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, sortedData.length);
 
-    return (
-        <div className={styles.container}>
-            <div className={styles.header}>
-                <h1 className={styles.title}>All Accounts</h1>
-                <div className={styles.searchSortContainer}>
-                    <SearchBar onChange={handleSearchChange} />
-                    <SortFilterButton
-                        sortOrder={sortOrder}
-                        onSortChange={(newOrder) => setSortOrder(newOrder)}
-                    />
-                </div>
-            </div>
+  return (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>All Accounts</h1>
+        <div className={styles.searchSortContainer}>
+          <SearchBar onChange={handleSearchChange} />
+          <SortFilterButton
+            sortOrder={sortOrder}
+            onSortChange={(newOrder) => setSortOrder(newOrder)}
+          />
+        </div>
+      </div>
 
-            <div className={styles.tableData}>
-                {isLoading ? (
-                    <div className={styles.loaderContainer}>
-                        <LottieLoader size={"180px"} />
-                    </div>
-                ) : (
-                    <TableWrapper
-                        data={paginatedData}
-                        onToggleStatus={(email) => handleToggleStatus(email)}
-                        onEditAdmin={(id) => handleEditAccount(id)}
-                        headerClassName={styles.tableHeader}
-                        rowClassName={styles.tableRow}
-                    />
-                )}
-            </div>
+      <div className={styles.tableData}>
+        {isLoading ? (
+          <div className={styles.loaderContainer}>
+            <LottieLoader size={"180px"} />
+          </div>
+        ) : (
+          <TableWrapper
+            data={paginatedData}
+            onToggleStatus={(email) => handleToggleStatus(email)}
+            onEditAdmin={(id) => handleEditAccount(id)}
+            headerClassName={styles.tableHeader}
+            rowClassName={styles.tableRow}
+          />
+        )}
+      </div>
 
-            <div className={styles.footer}>
-                <div className={styles.paginationContainer}>
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={handlePageChange}
-                    />
-                    <div className={styles.itemRange}>
-                        <p>
+      <div className={styles.footer}>
+        <div className={styles.paginationContainer}>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+          <div className={styles.itemRange}>
+            <p>
                             Displaying {startItem}–{endItem} of {filteredData.length} accounts
-                        </p>
-                    </div>
-                </div>
-                <NewButton
-    variant="custom" // Choose the appropriate variant (e.g., 'submit' or another variant depending on your design)
-    onClick={handleAddAccount}
-    width="fit" // Adjust the width if necessary
-    type="button" // Use 'button' type for a regular button
->
+            </p>
+          </div>
+        </div>
+        <NewButton
+          variant="custom" // Choose the appropriate variant (e.g., 'submit' or another variant depending on your design)
+          onClick={handleAddAccount}
+          width="fit" // Adjust the width if necessary
+          type="button" // Use 'button' type for a regular button
+        >
     + Add Account
-</NewButton>
+        </NewButton>
 
-            </div>
-            {openAddPopup &&
+      </div>
+      {openAddPopup &&
                 <AddAdminPopup
-                    header="Add Admin"
-                    onConfirm={handleAddAdmin}
-                    onClose={handleCloseAddPopup}
-                    closePopup={handleCloseAddPopup}
-                    passwordOn={true}
+                  header="Add Admin"
+                  onConfirm={handleAddAdmin}
+                  onClose={handleCloseAddPopup}
+                  closePopup={handleCloseAddPopup}
+                  passwordOn={true}
                 />}
 
-            {openEditPopup && selectedAdmin && (
+      {openEditPopup && selectedAdmin && (
 
-                <AddAdminPopup
-                    header="Edit Admin"
-                    onConfirm={handleUpdateAdmin}  // Use the correct function for updating
-                    onClose={handleCloseEditPopup}
-                    closePopup={handleCloseEditPopup}
-                    formData={{
-                        firstName: selectedAdmin.firstName,
-                        email: selectedAdmin.email,
-                        location: selectedAdmin.location,
-                        username: selectedAdmin.username,
-                        password: "", // Do not pass passwords for editing
-                        userRole: selectedAdmin.roles[0]?.roleName as "SUPER_ADMIN" | "ADMIN",
-                    }}
-                    passwordOn={false}
-                />)}
-            {openTogglePopup && (
-                <AdminTogglePopup onConfirm={confirmToggleStatus} onClose={handleCloseTogglePopup} />
-            )}
-        </div>
-    );
+        <AddAdminPopup
+          header="Edit Admin"
+          onConfirm={handleUpdateAdmin}  // Use the correct function for updating
+          onClose={handleCloseEditPopup}
+          closePopup={handleCloseEditPopup}
+          formData={{
+            firstName: selectedAdmin.firstName,
+            email: selectedAdmin.email,
+            location: selectedAdmin.location,
+            username: selectedAdmin.username,
+            password: "", // Do not pass passwords for editing
+            userRole: selectedAdmin.roles[0]?.roleName as "SUPER_ADMIN" | "ADMIN",
+          }}
+          passwordOn={false}
+        />)}
+      {openTogglePopup && (
+        <AdminTogglePopup onConfirm={confirmToggleStatus} onClose={handleCloseTogglePopup} />
+      )}
+    </div>
+  );
 };
 
 export default ManageAccountsPage;

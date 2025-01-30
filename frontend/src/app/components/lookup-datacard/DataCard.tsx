@@ -4,12 +4,12 @@ import React from "react";
 import { Card, CardContent, Typography, Box, Button, Stack, SxProps } from "@mui/material";
 
 interface ButtonConfig {
-  label: string; // Text label for the button
-  onClick: () => void; // Click handler for the button
-  color?: "primary" | "secondary" | "error" | "success" | "info" | "warning"; // Button color
-  size?: "small" | "medium" | "large"; // Button size
-  startIcon?: React.ReactNode; // Optional icon at the start of the button
-  endIcon?: React.ReactNode; // Optional icon at the end of the button
+  label: string;
+  onClick: () => void;
+  color?: "primary" | "secondary" | "error" | "success" | "info" | "warning";
+  size?: "small" | "medium" | "large";
+  startIcon?: React.ReactNode;
+  endIcon?: React.ReactNode;
 }
 
 interface DataCardProps {
@@ -18,13 +18,13 @@ interface DataCardProps {
   client?: string;
   creator?: string;
   date?: string;
-  details?: React.ReactNode; // Allow string or JSX
-  buttons?: ButtonConfig[]; // Optional buttons
-  scrollable?: boolean; // Optional scrollable feature
-  buttonAlignment?: "left" | "center" | "right"; // Button alignment
-  buttonPosition?: "below" | "same-row"; // Control button placement
-  disableBoxShadow?: boolean; // prop to control box shadow
-  sx?: SxProps; // Material-UI sx prop for custom styles
+  details?: React.ReactNode;
+  buttons?: ButtonConfig[];
+  scrollable?: boolean;
+  buttonAlignment?: "left" | "center" | "right";
+  buttonPosition?: "below" | "same-row";
+  disableBoxShadow?: boolean;
+  sx?: SxProps;
 }
 
 const DataCard: React.FC<DataCardProps> = ({
@@ -36,8 +36,8 @@ const DataCard: React.FC<DataCardProps> = ({
   buttons,
   scrollable = false,
   buttonAlignment = "left",
-  buttonPosition = "below", // Default position is below the details
-  disableBoxShadow = false, // Default to false (box shadow enabled)
+  buttonPosition = "below",
+  disableBoxShadow = false,
   sx,
 }) => {
   return (
@@ -45,35 +45,31 @@ const DataCard: React.FC<DataCardProps> = ({
       sx={{
         borderRadius: 2,
         mb: 2,
-        boxShadow: disableBoxShadow ? "none" : 2, // Conditionally apply box shadow
+        boxShadow: disableBoxShadow ? "none" : 2,
         ...sx,
       }}
     >
       <CardContent>
-        {/* Title */}
         {title && (
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
         )}
 
-        {/* Details and Buttons */}
         {buttonPosition === "same-row" ? (
-          // Place buttons in the same row as details
           <Box
             sx={{
               display: "flex",
-              justifyContent: "space-between", // Align details and buttons
-              alignItems: "center", // Vertically align items
-              flexWrap: "wrap", // Allow wrapping for smaller screens
-              gap: "1rem", // Added spacing between details and buttons
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "1rem",
               mb: 2,
             }}
           >
-            {/* Details */}
             <Box
               sx={{
-                maxWidth: "70%", 
+                maxWidth: "70%",
                 maxHeight: scrollable ? 100 : "auto",
                 overflowY: scrollable ? "auto" : "visible",
               }}
@@ -85,7 +81,6 @@ const DataCard: React.FC<DataCardProps> = ({
               )}
             </Box>
 
-            {/* Buttons */}
             {buttons && buttons.length > 0 && (
               <Stack direction="row" spacing={1}>
                 {buttons.map((button, index) => (
@@ -106,7 +101,6 @@ const DataCard: React.FC<DataCardProps> = ({
           </Box>
         ) : (
           <Box>
-            {/* Details */}
             <Box
               sx={{
                 maxHeight: scrollable ? 100 : "auto",
@@ -121,7 +115,6 @@ const DataCard: React.FC<DataCardProps> = ({
               )}
             </Box>
 
-            {/* Buttons */}
             {buttons && buttons.length > 0 && (
               <Box
                 sx={{
@@ -130,8 +123,8 @@ const DataCard: React.FC<DataCardProps> = ({
                     buttonAlignment === "right"
                       ? "flex-end"
                       : buttonAlignment === "center"
-                      ? "center"
-                      : "flex-start",
+                        ? "center"
+                        : "flex-start",
                   mt: 2,
                 }}
               >
@@ -155,7 +148,6 @@ const DataCard: React.FC<DataCardProps> = ({
           </Box>
         )}
 
-        {/* Meta Information */}
         {(client || creator || date) && (
           <Typography variant="body2" color="text.secondary" mb={1}>
             {client && `Client: ${client}`}

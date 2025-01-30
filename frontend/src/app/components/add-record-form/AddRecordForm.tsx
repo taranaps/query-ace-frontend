@@ -19,9 +19,8 @@ import postQueryWithAnswers from '@/app/api/queries/postQueryWithAnswers';
 
 const AddRecordForm = () => {
   const { user } = useAuth();
-
   const [formData, setFormData] = useState({
-    question: '',
+    question: "",
     answers: [] as string[],
     tags: [] as { group: string; tag: string }[],
   });
@@ -33,16 +32,16 @@ const AddRecordForm = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleAddAnswer = () => handleChange('answers', [...formData.answers, '']);
-  const handleRemoveAnswer = (index: number) => handleChange('answers', formData.answers.filter((_, i) => i !== index));
+  const handleAddAnswer = () => handleChange("answers", [...formData.answers, ""]);
+  const handleRemoveAnswer = (index: number) => handleChange("answers", formData.answers.filter((data, i) => i !== index));
 
   const handleAnswerChange = (value: string, index: number) => handleChange(
-    'answers',
+    "answers",
     formData.answers.map((answer, i) => (i === index ? value : answer))
   );
 
   const handleAddTag = (tag: { group: string; tag: string }) => {
-    handleChange('tags', [...formData.tags, tag]);
+    handleChange("tags", [...formData.tags, tag]);
     setIsTagPopupOpen(false);
   };
 
@@ -72,7 +71,7 @@ const AddRecordForm = () => {
     return errors;
   };
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = async(e: React.FormEvent) => {
     e.preventDefault();
     const errors = validateForm();
 
@@ -136,7 +135,7 @@ const AddRecordForm = () => {
     }
   };
 
-  const handleClear = () => setFormData({ question: '', answers: [], tags: [] });
+  const handleClear = () => setFormData({ question: "", answers: [], tags: [] });
 
   return (
     <form className={styles.addRecordForm} onSubmit={handleSave}>
@@ -147,7 +146,7 @@ const AddRecordForm = () => {
             variant="outlined"
             fullWidth
             value={formData.question}
-            onChange={(e) => handleChange('question', e.target.value)}
+            onChange={(e) => handleChange("question", e.target.value)}
             className={styles.inputField}
             required
           />
@@ -167,11 +166,11 @@ const AddRecordForm = () => {
                   onDelete={() => handleRemoveTag(index)}
                   className={styles.tagItem}
                   sx={{
-                    '& .MuiChip-deleteIcon': {
-                      color: '#ff4d4f',
+                    "& .MuiChip-deleteIcon": {
+                      color: "#ff4d4f",
                     },
-                    '&:hover .MuiChip-deleteIcon': {
-                      color: 'white',
+                    "&:hover .MuiChip-deleteIcon": {
+                      color: "white",
                     },
                   }}
                 />

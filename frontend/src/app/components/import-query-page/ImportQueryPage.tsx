@@ -24,8 +24,8 @@ interface ProcessedDataType {
   answers: { answer: string; userId: number }[];
 }
 
-const CACHE_KEY = 'processedQuestions';
-const CACHE_TIMESTAMP_KEY = 'cacheTimestamp';
+const CACHE_KEY = "processedQuestions";
+const CACHE_TIMESTAMP_KEY = "cacheTimestamp";
 
 const ImportQueryPage = () => {
 
@@ -61,15 +61,13 @@ const ImportQueryPage = () => {
 
       reader.onload = (event) => {
 
-        let id: number = 1;
-
         const result = event.target?.result as ArrayBuffer;
         const data = new Uint8Array(result);
-        const workbook = XLSX.read(data, { type: 'array' });
+        const workbook = XLSX.read(data, { type: "array" });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
 
-        const mergedCells = worksheet['!merges'] || [];
+        const mergedCells = worksheet["!merges"] || [];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as Array<(string | number)[]>;
 
         mergedCells.forEach((merge) => {
@@ -84,18 +82,18 @@ const ImportQueryPage = () => {
 
         const nonEmptyRows = jsonData.filter((row) =>
           Array.isArray(row) &&
-          row.some((cell) => cell !== undefined && String(cell).trim() !== '')
+          row.some((cell) => cell !== undefined && String(cell).trim() !== "")
         );
 
         const rows: (string | number)[][] = nonEmptyRows;
 
         const processedData: ProcessedDataType[] = [];
-        let lastCategory = '';
-        let lastCompany = '';
+        let lastCategory = "";
+        let lastCompany = "";
 
         rows.slice(1).forEach((row) => {
           const question = row[0] ? String(row[0]) : null;
-          const answer = row[1] ? String(row[1]) : 'No Response';
+          const answer = row[1] ? String(row[1]) : "No Response";
 
           if (row[2]) {
             lastCategory = String(row[2]);
@@ -107,10 +105,10 @@ const ImportQueryPage = () => {
           if (question) {
             const tags: QueryTagInterface[] = [];
             if (lastCategory) {
-              tags.push({ tagGroupName: 'Category', tagName: lastCategory });
+              tags.push({ tagGroupName: "Category", tagName: lastCategory });
             }
             if (lastCompany) {
-              tags.push({ tagGroupName: 'Company', tagName: lastCompany });
+              tags.push({ tagGroupName: "Company", tagName: lastCompany });
             }
 
             const existingQuestion = processedData.find((data) => data.question === question);
@@ -126,7 +124,6 @@ const ImportQueryPage = () => {
                 tags,
                 answers: [{ answer, userId: user.id }],
               });
-              id++;
             }
           }
         });
@@ -139,7 +136,7 @@ const ImportQueryPage = () => {
       };
 
       reader.onerror = () => {
-        setError('Failed to read the file. Please try again.');
+        setError("Failed to read the file. Please try again.");
       };
 
       reader.readAsArrayBuffer(selectedFile);
@@ -154,10 +151,9 @@ const ImportQueryPage = () => {
     localStorage.removeItem(CACHE_TIMESTAMP_KEY);
   };
 
-
-  const handleSave = async () => {
+  const handleSave = async() => {
     try {
-      const fetchTags = async () => {
+      const fetchTags = async() => {
         const tags = await fetchAllTagDetails();
         return tags;
       };
@@ -195,7 +191,7 @@ const ImportQueryPage = () => {
         const userConfirmed = window.confirm(
           `The following tags are not in the database:\n${uniqueMissingTags
             .map((tag) => `- ${tag.tagGroupName}: ${tag.tagName}`)
-            .join('\n')}\n\nDo you want to add these tags?`
+            .join("\n")}\n\nDo you want to add these tags?`
         );
 
         if (userConfirmed) {
@@ -208,35 +204,33 @@ const ImportQueryPage = () => {
             }
           }
         } else {
-          alert('Save operation canceled by the user.');
+          alert("Save operation canceled by the user.");
           return;
         }
       }
 
       const saved = await handleAddNewBulkQueryAndAnswer(questions);
       if (saved) {
-        alert('Data successfully saved!');
+        alert("Data successfully saved!");
         handleClear();
       } else {
-        alert('Something went wrong, please try again.');
+        alert("Something went wrong, please try again.");
       }
     } catch (error) {
-      console.error('An error occurred during the save process:', error);
-      alert('An unexpected error occurred. Please try again.');
+      console.error("An error occurred during the save process:", error);
+      alert("An unexpected error occurred. Please try again.");
     }
   };
 
-  function handleDownloadTemplate(): void {
-    const filePath = '/assets/templates/Import Query Template.xlsx'; 
-
-    const anchor = document.createElement('a');
+  const handleDownloadTemplate = (): void => {
+    const filePath = "/assets/templates/Import Query Template.xlsx";
+    const anchor = document.createElement("a");
     anchor.href = filePath;
-    anchor.download = 'Import Query Template.xlsx'; 
+    anchor.download = "Import Query Template.xlsx";
     document.body.appendChild(anchor);
     anchor.click();
     document.body.removeChild(anchor);
-  }
-
+  };
 
   const handleCardClick = (data: ProcessedDataType) => {
     setSelectedCardData(data);
@@ -244,9 +238,6 @@ const ImportQueryPage = () => {
   };
 
   const handlePopupSave = (updatedData: ProcessedDataType) => {
-    console.log('Updated Data:', updatedData);
-    console.log(' Data:', questions);
-
     setQuestions((prev) =>
       prev.map((question) =>
         question.id === updatedData.id ? { ...question, ...updatedData } : question
@@ -266,7 +257,7 @@ const ImportQueryPage = () => {
               question={question.question}
               answers={question.answers}
               tags={question.tags}
-              onDelete={() => setQuestions((prev) => prev.filter((_, i) => i !== index))}
+              onDelete={() => setQuestions((prev) => prev.filter((data, i) => i !== index))}
               onClick={() => handleCardClick(question)}
             />
           ))
@@ -302,14 +293,14 @@ const ImportQueryPage = () => {
             Clear
           </NewButton>
           <NewButton
-            variant={questions.length > 0 ? 'submit' : 'info'}
+            variant={questions.length > 0 ? "submit" : "info"}
             onClick={() =>
-              questions.length > 0 ? handleSave() : document.getElementById('fileInput')?.click()
+              questions.length > 0 ? handleSave() : document.getElementById("fileInput")?.click()
             }
             width="fit"
             type="button"
           >
-            {questions.length > 0 ? 'Save Data' : 'Import File'}
+            {questions.length > 0 ? "Save Data" : "Import File"}
             <input
               id="fileInput"
               type="file"

@@ -1,34 +1,29 @@
-'use client';
+"use client";
 import { useState, useEffect } from "react";
-import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 import DataCardDashboard from "@/app/components/dashboard-datacard/DataCardDashboard";
 import Pagination from "@/app/components/pagination/Pagination";
 import styles from "./datalookup.module.css";
 import DataPopup from "@/app/components/data-popup/DataPopup";
-import fetchQueriesQuestions from "@/app/api/questioncard/fetchQueriesQuestions";
-import fetchQueryWithAnswers from "@/app/api/questioncard/fetchQueryAnswers";
-import { handleCopyQuery } from "@/app/util/query/queryFunctionalities";
-import Lottie from 'lottie-react';
+import { fetchQueryWithAnswers } from "@/app/api/questioncard/fetchQueryAnswers";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
-import { fetchCompanies } from "@/app/api/companies/fetchCompanies";
 import { fetchCreatedByUsers } from "@/app/api/companies/fetchCreatedByUsers";
-import SortFilterButton from "@/app/components/sort-filter-button/SortFilterButton";
-import Select from "@mui/material/Select";
 import FilterDropdown from "@/app/components/lookup-filterdropdown/FilterDropDown";
 import fetchAllTagDetails from "@/app/api/tags/route.ts";
 import { handleFilterQuery } from "@/app/util/query/queryFunctionalities";
 
-export default function QueryLookup() {
+const QueryLookup = () => {
   const [data, setData] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [answers, setAnswers] = useState<any[]>([]);
+  const [answers, setAnswers] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [createdBy, setCreatedBy] = useState<string[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
-  const [sortOrder, setSortOrder] = useState<"newest" | "earliest">("newest");
+  const [sortOrder] = useState<"newest" | "earliest">("newest"); //change done;
+
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
   const [selectedCreatedBy, setSelectedCreatedBy] = useState<string[]>([]);
   const [tagGroups, setTagGroups] = useState<{ tagGroupName: string; tagNames: string[] }[]>([]);
@@ -41,13 +36,13 @@ export default function QueryLookup() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!user || user.status === 'INACTIVE') {
-      router.push('/pages/login');
+    if (!user || user.status === "INACTIVE") {
+      router.push("/pages/login");
     }
   }, [user, router]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async() => {
       try {
         const createdByResult = await fetchCreatedByUsers();
         if (Array.isArray(createdByResult)) setCreatedBy(createdByResult);
@@ -74,8 +69,7 @@ export default function QueryLookup() {
     fetchData();
   }, [selectedCompanies, selectedCreatedBy]);
 
-
-  const handleFilterChange = async () => {
+  const handleFilterChange = async() => {
     setLoading(true);
     const filteredQueries = await handleFilterQuery(selectedCompanies, selectedCreatedBy);
     setFilteredData(filteredQueries.data);
@@ -99,7 +93,7 @@ export default function QueryLookup() {
 
   const totalPages = Math.ceil(sortedData.length / itemsPerPage);
 
-  const handleCardClick = async (event: React.MouseEvent<HTMLElement>, item: any) => {
+  const handleCardClick = async(event: React.MouseEvent<HTMLElement>, item: any) => {
     setSelectedItem(item);
 
     const rect = event.currentTarget.getBoundingClientRect();
@@ -157,7 +151,7 @@ export default function QueryLookup() {
             <LottieLoader size={"180px"} />
           </div>
         ) : (
-          paginatedData.map((item, index) => (
+          paginatedData.map((item) => (
             <div className={styles.dataItem} key={item.id}>
               <DataCardDashboard
                 key={item.id}
@@ -209,4 +203,6 @@ export default function QueryLookup() {
       )}
     </div>
   );
-}
+};
+
+export default QueryLookup;

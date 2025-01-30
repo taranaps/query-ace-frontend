@@ -32,7 +32,7 @@
 //       } catch (err:any) {
 //         console.error("Error fetching user names:", err);
 //         if (err.response?.status === 401) {
-//           setError("Unauthorized access. Please log in."); 
+//           setError("Unauthorized access. Please log in.");
 //         }
 //       }
 //     };
@@ -111,7 +111,7 @@
 //           <h6>System Log</h6>
 //           <p>Actions done by admins</p>
 //         </div>
-        
+
 //       </div>
 //       <div className={styles.content}>
 //         {logs.length > 0 ? (

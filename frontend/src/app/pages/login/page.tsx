@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 
 /**
@@ -70,8 +70,8 @@ const LoginPage: React.FC = () => {
                
             </div>
         ), {
-            duration: 4000,
-            position: 'top-center',
+            duration: 2000,
+            position:'top-right',
         });
     };
 
@@ -108,8 +108,8 @@ const LoginPage: React.FC = () => {
                 </div>
             </div>
         ), {
-            duration: 4000,
-            position: 'top-center',
+            duration: 2000,
+            position: 'top-right',
         });
     };
 
@@ -124,16 +124,16 @@ const LoginPage: React.FC = () => {
         e.preventDefault();
         setIsLoading(true);
 
-        try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-            const data = await response.json();
+      const data = await response.json();
 
             if (response.ok) {
                 login(data);

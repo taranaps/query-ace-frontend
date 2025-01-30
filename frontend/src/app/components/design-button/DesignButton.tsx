@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import styles from './designbutton.module.css';
+import React, { useState } from "react";
+import styles from "./designbutton.module.css";
 
 interface DesignButtonProps {
     label: string;
@@ -10,38 +10,38 @@ interface DesignButtonProps {
 }
 
 const DesignButton: React.FC<DesignButtonProps> = ({ label, isActive = false, onClick }) => {
-    return (
-        <button
-            className={`${styles.designButton} ${isActive ? styles.active : ''}`}
-            onClick={onClick}
-        >
-            <span className={styles.filterLabel}>Filter by :</span>
-            <span className={styles.label}>{label}</span>
-            <span className={styles.icon}>▼</span>
-        </button>
-    );
+  return (
+    <button
+      className={`${styles.designButton} ${isActive ? styles.active : ""}`}
+      onClick={onClick}
+    >
+      <span className={styles.filterLabel}>Filter by :</span>
+      <span className={styles.label}>{label}</span>
+      <span className={styles.icon}>▼</span>
+    </button>
+  );
 };
 const FilterButtons: React.FC = () => {
-    const [activeFilter, setActiveFilter] = useState<string>('Customers');
+  const [activeFilter, setActiveFilter] = useState<string>("Customers");
 
-    const handleFilterClick = (filter: string) => {
-        setActiveFilter(filter);
-    };
+  const handleFilterClick = (filter: string) => {
+    setActiveFilter(filter);
+  };
 
-    return (
-        <div className={styles.container}>
-            <DesignButton
-                label="Customers"
-                isActive={activeFilter === 'Customers'}
-                onClick={() => handleFilterClick('Customers')}
-            />
-            <DesignButton
-                label="Created By"
-                isActive={activeFilter === 'Created By'}
-                onClick={() => handleFilterClick('Created By')}
-            />
-        </div>
-    );
+  return (
+    <div className={styles.container}>
+      <DesignButton
+        label="Customers"
+        isActive={activeFilter === "Customers"}
+        onClick={() => handleFilterClick("Customers")}
+      />
+      <DesignButton
+        label="Created By"
+        isActive={activeFilter === "Created By"}
+        onClick={() => handleFilterClick("Created By")}
+      />
+    </div>
+  );
 };
 
 export default FilterButtons;

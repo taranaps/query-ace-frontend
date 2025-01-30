@@ -1,5 +1,7 @@
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  redirect('/pages/login');
-}
+const Home = () => {
+  redirect("/pages/login");
+};
+
+export default Home;

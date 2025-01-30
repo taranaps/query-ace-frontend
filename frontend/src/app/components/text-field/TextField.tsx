@@ -1,6 +1,5 @@
-
-import React, { useState, ChangeEvent } from 'react';
-import styles from '../text-field/TextField.module.css';
+import React, { useState, ChangeEvent } from "react";
+import styles from "../text-field/TextField.module.css";
 
 interface TextfieldProps {
   label?: string;
@@ -15,9 +14,9 @@ const Textfield: React.FC<TextfieldProps> = ({
   placeholder,
   value,
   onChange,
-  type = 'text'
+  type = "text"
 }) => {
-  const [inputValue, setInputValue] = useState(value || '');
+  const [inputValue, setInputValue] = useState(value || "");
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
