@@ -11,7 +11,7 @@ const getAuthHeaders = () => {
 
 export const handleDeleteQuery = async(id: number) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/queries/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/queries/${id}`, {
       method: "DELETE",
       headers: getAuthHeaders(),
     });
@@ -137,7 +137,7 @@ export const handleAddNewBulkQueryAndAnswer = async(
     }[]
 ) => {
   try {
-    const response = await fetch("/api/queries/bulk", {
+    const response = await fetch(`${API_BASE_URL}/queries/bulk`, {
       method: "POST",
       headers: getAuthHeaders(),
       body: JSON.stringify(queries),

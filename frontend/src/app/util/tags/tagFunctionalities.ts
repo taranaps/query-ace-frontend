@@ -2,7 +2,7 @@ import { API_BASE_URL } from "@/config/apiConfig";
 
 export const handleAddNewTag = async(
   tag: {
-        tagGroupName: string, tagNames: string
+        tagGroupName: string, tagName: string
     }
 ) => {
 
