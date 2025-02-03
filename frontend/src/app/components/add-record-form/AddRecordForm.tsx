@@ -7,14 +7,15 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import toast from "react-hot-toast";
 import AddTagPopup from "../add-tag-popup/AddTagPopup";
 import styles from "./AddRecordForm.module.css";
-import { postQueryWithAnswers } from "@/app/api/queries/postQueryWithAnswers";
-import PostQueryQuestionInetface from "@/app/interface/query/postQueryQuestionInterface";
-import PostQueryAnswerInterface from "@/app/interface/query/postQueryAnswerInterface";
 import { LottieLoader } from "../lottie-loader/lottieLoader";
 import { useAuth } from "@/context/AuthContext";
 import NewButton from "../new-button/NewButton";
+import PostQueryQuestionInterface from "@/app/interface/query/postQueryQuestionInterface";
+import PostQueryAnswerInterface from "@/app/interface/query/postQueryAnswerInterface";
+import { postQueryWithAnswers } from "@/app/api/queries/postQueryWithAnswers";
 
 const AddRecordForm = () => {
   const { user } = useAuth();
@@ -47,16 +48,59 @@ const AddRecordForm = () => {
 
   const handleRemoveTag = (index: number) => handleChange("tags", formData.tags.filter((data, i) => i !== index));
 
-  const handleSave = async(e: React.FormEvent) => {
-    e.preventDefault();
+  const validateForm = () => {
+    const errors: string[] = [];
     const { question, answers, tags } = formData;
 
-    if (!question || answers.length === 0) {
-      // MessagePopup({"Please fill in the question and at least one answer", "OK", () => {}});
+    if (!question.trim()) {
+      errors.push("Question field is empty");
+    }
+
+    if (answers.length === 0) {
+      errors.push("No answers added");
+    } else {
+      const emptyAnswers = answers.filter(answer => !answer.trim());
+      if (emptyAnswers.length > 0) {
+        errors.push(`Answer field${emptyAnswers.length > 1 ? "s" : ""} ${emptyAnswers.length > 1 ? "are" : "is"} empty`);
+      }
+    }
+
+    if (tags.length === 0) {
+      errors.push("No tags added");
+    }
+
+    return errors;
+  };
+
+  const handleSave = async(e: React.FormEvent) => {
+    e.preventDefault();
+    const errors = validateForm();
+
+    if (errors.length > 0) {
+      toast.error(
+        <div>
+          <strong>Please fill in all required fields:</strong>
+          <ul style={{ paddingLeft: "20px", marginTop: "8px" }}>
+            {errors.map((error, index) => (
+              <li key={index}>{error}</li>
+            ))}
+          </ul>
+        </div>,
+        {
+          duration: 4000,
+          position: "top-right",
+          style: {
+            padding: "16px",
+            minWidth: "300px"
+          },
+        }
+      );
       return;
     }
 
-    const questionData: PostQueryQuestionInetface[] = [
+    const { question, answers, tags } = formData;
+
+    const questionData: PostQueryQuestionInterface[] = [
       {
         question,
         userId: user.id,
@@ -80,10 +124,16 @@ const AddRecordForm = () => {
       setLoadingAnimationState("success");
       await new Promise((resolve) => setTimeout(resolve, 2000));
       handleClear();
+      toast.success("Record saved successfully!", {
+        duration: 3000,
+        position: "top-right",
+      });
     } catch (error) {
-      setLoadingAnimationState("failed");
-      await new Promise((resolve) => setTimeout(resolve, 2000));
       console.error("Error submitting data:", error);
+      toast.error("Failed to save record. Please try again.", {
+        duration: 3000,
+        position: "top-right",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -107,6 +157,7 @@ const AddRecordForm = () => {
             value={formData.question}
             onChange={(e) => handleChange("question", e.target.value)}
             className={styles.inputField}
+            required
           />
 
           <div className={styles.tagSection}>
@@ -153,6 +204,7 @@ const AddRecordForm = () => {
                     value={answer}
                     onChange={(e) => handleAnswerChange(e.target.value, index)}
                     className={styles.inputField}
+                    required
                   />
                   <IconButton onClick={() => handleRemoveAnswer(index)} color="secondary">
                     <RemoveIcon />
@@ -166,13 +218,13 @@ const AddRecordForm = () => {
             <NewButton
               variant="cancel"
               onClick={handleClear}
-
             >
               Clear
             </NewButton>
             <NewButton
               variant="submit"
-              type="submit">
+              type="submit"
+            >
               Save
             </NewButton>
           </div>

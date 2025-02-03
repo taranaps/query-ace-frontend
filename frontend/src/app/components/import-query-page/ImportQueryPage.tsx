@@ -11,6 +11,7 @@ import NewButton from "../new-button/NewButton";
 import DataPopupImport from "../data-popup-import/DataPopupImport";
 import { v4 as uuidv4 } from "uuid";
 import { LottieLoader } from "../lottie-loader/lottieLoader";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 
 /**
  * Interface for processed question data.
@@ -50,6 +51,7 @@ const ImportQueryPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedCardData, setSelectedCardData] = useState<ProcessedDataType | null>(null);
   const [openPopup, setOpenPopup] = useState(false);
+  const [openImportPopup, setOpenImportPopup] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [loadingAnimationState, setLoadingAnimationState] = useState("loading");
@@ -103,6 +105,7 @@ const ImportQueryPage = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoadingAnimationState("loading");
     setIsLoading(true);
+    setOpenImportPopup(false);
     const selectedFile = e.target.files ? e.target.files[0] : null;
     setFile(selectedFile);
 
@@ -241,29 +244,13 @@ const ImportQueryPage = () => {
         setLoadingAnimationState("failed");
         await new Promise((resolve) => setTimeout(resolve, 2000));
         setIsLoading(false);
-        alert("Something went wrong, please try again.");
       }
     } catch (error) {
       setLoadingAnimationState("failed");
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setIsLoading(false);
       console.error("An error occurred during the save process:", error);
-      alert("An unexpected error occurred. Please try again.");
     }
-  };
-
-  /**
-   * Function to download the import query template.
-   * Initiates a download of the template file.
-   */
-  const handleDownloadTemplate = (): void => {
-    const filePath = "/assets/templates/Import Query Template.xlsx";
-    const anchor = document.createElement("a");
-    anchor.href = filePath;
-    anchor.download = "Import Query Template.xlsx";
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
   };
 
   /**
@@ -315,6 +302,10 @@ const ImportQueryPage = () => {
                   onClick={() => handleCardClick(question)}
                 />
               ))
+            ) : error ? (
+              <Typography color="error" className={styles.errorMessage}>
+                {error}
+              </Typography>
             ) : (
               <div className={styles.previewBox}>
                 <img
@@ -326,32 +317,24 @@ const ImportQueryPage = () => {
             )}
           </div>
           <div className={styles.footer}>
-            <div className={styles.leftButtons}>
-              <NewButton
-                variant="custom"
-                onClick={handleDownloadTemplate}
-                width="fit"
-                type="button"
-              >
-                Download Template
-              </NewButton>
-            </div>
             <div className={styles.rightButtons}>
-              <NewButton
-                variant="cancel"
-                onClick={handleClear}
-                disabled={!file && questions.length === 0}
-                width="fit"
-                type="button"
-              >
-                Clear
-              </NewButton>
+              {questions.length > 0 && (
+                <NewButton
+                  variant="cancel"
+                  onClick={handleClear}
+                  disabled={!file && questions.length === 0}
+                  width="fit"
+                  type="button"
+                >
+              Clear
+                </NewButton>
+              )}
               <NewButton
                 variant={questions.length > 0 ? "submit" : "info"}
                 onClick={() =>
                   questions.length > 0
                     ? handleSave()
-                    : document.getElementById("fileInput")?.click()
+                    : setOpenImportPopup(true)
                 }
                 width="fit"
                 type="button"
@@ -374,10 +357,43 @@ const ImportQueryPage = () => {
               onSave={handlePopupSave}
             />
           )}
-          {error && (
-            <Typography color="error" className={styles.errorMessage}>
-              {error}
-            </Typography>
+          {openImportPopup && (
+            <Dialog open={openImportPopup} onClose={() => setOpenImportPopup(false)}>
+              <DialogTitle>Bulk Upload Queries</DialogTitle>
+              <DialogContent>
+                <p>
+              Download the{" "}
+                  <a
+                    href="/assets/templates/Import Query Template.xlsx"
+                    style={{ color: "#2196f3" }}
+                  >
+                template
+                  </a>
+              , enter your queries with corresponding data, and upload it below:
+                </p>
+                <div
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "12px",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <label
+                    htmlFor="fileInput"
+                    style={{ display: "block", fontSize: "14px", color: "#555" }}
+                  >
+                Click here to upload a file
+                  </label>
+                  <input
+                    hidden={true}
+                    type="file"
+                    accept=".xlsx"
+                    onChange={handleFileChange}
+                    style={{ marginTop: "8px", width: "100%" }}
+                  />
+                </div>
+              </DialogContent>
+            </Dialog>
           )}
         </>
       )}

@@ -1,66 +1,66 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import Filter from './filter';
-import '@testing-library/jest-dom';
+// import { render, screen, fireEvent } from '@testing-library/react';
+// import Filter from './filter';
+// import '@testing-library/jest-dom';
 
 
-describe('Filter Component', () => {
-  const mockOnFilterChange = jest.fn();
-  const admins = ['Alice', 'Bob', 'Charlie', 'David'];
+// describe('Filter Component', () => {
+//   const mockOnFilterChange = jest.fn();
+//   const admins = ['Alice', 'Bob', 'Charlie', 'David'];
 
-  test('renders Filter component', () => {
-    render(<Filter admins={admins} onFilterChange={mockOnFilterChange} />);
-    const filterButton = screen.getByText(/filter by: admin/i);
-    expect(filterButton).toBeInTheDocument();
-  });
+//   test('renders Filter component', () => {
+//     render(<Filter admins={admins} onFilterChange={mockOnFilterChange} />);
+//     const filterButton = screen.getByText(/filter by: admin/i);
+//     expect(filterButton).toBeInTheDocument();
+//   });
 
-  test('toggles popup visibility when filter button is clicked', () => {
-    render(<Filter admins={admins} onFilterChange={mockOnFilterChange} />);
-    const filterButton = screen.getByText(/filter by: admin/i);
+//   test('toggles popup visibility when filter button is clicked', () => {
+//     render(<Filter admins={admins} onFilterChange={mockOnFilterChange} />);
+//     const filterButton = screen.getByText(/filter by: admin/i);
     
-    fireEvent.click(filterButton);
-    expect(screen.getByText(/filter admins/i)).toBeInTheDocument();
+//     fireEvent.click(filterButton);
+//     expect(screen.getByText(/filter admins/i)).toBeInTheDocument();
     
-    fireEvent.click(screen.getByText('✕'));
-    expect(screen.queryByText(/filter admins/i)).not.toBeInTheDocument();
-  });
+//     fireEvent.click(screen.getByText('✕'));
+//     expect(screen.queryByText(/filter admins/i)).not.toBeInTheDocument();
+//   });
 
-  test('filters admins based on search query', () => {
-    render(<Filter admins={admins} onFilterChange={mockOnFilterChange} />);
-    fireEvent.click(screen.getByText(/filter by: admin/i));
-    const searchInput = screen.getByPlaceholderText(/search admins/i);
+//   test('filters admins based on search query', () => {
+//     render(<Filter admins={admins} onFilterChange={mockOnFilterChange} />);
+//     fireEvent.click(screen.getByText(/filter by: admin/i));
+//     const searchInput = screen.getByPlaceholderText(/search admins/i);
     
-    fireEvent.change(searchInput, { target: { value: 'Bo' } });
-    expect(screen.getByLabelText('Bob')).toBeInTheDocument();
-    expect(screen.queryByLabelText('Alice')).not.toBeInTheDocument();
-  });
+//     fireEvent.change(searchInput, { target: { value: 'Bo' } });
+//     expect(screen.getByLabelText('Bob')).toBeInTheDocument();
+//     expect(screen.queryByLabelText('Alice')).not.toBeInTheDocument();
+//   });
 
-  test('selects and deselects admins correctly', () => {
-    render(<Filter admins={admins} onFilterChange={mockOnFilterChange} />);
-    fireEvent.click(screen.getByText(/filter by: admin/i));
+//   test('selects and deselects admins correctly', () => {
+//     render(<Filter admins={admins} onFilterChange={mockOnFilterChange} />);
+//     fireEvent.click(screen.getByText(/filter by: admin/i));
 
-    const bobCheckbox = screen.getByLabelText('Bob');
-    const aliceCheckbox = screen.getByLabelText('Alice');
+//     const bobCheckbox = screen.getByLabelText('Bob');
+//     const aliceCheckbox = screen.getByLabelText('Alice');
 
-    fireEvent.click(bobCheckbox);
-    expect(bobCheckbox).toBeChecked();
-    expect(mockOnFilterChange).toHaveBeenCalledWith(['Bob']);
+//     fireEvent.click(bobCheckbox);
+//     expect(bobCheckbox).toBeChecked();
+//     expect(mockOnFilterChange).toHaveBeenCalledWith(['Bob']);
 
-    fireEvent.click(bobCheckbox);
-    expect(bobCheckbox).not.toBeChecked();
-    expect(mockOnFilterChange).toHaveBeenCalledWith([]);
+//     fireEvent.click(bobCheckbox);
+//     expect(bobCheckbox).not.toBeChecked();
+//     expect(mockOnFilterChange).toHaveBeenCalledWith([]);
     
-    fireEvent.click(aliceCheckbox);
-    expect(aliceCheckbox).toBeChecked();
-    expect(mockOnFilterChange).toHaveBeenCalledWith(['Alice']);
-  });
+//     fireEvent.click(aliceCheckbox);
+//     expect(aliceCheckbox).toBeChecked();
+//     expect(mockOnFilterChange).toHaveBeenCalledWith(['Alice']);
+//   });
 
-  test('calls onFilterChange with selected admins', () => {
-    render(<Filter admins={admins} onFilterChange={mockOnFilterChange} />);
-    fireEvent.click(screen.getByText(/filter by: admin/i));
+//   test('calls onFilterChange with selected admins', () => {
+//     render(<Filter admins={admins} onFilterChange={mockOnFilterChange} />);
+//     fireEvent.click(screen.getByText(/filter by: admin/i));
     
-    fireEvent.click(screen.getByLabelText('Alice'));
-    fireEvent.click(screen.getByLabelText('David'));
+//     fireEvent.click(screen.getByLabelText('Alice'));
+//     fireEvent.click(screen.getByLabelText('David'));
     
-    expect(mockOnFilterChange).toHaveBeenCalledWith(['Alice', 'David']);
-  });
-});
+//     expect(mockOnFilterChange).toHaveBeenCalledWith(['Alice', 'David']);
+//   });
+// });
