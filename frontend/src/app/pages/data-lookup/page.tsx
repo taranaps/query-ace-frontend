@@ -12,7 +12,16 @@ import { fetchCreatedByUsers } from "@/app/api/companies/fetchCreatedByUsers";
 import FilterDropdown from "@/app/components/lookup-filterdropdown/FilterDropDown";
 import fetchAllTagDetails from "@/app/api/tags/route.ts";
 import { handleFilterQuery } from "@/app/util/query/queryFunctionalities";
-
+interface QueryItem {
+  id: string;
+  createdAt?: string;
+  usersUsername?: string;
+  question: string;
+  answers: Array<{ answer: string }>;
+  customer?: string;
+  queryCreatedAt?: string;
+  tags?: string[];
+}
 const QueryLookup = () => {
   const [data, setData] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -22,7 +31,7 @@ const QueryLookup = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [createdBy, setCreatedBy] = useState<string[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
-  const [sortOrder] = useState<"newest" | "earliest">("newest"); //change done;
+  const [sortOrder] = useState<"newest" | "earliest">("newest"); 
 
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
   const [selectedCreatedBy, setSelectedCreatedBy] = useState<string[]>([]);
@@ -31,6 +40,8 @@ const QueryLookup = () => {
   const itemsPerPage = 10;
   const [popupPosition, setPopupPosition] = useState<{ top: number, left: number }>({ top: 0, left: 0 });
   const [popupSize, setPopupSize] = useState<{ width: number; height: number }>({ width: 60, height: 20 });
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
 
   const { user } = useAuth();
   const router = useRouter();
@@ -53,6 +64,11 @@ const QueryLookup = () => {
         const filteredQueriesResponse = await handleFilterQuery(selectedCreatedBy, selectedCompanies);
 
         if (filteredQueriesResponse.success) {
+          const formattedData = filteredQueriesResponse.data.map((item: QueryItem)=> ({
+            ...item,
+            createdAt: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "Unknown",
+            usersUsername: item.usersUsername || "Unknown"
+          }));
           setData(filteredQueriesResponse.data);
           setFilteredData(filteredQueriesResponse.data);
         } else {
@@ -67,7 +83,7 @@ const QueryLookup = () => {
     };
 
     fetchData();
-  }, [selectedCompanies, selectedCreatedBy]);
+  }, [selectedCompanies, selectedCreatedBy, refreshTrigger]);
 
   const handleFilterChange = async() => {
     setLoading(true);
@@ -154,7 +170,7 @@ const QueryLookup = () => {
           paginatedData.map((item) => (
             <div className={styles.dataItem} key={item.id}>
               <DataCardDashboard
-                key={item.id}
+                {...item}
                 id={item.id}
                 question={item.question || "No question provided"}
                 answer={item.answers[0]?.answer || "No answer provided"}
@@ -197,8 +213,11 @@ const QueryLookup = () => {
             setSelectedItem(null);
             setAnswers([]);
           }}
+          onDataChange={() => setRefreshTrigger(prev => prev + 1)} 
+
           position={popupPosition}
           size={popupSize}
+          user={user}
         />
       )}
     </div>

@@ -26,13 +26,14 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ]
+      ],
+      "types/*": ["./types/*"]
     },
     "types": [
       "jest",
       "@testing-library/jest-dom",
       "node"
-    ],
+    ]
   },
   "include": [
     "next-env.d.ts",

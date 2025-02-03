@@ -1,13 +1,20 @@
-export const handleGenerateReportSearch = async(searchData: string[]) => {
-  try {
-    const requestBody = searchData;
+import { API_BASE_URL } from "@/config/apiConfig";
 
-    const response = await fetch("/api/generatereport/search", {
+export const handleGenerateReportSearch = async(
+  searchData: string[],
+  options?: { signal?: AbortSignal }
+) => {
+  try {
+    const token = localStorage.getItem('token');
+    
+    const response = await fetch(`${API_BASE_URL}/generatereport/search`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        'Authorization': `Bearer ${token}` 
       },
-      body: JSON.stringify(requestBody),
+      body: JSON.stringify(searchData),
+      ...options // Spread the options here
     });
 
     if (response.ok) {
@@ -15,11 +22,10 @@ export const handleGenerateReportSearch = async(searchData: string[]) => {
       return { success: true, data: responseData };
     }
 
-    console.error(`Failed to generate report. Status: ${response.status}`);
     const errorData = await response.json();
-    return { success: false, message: errorData.message || `Failed to generate report. Status: ${response.status}` };
+    return { success: false, message: errorData.message || `Request failed with status ${response.status}` };
   } catch (error) {
-    console.error("An error occurred while generating the report:", error);
-    return { success: false, message: "An error occurred while generating the report." };
+    console.error("Request error:", error);
+    return { success: false, message: error instanceof Error ? error.message : "Unknown error occurred" };
   }
 };

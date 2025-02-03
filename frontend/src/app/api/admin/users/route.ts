@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { API_BASE_URL } from "@/config/apiConfig";
 export const GET = async() => {
-  try {
+
+  try { 
+    
     const response = await fetch(`${API_BASE_URL}/admin/users`);
     const data = await response.json();
     if (!response.ok) {

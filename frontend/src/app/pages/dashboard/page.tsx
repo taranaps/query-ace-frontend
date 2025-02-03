@@ -24,17 +24,11 @@ import { fetchQueryWithAnswers } from "@/app/api/questioncard/fetchQueryAnswers"
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
 import planeanimation from "../../../../public/assets/animatedIcons/Paper Plane (1).json";
 import LottieIconButton from "../../components/lottie-animated-button/LottieIconButton";
+import {TrendingQuery} from "types/TrendingQuery";
+import { API_BASE_URL } from "@/config/apiConfig";
 
-/**
- * @component Dashboard
- * @description
- * The main dashboard component that shows queries and handles user interactions.
- * Features:
- * - Authentication protection
- * - Search functionality
- * - Trending queries display
- * - Detailed query view in popup
- */
+
+
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const router = useRouter();
@@ -80,42 +74,59 @@ const Dashboard: React.FC = () => {
   const [popupPosition, setPopupPosition] = useState<{ top: number, left: number }>({ top: 0, left: 0 });
   const [popupSize, setPopupSize] = useState<{ width: number; height: number }>({ width: 60, height: 20 });
 
-  /**
-   * @state
-   * @description
-   * State for trending queries display
-   */
-  const [trendingQueries, setTrendingQueries] = useState<any[]>([]);
+  const [trendingQueries, setTrendingQueries] = useState<TrendingQuery[]>([]);
 
-  /**
-   * @function fetchTrendingQueries
-   * @description
-   * Fetches trending queries from the server:
-   * - Makes API request for top queries
-   * - Updates trending queries state
-   * - Handles error cases
-   */
-  const fetchTrendingQueries = async() => {
-    try {
-      const response = await fetch("/api/queries/top");
-      if (!response.ok) {
-        throw new Error("Failed to fetch trending queries.");
-      }
-      const data = await response.json();
-      setTrendingQueries(data);
-    } catch (error) {
-      console.error("Error fetching trending queries:", error);
+  
+const fetchTrendingQueries = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/pages/login');
+      return;
     }
-  };
+    const response = await fetch(`${API_BASE_URL}/queries/top`, {
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${token}` 
+      }
+    });
+    if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        router.push('/pages/login');
+        return;
+      }
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log('Raw data:', data); // Debug log
+    console.log('Type of data:', typeof data); // Check data type
 
-  /**
-   * @function useEffect
-   * @description
-   * Loads trending queries on component mount
-   */
-  useEffect(() => {
-    fetchTrendingQueries();
-  }, []);
+    // Check if data is an array
+    if (!Array.isArray(data)) {
+      console.error('Received data is not an array:', data);
+      setTrendingQueries([]);
+      return;
+    }
+
+    const formattedData = data.map((query: TrendingQuery) => ({
+      ...query,
+      createdAt: new Date(query.createdAt).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      })
+    }));
+    
+    setTrendingQueries(formattedData);
+  } catch (error) {
+    console.error("Error fetching trending queries:", error);
+    setTrendingQueries([]);
+  }
+};
+useEffect(() => {
+  fetchTrendingQueries();
+}, []);
 
   /**
    * @function handleCardClick
@@ -219,7 +230,7 @@ const Dashboard: React.FC = () => {
         />
         <img src="/assets/icons/search-grey-icon.png" alt="Search" />
       </div>
-
+  
       <div className={styles["dashboard-body"]}>
         {isLoading ? (
           <div className={styles.loaderContainer}>
@@ -231,18 +242,18 @@ const Dashboard: React.FC = () => {
               <div className={styles.trendingQueriesContainer}>
                 <div className={styles.headingContainer}>
                   <h2 className={styles.trendingTitle}>Trending Queries</h2>
-                  <div className=" Lottie">
+                  <div className="Lottie">
                     <LottieIconButton
                       animationData={planeanimation}
                       label="Copy Answer"
-                      onClick={() => { }}
+                      onClick={() => {}}
                     />
                   </div>
                 </div>
-
+  
                 <div className={styles.queriesContent}>
                   {trendingQueries.map((query) => (
-                    <div className={styles.queryItem} key={query.id}>
+                    <div className={styles.queryItem} key={query.question + query.createdAt}>
                       <div className={styles.queryInfo}>
                         <div className={styles.queryIcon}>
                           <i className="fas fa-shield-alt"></i>
@@ -255,7 +266,6 @@ const Dashboard: React.FC = () => {
                       <div className={styles.queryViews}>{query.highestCopyCount}</div>
                     </div>
                   ))}
-
                 </div>
               </div>
             )}
@@ -293,7 +303,7 @@ const Dashboard: React.FC = () => {
           </div>
         )}
       </div>
-
+  
       {isPopupOpen && selectedItem && (
         <DataPopup
           data={{
@@ -310,10 +320,8 @@ const Dashboard: React.FC = () => {
           position={popupPosition}
           size={popupSize}
         />
-
       )}
     </div>
   );
-};
-
+}
 export default Dashboard;

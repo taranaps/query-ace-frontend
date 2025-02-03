@@ -5,14 +5,22 @@ export const postQueryWithAnswers = async(
   questionData: QueryQuestionInetface[],
   answersData: QueryAnswerInterface[]
 ) => {
+  const token = localStorage.getItem('token'); 
+  console.log('Token:', token);
+
   const baseUrl = "http://localhost:8080/api/v1/queryapplication/queries";
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+  const headers = {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  };
 
   try {
     const queryResponse = await fetch(baseUrl, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify(questionData),
     });
 
@@ -37,9 +45,7 @@ export const postQueryWithAnswers = async(
 
       const answersResponse = await fetch(answersUrl, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
         body: JSON.stringify(answersWithQueryId),
       });
 

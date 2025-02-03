@@ -1,16 +1,18 @@
 export const formatDate = (dateString: string) => {
   const date = new Date(dateString);
-  const formattedDate = new Intl.DateTimeFormat("en-GB", {
+  
+  if (isNaN(date.getTime())) {
+    return 'Invalid date';
+  }
+
+  const formattedTime = new Intl.DateTimeFormat("en-US", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: true,
-    day: "2-digit",
-    month: "2-digit",
-    year: "2-digit",
   }).format(date);
 
-  let [time, period] = formattedDate.split(", ");
-  period = period.toUpperCase();
-  time = time.toUpperCase();
-  return `${time} ${period}`;
+  const [time, period] = formattedTime.split(" ");
+  const [hours, minutes] = time.split(":");
+  
+  return `${hours.padStart(2, '0')}:${minutes} ${period.toUpperCase()}`;
 };

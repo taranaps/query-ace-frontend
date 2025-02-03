@@ -4,6 +4,14 @@ import loadingAnimationData from "../../../../public/assets/animatedIcons/circle
 import failedAnimationData from "../../../../public/assets/animatedIcons/circle-loader.json";
 import successAnimationData from "../../../../public/assets/animatedIcons/successv2.json";
 
+/**
+ * @interface LottieLoaderProps
+ * @description
+ * Props for customizing the loader appearance.
+ * Size can be specified as string (e.g., '100%', '200px') or number.
+ * 
+ * @property {string|number} [size='100%'] - Controls width and height of loader
+ */
 interface LottieLoaderProps {
     size?: string | number;
     state: string;

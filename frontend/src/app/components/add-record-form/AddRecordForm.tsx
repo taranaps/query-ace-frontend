@@ -76,6 +76,7 @@ const AddRecordForm = () => {
     e.preventDefault();
     const errors = validateForm();
 
+
     if (errors.length > 0) {
       toast.error(
         <div>
@@ -103,7 +104,7 @@ const AddRecordForm = () => {
     const questionData: PostQueryQuestionInterface[] = [
       {
         question,
-        userId: user.id,
+        userId: user?.id || user?.userId || 1, 
         tags: tags.map((tag) => ({
           tagName: tag.tag,
           tagGroupName: tag.group,
@@ -115,6 +116,9 @@ const AddRecordForm = () => {
       answer,
       userId: user.id,
     }));
+    console.log('User:', user); // Check user object
+    console.log('Question Data:', questionData); // Check data structure
+    console.log('Answers Data:', answersData); 
 
     setLoadingAnimationState("loading");
     setIsLoading(true);

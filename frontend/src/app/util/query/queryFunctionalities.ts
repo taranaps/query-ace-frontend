@@ -1,13 +1,19 @@
 import QueryTagInterface from "@/app/interface/query/queryTagInterface";
 import { API_BASE_URL } from "@/config/apiConfig";
 
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  };
+};
+
 export const handleDeleteQuery = async(id: number) => {
   try {
-    const response = await fetch(`/api/queries/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/queries/${id}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: getAuthHeaders(),
     });
     if (!response.ok) {
       console.error(`Failed to delete query. Status: ${response.status}, Message: ${response.statusText}`);
@@ -19,13 +25,11 @@ export const handleDeleteQuery = async(id: number) => {
   }
 };
 
-export const handleDeleteQueryAnswer = async(id: number) => {
+export const handleDeleteQueryAnswer = async(answerId: number) => {
   try {
-    const response = await fetch(`/api/queries/answers/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/queries/answers/${answerId}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: getAuthHeaders(),
     });
 
     if (!response.ok) {
@@ -39,17 +43,15 @@ export const handleDeleteQueryAnswer = async(id: number) => {
 };
 
 export const handleEditQuery = async(
-  id: number,
+  answerId: number,
   newAnswer: string,
   userId: number,
   queryId: number
 ) => {
   try {
-    const response = await fetch(`/api/queries/answers/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/queries/answers/${answerId}`, {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers:getAuthHeaders(),
       body: JSON.stringify([
         {
           "answer": newAnswer,
@@ -73,13 +75,11 @@ export const handleEditQuery = async(
   }
 };
 
-export const handleCopyQuery = async(id: number) => {
+export const handleCopyQuery = async(answerId: number) => {
   try {
-    const response = await fetch(`/api/queries/answers/${id}/copy`, {
+    const response = await fetch(`${API_BASE_URL}/queries/answers/${answerId}/copy`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify({}),
     });
 
@@ -92,40 +92,39 @@ export const handleCopyQuery = async(id: number) => {
   }
 };
 
-export const handleAddNewQueryAnswer = async(
-  answer: string,
-  userId: number,
+export const handleAddNewQueryAnswer = async (
+  answer: string, 
+  userId: number, 
   queryId: number
 ) => {
   try {
+    const payload = [{
+      answer: answer,
+      userId: userId,
+      queryId: queryId
+    }];
 
-    const requestBody = [
-      {
-        answer,
-        userId,
-        queryId,
-      }
-    ];
-
-    const response = await fetch("/api/queries/id/answers", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
+    const response = await fetch(`${API_BASE_URL}/queries/${queryId}/answers`, {
+      method: 'POST',
+      headers:getAuthHeaders(),
+      body: JSON.stringify(payload)
     });
 
     if (!response.ok) {
-      const errorResponse = await response.json();
-      console.error("Error adding query answer:", errorResponse);
-      return { success: false, message: "Failed to add query answer" };
+      throw new Error('Failed to add answer');
     }
 
-    const responseData = await response.json();
-    return { success: true, data: responseData };
-  } catch (error: unknown) {
-    console.error("Error occurred while adding query answer:", error);
-    return { success: false, message: "An error occurred while processing the request" };
+    const result = await response.json();
+    return {
+      success: true,
+      data: result // Return full array of answer responses
+    };
+  } catch (error) {
+    console.error('Error adding answer:', error);
+    return { 
+      success: false, 
+      message: error instanceof Error ? error.message : 'Unknown error' 
+    };
   }
 };
 
@@ -138,11 +137,9 @@ export const handleAddNewBulkQueryAndAnswer = async(
     }[]
 ) => {
   try {
-    const response = await fetch("/api/queries/bulk", {
+    const response = await fetch(`${API_BASE_URL}/queries/bulk`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify(queries),
     });
 
@@ -174,9 +171,7 @@ export const handleFilterQuery = async(
 
     const response = await fetch(apiUrl, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: getAuthHeaders(),
     });
 
     if (!response.ok) {

@@ -1,9 +1,44 @@
-export const fetchCreatedByUsers = async() => {
-  const response = await fetch("http://localhost:8080/api/v1/queryapplication/admin/users-names");
-  if (response.ok) {
-    return response.json();
-  } else {
-    console.error("Error fetching created by users:", response.status);
+export const fetchCreatedByUsers = async (): Promise<string[]> => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No authentication token found');
+      return [];
+    }
+
+    const response = await fetch(
+      "http://localhost:8080/api/v1/queryapplication/admin/users-names",
+      {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        window.location.href = '/pages/login';
+      }
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    
+    // Validate response format
+    if (!Array.isArray(data) || !data.every(item => 
+      typeof item === 'object' && 
+      typeof item.username === 'string'
+    )) {
+      throw new Error('Invalid user data format');
+    }
+
+    // Extract usernames from objects
+    return data.map(user => user.username);
+
+  } catch (error) {
+    console.error("Error fetching created by users:", error);
     return [];
   }
 };

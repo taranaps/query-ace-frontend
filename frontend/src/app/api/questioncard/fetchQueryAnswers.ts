@@ -36,10 +36,14 @@ export const fetchQueryWithAnswers = async(id: number) => {
   }
   const url = `http://localhost:8080/api/v1/queryapplication/queries/${id}/with-answers`;
   try {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('No authentication token found');
     const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+
       },
     });
     if (response.status === 404) {

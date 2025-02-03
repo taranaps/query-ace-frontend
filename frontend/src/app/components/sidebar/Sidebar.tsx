@@ -19,13 +19,13 @@ export const Sidebar = memo(() => {
     { navigationPath: "/system-log", iconPath: "/assets/icons/system-log-icon.svg", label: "System Logs" },
   ];
 
-  if (user?.roles[0]?.roleName.includes("SUPER_ADMIN")) {
-    navItems.push({
-      navigationPath: "/manage-accounts",
-      iconPath: "/assets/icons/manage-accounts-icon.svg",
-      label: "Manage Accounts"
-    });
-  }
+    if (user?.role === 'SUPER_ADMIN') {
+        navItems.push({
+            navigationPath: '/manage-accounts',
+            iconPath: '/assets/icons/manage-accounts-icon.svg',
+            label: 'Manage Accounts'
+        });
+    }
 
   useEffect(() => {
     const index = navItems.findIndex((item) => item.navigationPath === pathname);
@@ -89,7 +89,7 @@ export const Sidebar = memo(() => {
           <div className={styles["sidebar-bottom-account-details-profile"]}></div>
           <div className={styles["sidebar-bottom-account-details-name-and-email"]}>
             <div className={styles["sidebar-bottom-account-details-name"]}>
-              {user?.firstName || "User Name"}
+              {user?.username || "User Name"}
             </div>
             <div className={styles["sidebar-bottom-account-details-email"]}>
               {user?.email || "user@example.com"}

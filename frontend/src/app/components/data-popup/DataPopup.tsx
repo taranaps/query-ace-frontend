@@ -22,10 +22,9 @@ import { handleDeleteQueryAnswer } from "@/app/util/query/queryFunctionalities";
 import { handleAddNewQueryAnswer } from "@/app/util/query/queryFunctionalities";
 import { LottieLoader } from "../lottie-loader/lottieLoader";
 import AddTagPopup from "../add-tag-popup/AddTagPopup";
-import { formatDate } from "@/app/util/formatDate";
 import { handleAddNewTagToExistingQuery } from "@/app/util/tags/tagFunctionalities";
 import NewButton from "../../components/new-button/NewButton";
-
+import {formatDate} from "../../util/formatDate";
 /**
  * @component DataPopup
  * @description
@@ -42,24 +41,40 @@ import NewButton from "../../components/new-button/NewButton";
  * @param {Object} props.position - Initial position for animation
  * @param {Object} props.size - Initial size for animation
  */
+interface Answer {
+  id: number;
+  answer: string;
+  createdAt: string;
+  updatedAt: string;
+  email?: string;
+  firstName?: string;
+  roleName?: string;
+  usersId?: number;
+  usersUsername?: string;
+}
+// interface DataPopupProps {
+//   onDataChange?: () => void; 
+// }
 const DataPopup = ({
   data,
   onClose,
   user,
   position,
-  size
+  size,
+  // onDataChange
 }: {
     data: any;
     onClose: () => void;
     user?: any;
     position: { top: number; left: number };
     size: { width: number; height: number };
+    // onDataChange?: () => void;
 }) => {
   /**
    * @state
    * @description Main state management for popup content
    */
-  const [answers, setAnswers] = useState(data.answers);
+  const [answers, setAnswers] = useState<Answer[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newAnswer, setNewAnswer] = useState<string>("");
   const [error, setError] = useState("");
@@ -104,6 +119,12 @@ const DataPopup = ({
     setTagGroups(data.tags || []);
   }, [data]);
 
+  useEffect(() => {
+    if (data?.answers) {
+      setAnswers(data.answers);
+    }
+  }, [data]);
+
   /**
    * @function handleConfirmDelete
    * @description Processes answer deletion
@@ -119,12 +140,16 @@ const DataPopup = ({
    * @function handleAddAnswer
    * @description Handles adding new answer with validation
    */
-  const handleAddAnswer = async() => {
+  const handleAddAnswer = async () => {
     if (!newAnswer.trim()) {
       setError("Please enter an answer before submitting.");
       return;
     }
-    setLoadingAnimationState("loading");
+    if (!user?.id) {
+      setError("User information not available");
+      return;
+    }
+      setLoadingAnimationState("loading");
     setLoading(true);
     const result = await handleAddNewQueryAnswer(newAnswer, user.id, data.id);
 
@@ -173,6 +198,8 @@ const DataPopup = ({
     if (result.success) {
       setLoadingAnimationState("success");
       await new Promise((resolve) => setTimeout(resolve, 2000));
+      // onDataChange?.();
+
       setTagGroups((prevTagGroups) => {
         const updatedTagGroups = [...prevTagGroups];
         updatedTagGroups.push({ tagGroupName: newTag.group, tagNames: newTag.tag });

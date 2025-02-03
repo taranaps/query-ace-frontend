@@ -24,6 +24,7 @@ interface TableRowProps {
     rowClassName?: string;
     onToggle: (newStatus: boolean) => void;
     onRowClick?: () => void;
+    username: string;
 }
 
 /**

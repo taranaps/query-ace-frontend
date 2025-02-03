@@ -1,3 +1,16 @@
+/**
+ * @module Pagination
+ * @description
+ * A pagination component that helps users navigate through multiple pages of content.
+ * Shows page numbers, previous/next buttons, and smart ellipsis for many pages.
+ * Key features:
+ * - Dynamic page number display
+ * - Previous/Next navigation
+ * - Smart ellipsis for large page ranges
+ * - Active page highlighting
+ * - Responsive buttons
+ * - Boundary checks
+ */
 import React from "react";
 
 /**

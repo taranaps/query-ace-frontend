@@ -25,13 +25,20 @@ export const GET = async(request: Request, { params }: { params: { id: string } 
 };
 
 export const PATCH = async(request: Request, { params }: { params: { id: string } }) => {
+  const token = localStorage.getItem('token');
+
   try {
+    if (!token) {
+      throw new Error('Authorization token missing');
+    }
     const { id } = params;
     const requestBody = await request.json();
     const response = await fetch(`${API_BASE_URL}/admin/users/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+
       },
       body: JSON.stringify(requestBody),
     });

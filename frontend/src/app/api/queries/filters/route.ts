@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 
 export const POST = async(request: Request) => {
   try {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('No authentication token found');
     const { usersUsernames, tags }: { usersUsernames: string[]; tags: string[] } = await request.json();
     if (!Array.isArray(usersUsernames) || !Array.isArray(tags)) {
       return NextResponse.json(
@@ -15,6 +17,8 @@ export const POST = async(request: Request) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+
       },
       body: JSON.stringify({ usersUsernames, tags }),
     });

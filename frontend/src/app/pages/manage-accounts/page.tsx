@@ -17,37 +17,20 @@ import Pagination from "../../components/pagination/Pagination";
 import AddAdminPopup from "../../components/add-admin-popup/AddAdminPopup";
 import AdminTogglePopup from "../../components/admin-toggle-popup/AdminTogglePopup";
 import { fetchUserInterface } from "@/app/interface/user/fetchUserInterface";
-
 import styles from "./ManageAccountsPage.module.css";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
 import { handleAddAdmin } from "@/app/util/admin/adminFunctionalities";
 import NewButton from "../../components/new-button/NewButton";
+import { API_BASE_URL } from "@/config/apiConfig";
 
-/**
-* Represents the data structure for an admin form.
-* @typedef {Object} AdminFormData
-* @property {string} firstName - The first name of the admin.
-* @property {string} email - The email address of the admin.
-* @property {string} location - The location of the admin.
-* @property {string} username - The username of the admin.
-* @property {string} password - The password for the admin account.
-* @property {"SUPER_ADMIN" | "ADMIN"} userRole - The role of the admin, either "SUPER_ADMIN" or "ADMIN".
-*/
 type AdminFormData = {
-    firstName: string;
-    email: string;
-    location: string;
-    username: string;
-    password: string;
-    userRole: "SUPER_ADMIN" | "ADMIN";
+  firstName: string;
+  email: string;
+  username: string;
+  password: string;
+  userRole: "SUPER_ADMIN" | "ADMIN";
 };
 
-/**
- * Component for managing admin accounts.
- * 
- * @component
- * @returns {React.ReactElement} Rendered ManageAccountsPage component.
- */
 const ManageAccountsPage: React.FC = () => {
   const [userData, setUserData] = useState<fetchUserInterface[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -68,7 +51,7 @@ const ManageAccountsPage: React.FC = () => {
   useEffect(() => {
     if (!user || user.status === "INACTIVE") {
       router.push("/pages/login");
-    } else if (user.roles[0]?.roleName !== "SUPER_ADMIN") {
+    } else if (user.role !== "SUPER_ADMIN") {
       router.back();
     }
   }, [user, router]);
@@ -76,12 +59,22 @@ const ManageAccountsPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async() => {
       try {
-        const response = await fetch("/api/admin/users");
+        const response = await fetch(`${API_BASE_URL}/admin/users`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
         const result = await response.json();
-        console.log(result);
-
+    
         if (Array.isArray(result)) {
-          setUserData(result);
+          const validatedData = result.map(user => ({
+            ...user,
+            status: (user.status === "ACTIVE" || user.status === "INACTIVE") 
+              ? user.status 
+              : "INACTIVE",
+            roles: user.roles || []
+          })) as fetchUserInterface[];
+          setUserData(validatedData);
         } else {
           console.error("Fetched data is not an array:", result);
         }
@@ -95,65 +88,57 @@ const ManageAccountsPage: React.FC = () => {
     fetchData();
   }, []);
 
-      /**
-     * Handles toggling the status of a user.
-     * @param {string} email - Email of the user to toggle.
-     */
   const handleToggleStatus = (email: string) => {
     setSelectedEmail(email);
     setOpenTogglePopup(true);
   };
 
-      /**
-     * Confirms and updates the toggle status of a user.
-     */
   const confirmToggleStatus = async() => {
     if (selectedEmail) {
       const userToUpdate = userData.find((item) => item.email === selectedEmail);
-
+    
       if (userToUpdate) {
-        const updatedStatus: "ACTIVE"   | "INACTIVE" = !userToUpdate.isActive ? "ACTIVE" : "INACTIVE";
-
         try {
-          const url = `/api/admin/toggle-status/${userToUpdate.id}`.trim();
-
-          console.log(url);
-
-          const response = await fetch(url, {
+          const response = await fetch(`${API_BASE_URL}/admin/toggle-status/${userToUpdate.id}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
+              "Authorization": `Bearer ${localStorage.getItem('token')}`
             },
             body: JSON.stringify({
-              isActive: !userToUpdate.isActive,
-              status: updatedStatus,
-            }),
+              userId: userToUpdate.id 
+            })
           });
-
-          const result = await response.json();
-
+    
           if (response.ok) {
             const updatedData = userData.map((item) =>
-              item.email === selectedEmail ? { ...item, isActive: !item.isActive, status: updatedStatus } : item
+              item.email === selectedEmail 
+                ? { 
+                    ...item, 
+                    status: (item.status === "ACTIVE" ? "INACTIVE" : "ACTIVE") as "ACTIVE" | "INACTIVE"
+                  }
+                : item
             );
             setUserData(updatedData);
-          } else {
-            console.error("Failed to update user status", result);
           }
         } catch (error) {
-          console.error("Error updating user status:", error);
+          console.error("Error updating status:", error);
         }
       }
     }
-
     setOpenTogglePopup(false);
     setSelectedEmail(null);
   };
 
   const handleAddAccount = () => setOpenAddPopup(true);
+  
   const handleEditAccount = async(id: number) => {
     try {
-      const response = await fetch(`/api/admin/users/${id}`);
+      const response = await fetch(`${API_BASE_URL}/admin/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
       const adminDetails = await response.json();
 
       if (response.ok) {
@@ -169,33 +154,30 @@ const ManageAccountsPage: React.FC = () => {
 
   const handleUpdateAdmin = async(updatedAdminData: AdminFormData) => {
     if (!selectedAdmin) return;
-
+  
     try {
-      const response = await fetch(`/api/admin/users/${selectedAdmin.id}`, {
+      const response = await fetch(`${API_BASE_URL}/admin/edit`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify(updatedAdminData),
+        body: JSON.stringify({
+          userId: selectedAdmin.id,
+          ...updatedAdminData
+        })
       });
-      console.log("sel admin:",selectedAdmin);
-      if (!response.ok) {
-        console.error("Failed to update admin:", response.statusText);
-        return;
-      }
-
-      const result = await response.json();
-      console.log("Updated admin response:", result);
-
-      if (result) {
-        const updatedUserData = userData.map((admin) =>
-          admin.id === selectedAdmin.id ? { ...admin, ...updatedAdminData } : admin
-        );
-        setUserData(updatedUserData);
+  
+      if (response.ok) {
+        const result = await response.json();
+        setUserData(userData.map((admin) => 
+          admin.id === selectedAdmin.id ? { 
+            ...admin, 
+            ...result,
+            role: result.userRole
+          } : admin
+        ));
         setOpenEditPopup(false);
-        console.log(updatedAdminData);
-      } else {
-        console.error("Failed to update admin:", result);
       }
     } catch (error) {
       console.error("Error updating admin:", error);
@@ -204,7 +186,6 @@ const ManageAccountsPage: React.FC = () => {
 
   const handleCloseAddPopup = () => setOpenAddPopup(false);
   const handleCloseEditPopup = () => setOpenEditPopup(false);
-
   const handleCloseTogglePopup = () => setOpenTogglePopup(false);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value);
@@ -219,8 +200,8 @@ const ManageAccountsPage: React.FC = () => {
   const filteredData = sortedData.filter(
     (item) =>
       item.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.location.toLowerCase().includes(searchQuery.toLowerCase())
+      item.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const paginatedData = filteredData.slice(
@@ -270,46 +251,49 @@ const ManageAccountsPage: React.FC = () => {
           />
           <div className={styles.itemRange}>
             <p>
-                            Displaying {startItem}–{endItem} of {filteredData.length} accounts
+              Displaying {startItem}–{endItem} of {filteredData.length} accounts
             </p>
           </div>
         </div>
         <NewButton
-          variant="custom" // Choose the appropriate variant (e.g., 'submit' or another variant depending on your design)
+          variant="custom"
           onClick={handleAddAccount}
-          width="fit" // Adjust the width if necessary
-          type="button" // Use 'button' type for a regular button
+          width="fit"
+          type="button"
         >
-    + Add Account
+          + Add Account
         </NewButton>
-
       </div>
-      {openAddPopup &&
-                <AddAdminPopup
-                  header="Add Admin"
-                  onConfirm={handleAddAdmin}
-                  onClose={handleCloseAddPopup}
-                  closePopup={handleCloseAddPopup}
-                  passwordOn={true}
-                />}
+
+      {openAddPopup && (
+        <AddAdminPopup
+          header="Add Admin"
+          onConfirm={handleAddAdmin}
+          onClose={handleCloseAddPopup}
+          closePopup={handleCloseAddPopup}
+          passwordOn={true}
+        />
+      )}
 
       {openEditPopup && selectedAdmin && (
-
         <AddAdminPopup
           header="Edit Admin"
-          onConfirm={handleUpdateAdmin}  // Use the correct function for updating
+          onConfirm={handleUpdateAdmin}
           onClose={handleCloseEditPopup}
           closePopup={handleCloseEditPopup}
           formData={{
             firstName: selectedAdmin.firstName,
             email: selectedAdmin.email,
-            location: selectedAdmin.location,
             username: selectedAdmin.username,
-            password: "", // Do not pass passwords for editing
-            userRole: selectedAdmin.roles[0]?.roleName as "SUPER_ADMIN" | "ADMIN",
+            password: "",
+            userRole: (selectedAdmin.roles[0]?.roleName === "SUPER_ADMIN" 
+              ? "SUPER_ADMIN" 
+              : "ADMIN") as "SUPER_ADMIN" | "ADMIN"
           }}
           passwordOn={false}
-        />)}
+        />
+      )}
+
       {openTogglePopup && (
         <AdminTogglePopup onConfirm={confirmToggleStatus} onClose={handleCloseTogglePopup} />
       )}

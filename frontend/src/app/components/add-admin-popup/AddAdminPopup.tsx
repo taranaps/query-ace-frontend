@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogActions,
@@ -24,7 +24,6 @@ import MessagePopup from "../message-popup/MessagePopup";
 interface AdminFormData {
     firstName: string;
     email: string;
-    location: string;
     username: string;
     password: string;
     userRole: "SUPER_ADMIN" | "ADMIN";
@@ -78,7 +77,6 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
   const [formState, setFormState] = useState<AdminFormData>({
     firstName: formData.firstName || "",
     email: formData.email || "",
-    location: formData.location || "TRIVANDRUM",
     username: formData.username || "",
     password: formData.password || "",
     userRole: formData.userRole || "ADMIN",
@@ -102,9 +100,9 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
      * @function
      */
   const handleCreate = async() => {
-    const { firstName, email, location, username, password } = formState;
+    const { firstName, email, username, password } = formState;
 
-    if (firstName && email && location && username && (password || !passwordOn)) {
+    if (firstName && email  && username && (password || !passwordOn)) {
       setLoading(true);
       const confirmSave = await onConfirm(formState);
       if (!confirmSave) {
@@ -132,36 +130,32 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
             </DialogTitle>
             <DialogContent>
               <div className={styles.addAdminPopUpFields}>
+              <Textfield
+                id="fullname-input"
+                placeholder="Full name"
+                value={formState.firstName}
+                onChange={(value) => handleInputChange("firstName", value)}
+              />
+              <Textfield
+                id="email-input"
+                placeholder="Email"
+                value={formState.email}
+                onChange={(value) => handleInputChange("email", value)}
+              />
+              <Textfield
+                id="username-input"
+                placeholder="Username"
+                value={formState.username}
+                onChange={(value) => handleInputChange("username", value)}
+              />
+              {passwordOn && (
                 <Textfield
-                  placeholder="Full name"
-                  value={formState.firstName}
-                  onChange={(value) =>
-                    handleInputChange("firstName", value)
-                  }
+                  id="password-input"
+                  type="password"
+                  placeholder="Password"
+                  value={formState.password}
+                  onChange={(value) => handleInputChange("password", value)}
                 />
-                <Textfield
-                  placeholder="Email"
-                  value={formState.email}
-                  onChange={(value) =>
-                    handleInputChange("email", value)
-                  }
-                />
-                <Textfield
-                  placeholder="Username"
-                  value={formState.username}
-                  onChange={(value) =>
-                    handleInputChange("username", value)
-                  }
-                />
-                {passwordOn && (
-                  <Textfield
-                    type="password"
-                    placeholder="Password"
-                    value={formState.password}
-                    onChange={(value) =>
-                      handleInputChange("password", value)
-                    }
-                  />
                 )}
               </div>
             </DialogContent>

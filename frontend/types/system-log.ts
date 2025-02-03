@@ -1,14 +1,16 @@
-export interface SystemLog {
-    date: string;
-    logs: LogEntry[];
-  }
+export interface UserDTO {
+  id: number;
+  username: string;
+}
+
+interface ActivityLog {
+  time: string;
+  description: string;
+}
+interface DateGroupedLogs {
+  date: string;
+  logs: ActivityLog[];
+}
+
+export type SystemLogResponse = DateGroupedLogs[];
   
-  export interface LogEntry {
-    time: string;
-    description: string;
-  }
-  
-  export interface ApiResponse<T> {
-    data?: T;
-    error?: string;
-  }

@@ -1,52 +1,66 @@
-export const handleAddAdmin = async(adminData: {
+import { API_BASE_URL } from "@/config/apiConfig";
+
+interface AdminData {
     firstName: string;
     email: string;
-    location: string;
     username: string;
     password: string;
-    userRole: "SUPER_ADMIN" | "ADMIN";
-}) => {
+}
+export const handleAddAdmin = async(adminData: AdminData) => {
   try {
-    const url = "/api/admin/create";
+    const token = localStorage.getItem('token'); 
+    
+    const payload = {
+      firstName: adminData.firstName,
+      email: adminData.email,
+      username: adminData.username,
+      password: adminData.password,
+      location: "BANGLORE",
+      userRole: "ADMIN" 
 
-    const response = await fetch(url, {
+    };
+    console.log('Request Payload:', payload);
+
+    const response = await fetch(`${API_BASE_URL}/admin/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
-      body: JSON.stringify(adminData),
+      body: JSON.stringify(payload)
     });
 
-    if (response.ok) {
-      return true;
-    } else {
-      const errorResult = await response.json();
-      console.error("Failed to create admin:", errorResult);
-      return false;
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log('Error Response:', errorText);
+      const errorData = JSON.parse(errorText);
+      throw new Error(errorData.detail || errorText);
     }
+
+    return await response.json();
   } catch (error) {
     console.error("Error creating admin:", error);
-    return false;
+    throw error;
   }
 };
 
-export const handleEditAdmin = async(
-  id: string,
-  adminData: Partial<{
-    firstName: string;
-    email: string;
-    username: string;
+export const handleEditAdmin = async(id: string, adminData: Partial<{
+  firstName: string;
+  email: string;
+  username: string;
 }>) => {
-  try {
-    const url = `/api/admin/users/${id}`;
+try {
+  const token = localStorage.getItem('token');
+  const url = `${API_BASE_URL}/admin/edit`;  
 
-    const response = await fetch(url, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(adminData),
-    });
+  const response = await fetch(url, {
+    method: "PATCH", 
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(adminData),
+  });
 
     if (response.ok) {
       return true;

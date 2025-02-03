@@ -172,6 +172,9 @@ const ImportQueryPage = () => {
             lastCompany = String(row[3]);
           }
           if (question) {
+            if (!user) {
+              throw new Error("User must be authenticated to perform this action");
+            }
             const tags: QueryTagInterface[] = [];
             if (lastCategory) {
               tags.push({ tagGroupName: "Category", tagName: lastCategory });

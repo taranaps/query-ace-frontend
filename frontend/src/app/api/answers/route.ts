@@ -51,7 +51,7 @@ export const GET = async(request: Request, { params }: { params: { questionId: s
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": token ? `Bearer ${token}` : "",
+        "Authorization": `Bearer ${token}`,
       },
     });
 
