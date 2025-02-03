@@ -217,6 +217,7 @@ const QueryLookup = () => {
 
           position={popupPosition}
           size={popupSize}
+          user={user}
         />
       )}
     </div>
