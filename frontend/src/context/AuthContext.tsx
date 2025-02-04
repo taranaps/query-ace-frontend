@@ -89,9 +89,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
       });
   
-      if (response.status === 401) {
-        handleUnauthorized();
-      }
+      // if (response.status === 401) {
+      //   handleUnauthorized();
+      // }
       return response;
     };
   

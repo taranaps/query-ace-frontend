@@ -24,7 +24,7 @@ import { LottieLoader } from "../lottie-loader/lottieLoader";
 import AddTagPopup from "../add-tag-popup/AddTagPopup";
 import { handleAddNewTagToExistingQuery } from "@/app/util/tags/tagFunctionalities";
 import NewButton from "../../components/new-button/NewButton";
-import {formatDate} from "../../util/formatDate";
+import { fetchQueryWithAnswers } from "@/app/api/questioncard/fetchQueryAnswers";
 /**
  * @component DataPopup
  * @description
@@ -53,17 +53,19 @@ interface Answer {
   usersUsername?: string;
 }
 // interface DataPopupProps {
-//   onDataChange?: () => void; 
+//   onDataChange?: () => void;
 // }
 const DataPopup = ({
-  data,
+  // data,
+  id,
   onClose,
   user,
   position,
   size,
   // onDataChange
 }: {
-    data: any;
+    // data: any;
+    id: number;
     onClose: () => void;
     user?: any;
     position: { top: number; left: number };
@@ -77,6 +79,7 @@ const DataPopup = ({
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newAnswer, setNewAnswer] = useState<string>("");
+  const [question, setQuestion] = useState<string>("");
   const [error, setError] = useState("");
   const [isAddTagPopupOpen, setIsAddTagPopupOpen] = useState(false);
   const [tagGroups, setTagGroups] = useState<{ tagGroupName: string; tagNames: string }[]>([]);
@@ -107,6 +110,21 @@ const DataPopup = ({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const fetchInitialData = async() => {
+    try {
+      const fetchedData = await fetchQueryWithAnswers(id);
+      if (fetchedData && fetchedData.answers) {
+        setAnswers(fetchedData.answers);
+        setTagGroups(fetchedData.tags);
+        setQuestion(fetchedData.question);
+      } else {
+        console.warn("No answers found for this query.");
+      }
+    } catch (error) {
+      console.error("Error fetching answers:", error);
+    }
+  };
+
   /**
    * @function useEffect
    * @description Sets up initial data and animation
@@ -115,15 +133,18 @@ const DataPopup = ({
     setTimeout(() => {
       setIsTransitionComplete(true);
     }, 50);
-    setAnswers(data.answers || []);
-    setTagGroups(data.tags || []);
-  }, [data]);
 
-  useEffect(() => {
-    if (data?.answers) {
-      setAnswers(data.answers);
-    }
-  }, [data]);
+    fetchInitialData();
+
+    // setAnswers(data.answers || []);
+    // setTagGroups(data.tags || []);
+  }, []);
+
+  // useEffect(() => {
+  //   if (data?.answers) {
+  //     setAnswers(data.answers);
+  //   }
+  // }, [data]);
 
   /**
    * @function handleConfirmDelete
@@ -140,7 +161,7 @@ const DataPopup = ({
    * @function handleAddAnswer
    * @description Handles adding new answer with validation
    */
-  const handleAddAnswer = async () => {
+  const handleAddAnswer = async() => {
     if (!newAnswer.trim()) {
       setError("Please enter an answer before submitting.");
       return;
@@ -149,26 +170,28 @@ const DataPopup = ({
       setError("User information not available");
       return;
     }
-      setLoadingAnimationState("loading");
+    setLoadingAnimationState("loading");
     setLoading(true);
-    const result = await handleAddNewQueryAnswer(newAnswer, user.id, data.id);
+    const result = await handleAddNewQueryAnswer(newAnswer, user.id, id);
 
     if (result.success) {
-      setAnswers((prevAnswers: any[]) => [
-        ...prevAnswers,
-        {
-          id: Date.now(),
-          answer: newAnswer,
-          createdAt: new Date().toString(),
-          email: user.email,
-          firstName: user.firstName,
-          roleName: user.roles[0].roleName,
-          updatedAt: formatDate(new Date().toString()),
-          usersId: user.id,
-          usersUsername: user.username,
-        },
-      ]);
-      setNewAnswer("");
+      // setAnswers((prevAnswers: any[]) => [
+      //   ...prevAnswers,
+      //   {
+      //     id: Date.now(),
+      //     answer: newAnswer,
+      //     createdAt: new Date().toString(),
+      //     email: user.email,
+      //     firstName: user.firstName,
+      //     roleName: user.roles[0].roleName,
+      //     updatedAt: formatDate(new Date().toString()),
+      //     usersId: user.id,
+      //     usersUsername: user.username,
+      //   },
+      // ]);
+      // setNewAnswer("");
+
+      await fetchInitialData();
       setIsAddModalOpen(false);
       setLoadingAnimationState("success");
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -193,7 +216,7 @@ const DataPopup = ({
     setLoadingAnimationState("loading");
     setLoading(true);
     const tagPayload = { tagGroupName: newTag.group, tagName: newTag.tag };
-    const result = await handleAddNewTagToExistingQuery(data.id, tagPayload);
+    const result = await handleAddNewTagToExistingQuery(id.toString(), tagPayload);
 
     if (result.success) {
       setLoadingAnimationState("success");
@@ -236,7 +259,7 @@ const DataPopup = ({
           <div className={styles.popupHeaderQuestion}>
             <p style={{ fontSize: "18px", fontWeight: "bold" }}>Question:</p>
 
-            <h2>{data.question}</h2>
+            <h2>{question}</h2>
           </div>
           <LottieIconButton
             animationData={closeAnimation}

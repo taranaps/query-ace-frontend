@@ -207,7 +207,7 @@ const SystemLogPage: React.FC = () => {
       setLoading(false);
     }
  };
- 
+
  /**
   * @function handleFilterChange
   * @description

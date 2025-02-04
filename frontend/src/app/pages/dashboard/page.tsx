@@ -24,10 +24,8 @@ import { fetchQueryWithAnswers } from "@/app/api/questioncard/fetchQueryAnswers"
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
 import planeanimation from "../../../../public/assets/animatedIcons/Paper Plane (1).json";
 import LottieIconButton from "../../components/lottie-animated-button/LottieIconButton";
-import {TrendingQuery} from "types/TrendingQuery";
+import { TrendingQuery } from "types/TrendingQuery";
 import { API_BASE_URL } from "@/config/apiConfig";
-
-
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -76,57 +74,54 @@ const Dashboard: React.FC = () => {
 
   const [trendingQueries, setTrendingQueries] = useState<TrendingQuery[]>([]);
 
-  
-const fetchTrendingQueries = async () => {
-  try {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      router.push('/pages/login');
-      return;
-    }
-    const response = await fetch(`${API_BASE_URL}/queries/top`, {
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': `Bearer ${token}` 
-      }
-    });
-    if (!response.ok) {
-      if (response.status === 401) {
-        localStorage.removeItem('token');
-        router.push('/pages/login');
+  const fetchTrendingQueries = async() => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        router.push("/pages/login");
         return;
       }
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    console.log('Raw data:', data); // Debug log
-    console.log('Type of data:', typeof data); // Check data type
+      const response = await fetch(`${API_BASE_URL}/queries/top`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          router.push("/pages/login");
+          return;
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
 
-    // Check if data is an array
-    if (!Array.isArray(data)) {
-      console.error('Received data is not an array:', data);
+      // Check if data is an array
+      if (!Array.isArray(data)) {
+        console.error("Received data is not an array:", data);
+        setTrendingQueries([]);
+        return;
+      }
+
+      const formattedData = data.map((query: TrendingQuery) => ({
+        ...query,
+        createdAt: new Date(query.createdAt).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric"
+        })
+      }));
+
+      setTrendingQueries(formattedData);
+    } catch (error) {
+      console.error("Error fetching trending queries:", error);
       setTrendingQueries([]);
-      return;
     }
-
-    const formattedData = data.map((query: TrendingQuery) => ({
-      ...query,
-      createdAt: new Date(query.createdAt).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      })
-    }));
-    
-    setTrendingQueries(formattedData);
-  } catch (error) {
-    console.error("Error fetching trending queries:", error);
-    setTrendingQueries([]);
-  }
-};
-useEffect(() => {
-  fetchTrendingQueries();
-}, []);
+  };
+  useEffect(() => {
+    fetchTrendingQueries();
+  }, []);
 
   /**
    * @function handleCardClick
@@ -155,18 +150,18 @@ useEffect(() => {
 
     setIsPopupOpen(true);
 
-    try {
-      const fetchedData = await fetchQueryWithAnswers(item.id);
-      if (fetchedData && fetchedData.answers) {
-        setAnswers(fetchedData.answers);
-      } else {
-        console.warn("No answers found for this query.");
-        setAnswers([]);
-      }
-    } catch (error) {
-      console.error("Error fetching answers:", error);
-      setAnswers([]);
-    }
+    // try {
+    //   const fetchedData = await fetchQueryWithAnswers(item.id);
+    //   if (fetchedData && fetchedData.answers) {
+    //     setAnswers(fetchedData.answers);
+    //   } else {
+    //     console.warn("No answers found for this query.");
+    //     setAnswers([]);
+    //   }
+    // } catch (error) {
+    //   console.error("Error fetching answers:", error);
+    //   setAnswers([]);
+    // }
   };
 
   /**
@@ -230,7 +225,7 @@ useEffect(() => {
         />
         <img src="/assets/icons/search-grey-icon.png" alt="Search" />
       </div>
-  
+
       <div className={styles["dashboard-body"]}>
         {isLoading ? (
           <div className={styles.loaderContainer}>
@@ -250,7 +245,7 @@ useEffect(() => {
                     />
                   </div>
                 </div>
-  
+
                 <div className={styles.queriesContent}>
                   {trendingQueries.map((query) => (
                     <div className={styles.queryItem} key={query.question + query.createdAt}>
@@ -303,14 +298,15 @@ useEffect(() => {
           </div>
         )}
       </div>
-  
+
       {isPopupOpen && selectedItem && (
         <DataPopup
-          data={{
-            ...selectedItem,
-            answers: answers,
-            tags: selectedItem.tags || [],
-          }}
+          // data={{
+          //   ...selectedItem,
+          //   answers: answers,
+          //   tags: selectedItem.tags || [],
+          // }}
+          id={selectedItem.id}
           onClose={() => {
             setIsPopupOpen(false);
             setSelectedItem(null);
@@ -323,5 +319,5 @@ useEffect(() => {
       )}
     </div>
   );
-}
+};
 export default Dashboard;
