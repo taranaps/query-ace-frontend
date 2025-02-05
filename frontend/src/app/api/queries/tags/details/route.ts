@@ -14,14 +14,15 @@ export const GET = async(request: Request) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        "Authorization": `${token}`
       },
     });
 
     if (response.ok) {
+      const data = await response.json();  // Extract the JSON data from the response
       return NextResponse.json(
-        { message: "Tags successfully added" },
-        { status: 400 }
+        { message: "Tags successfully fetched", data },  // Include the data in the response
+        { status: 200 }
       );
     }
 

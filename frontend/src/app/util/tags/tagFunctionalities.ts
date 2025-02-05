@@ -1,5 +1,13 @@
 import { API_BASE_URL } from "@/config/apiConfig";
 
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  };
+};
+
 export const handleAddNewTag = async(
   tag: {
         tagGroupName: string, tagName: string
@@ -8,14 +16,9 @@ export const handleAddNewTag = async(
 
   try {
     const requestBody =  tag ;
-    const token = localStorage.getItem("token");
-
     const response = await fetch(`${API_BASE_URL}/queries/tags`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify(requestBody),
     });
 
@@ -37,15 +40,10 @@ export const handleAddNewTagToExistingQuery = async(
   tags: { tagGroupName: string; tagName: string }
 ) => {
   try {
-    const token = localStorage.getItem("token");
-
     const requestBody =  tags;
     const response = await fetch(`${API_BASE_URL}/queries/${id}/tags/add`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify(requestBody),
     });
 
@@ -61,21 +59,16 @@ export const handleAddNewTagToExistingQuery = async(
   }
 };
 
-export const fetchAllTagDetails = async() => {
+export const fetchAllTagsWithDetails = async() => {
   try {
-    const token = localStorage.getItem("token");
-
     const response = await fetch("/api/queries/tags/details", {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
+      headers: getAuthHeaders(),
     });
 
     if (response.ok) {
-      const data = await response.json();
-      return { success: true, data };
+      const { data } = await response.json();  // Extract only the 'data' field from the response
+      return data;  // Return the actual tag details
     }
 
     console.error(`Failed to fetch tags. Status: ${response.status}`);
@@ -88,13 +81,9 @@ export const fetchAllTagDetails = async() => {
 
 export const removeTagFromBackend = async(id: string) => {
   try {
-    const token = localStorage.getItem("token");
-
     const response = await fetch(`/api/queries/tags/${id}`, {
       method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
+      headers: getAuthHeaders(),
     });
 
     if (response.ok) {

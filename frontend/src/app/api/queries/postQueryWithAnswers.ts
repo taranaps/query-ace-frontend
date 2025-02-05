@@ -19,7 +19,7 @@ export const postQueryWithAnswers = async(
   try {
     const queryResponse = await fetch(baseUrl, {
       method: "POST",
-      headers,
+      headers : headers,
       body: JSON.stringify(questionData),
     });
 

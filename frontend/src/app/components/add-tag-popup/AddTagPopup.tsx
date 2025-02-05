@@ -5,7 +5,7 @@ import {
   FormControl, InputLabel, Select, MenuItem, TextField,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material";
-import { fetchAllTagDetails } from "@/app/util/tags/tagFunctionalities";
+import { fetchAllTagsWithDetails } from "@/app/util/tags/tagFunctionalities";
 
 interface AddTagPopupProps {
     open: boolean;
@@ -24,7 +24,8 @@ const AddTagPopup: React.FC<AddTagPopupProps> = ({ open, onClose, onAddTags }) =
 
   useEffect(() => {
     const fetchTags = async() => {
-      const tags = await fetchAllTagDetails();
+      const tags = await fetchAllTagsWithDetails();
+      console.log(tags);
       setTagGroups(tags);
     };
     fetchTags();
