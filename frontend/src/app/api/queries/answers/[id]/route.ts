@@ -17,7 +17,7 @@ export const PATCH = async(request: Request, { params }: { params: { id: string 
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        "Authorization": `${token}`
       },
       body: JSON.stringify(requestBody),
     });
@@ -61,7 +61,7 @@ export const DELETE = async(
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        "Authorization": `${token}`
       },
     });
 

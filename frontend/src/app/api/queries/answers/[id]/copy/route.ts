@@ -15,7 +15,7 @@ export const POST = async(request: Request, { params }: { params: { id: string }
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        "Authorization": `${token}`
       },
     });
     if (response.ok) {
