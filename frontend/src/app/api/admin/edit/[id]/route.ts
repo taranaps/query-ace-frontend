@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { API_BASE_URL } from "@/config/apiConfig";
 
-export const PATCH = async(request: Request, context: { params: { id: string }}) => {
-
+export const PATCH = async (request: Request, { params }: { params: { id: string } }) => {
   const token = request.headers.get("Authorization");
   if (!token) {
     return NextResponse.json(
@@ -12,8 +11,6 @@ export const PATCH = async(request: Request, context: { params: { id: string }})
   }
 
   try {
-    const { id } = context.params;
-
     const requestBody = await request.json();
 
     // Validate required fields
@@ -25,7 +22,7 @@ export const PATCH = async(request: Request, context: { params: { id: string }})
       );
     }
 
-    const response = await fetch(`${API_BASE_URL}/admin/edit/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/admin/edit/${params.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
