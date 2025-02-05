@@ -1,13 +1,9 @@
 import { NextResponse } from "next/server";
 import { API_BASE_URL } from "@/config/apiConfig";
 
-interface RouteContext {
-  params: { id: string };
-}
+export const PATCH = async(request: Request, { params }: { params: { id: number } }) => {
 
-export const PATCH = async(request: Request, context: RouteContext) => {
   const token = request.headers.get("Authorization");
-  
   if (!token) {
     return NextResponse.json(
       { message: "Authorization token missing" },
@@ -16,7 +12,7 @@ export const PATCH = async(request: Request, context: RouteContext) => {
   }
 
   try {
-    const { id } = context.params;
+    const { id } = params;
 
     const requestBody = await request.json();
 
