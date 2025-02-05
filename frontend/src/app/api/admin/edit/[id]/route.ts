@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { API_BASE_URL } from "@/config/apiConfig";
 
-export const PATCH = async(request: Request, { params }: { params: { id: string } }) => {
+export const PATCH = async(request: Request, context: { params: { id: string }}) => {
 
   const token = request.headers.get("Authorization");
   if (!token) {
@@ -12,7 +12,7 @@ export const PATCH = async(request: Request, { params }: { params: { id: string 
   }
 
   try {
-    const { id } = params;
+    const { id } = context.params;
 
     const requestBody = await request.json();
 
