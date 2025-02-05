@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import styles from "./AddTagPopup.module.css";
 import {
@@ -6,7 +5,7 @@ import {
   FormControl, InputLabel, Select, MenuItem, TextField,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material";
-import fetchAllTagDetails from "@/app/api/tags/route.ts";
+import { fetchAllTagDetails } from "@/app/util/tags/tagFunctionalities";
 
 interface AddTagPopupProps {
     open: boolean;
@@ -107,7 +106,7 @@ const AddTagPopup: React.FC<AddTagPopupProps> = ({ open, onClose, onAddTags }) =
               </MenuItem>
               <MenuItem>
                 <TextField
-                   slotProps={{
+                  slotProps={{
                     input: {
                       onMouseDown: (e) => e.stopPropagation(),
                       onClick: (e) => e.stopPropagation(),
@@ -131,14 +130,14 @@ const AddTagPopup: React.FC<AddTagPopupProps> = ({ open, onClose, onAddTags }) =
               <MenuItem>
                 <div className={styles.newGroupContainer}>
                   <TextField
-                   slotProps={{
-                    input: {
-                      onMouseDown: (e) => e.stopPropagation(),
-                      onClick: (e) => e.stopPropagation(),
-                      onKeyDown: (e) => e.stopPropagation(),
-                    },
-                  }}
-                  onKeyDown={(e) => e.stopPropagation()}
+                    slotProps={{
+                      input: {
+                        onMouseDown: (e) => e.stopPropagation(),
+                        onClick: (e) => e.stopPropagation(),
+                        onKeyDown: (e) => e.stopPropagation(),
+                      },
+                    }}
+                    onKeyDown={(e) => e.stopPropagation()}
                     label="New Tag Group"
                     value={newGroupName}
                     onChange={(e) => setNewGroupName(e.target.value)}
@@ -176,7 +175,7 @@ const AddTagPopup: React.FC<AddTagPopupProps> = ({ open, onClose, onAddTags }) =
               </MenuItem>
               <MenuItem>
                 <TextField
-                   slotProps={{
+                  slotProps={{
                     input: {
                       onMouseDown: (e) => e.stopPropagation(),
                       onClick: (e) => e.stopPropagation(),
@@ -200,14 +199,14 @@ const AddTagPopup: React.FC<AddTagPopupProps> = ({ open, onClose, onAddTags }) =
               <MenuItem>
                 <div className={styles.newTagContainer}>
                   <TextField
-                   slotProps={{
-                    input: {
-                      onMouseDown: (e) => e.stopPropagation(),
-                      onClick: (e) => e.stopPropagation(),
-                      onKeyDown: (e) => e.stopPropagation(),
-                    },
-                  }}
-                  onKeyDown={(e) => e.stopPropagation()}
+                    slotProps={{
+                      input: {
+                        onMouseDown: (e) => e.stopPropagation(),
+                        onClick: (e) => e.stopPropagation(),
+                        onKeyDown: (e) => e.stopPropagation(),
+                      },
+                    }}
+                    onKeyDown={(e) => e.stopPropagation()}
                     label="New Tag Name"
                     value={newTagName}
                     onChange={(e) => setNewTagName(e.target.value)}

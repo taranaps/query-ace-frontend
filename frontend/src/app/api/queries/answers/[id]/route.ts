@@ -2,6 +2,13 @@ import { API_BASE_URL } from "@/config/apiConfig";
 import { NextResponse } from "next/server";
 
 export const PATCH = async(request: Request, { params }: { params: { id: string } }) => {
+  const token = request.headers.get("Authorization");
+  if (!token) {
+    return NextResponse.json(
+      { message: "Authorization token missing" },
+      { status: 401 }
+    );
+  }
   try {
     const { id } = params;
     const requestBody = await request.json();
@@ -10,6 +17,7 @@ export const PATCH = async(request: Request, { params }: { params: { id: string 
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(requestBody),
     });
@@ -35,6 +43,13 @@ export const DELETE = async(
   request: Request,
   { params }: { params: { id: string } }
 ) => {
+  const token = request.headers.get("Authorization");
+  if (!token) {
+    return NextResponse.json(
+      { message: "Authorization token missing" },
+      { status: 401 }
+    );
+  }
   try {
     const { id } = params;
 
@@ -46,6 +61,7 @@ export const DELETE = async(
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
     });
 

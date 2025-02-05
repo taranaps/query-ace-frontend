@@ -2,9 +2,14 @@ import { API_BASE_URL } from "@/config/apiConfig";
 import { NextResponse } from "next/server";
 
 export const POST = async(request: Request) => {
+  const token = request.headers.get("Authorization");
+  if (!token) {
+    return NextResponse.json(
+      { message: "Authorization token missing" },
+      { status: 401 }
+    );
+  }
   try {
-    const token = localStorage.getItem('token');
-    if (!token) throw new Error('No authentication token found');
     const { usersUsernames, tags }: { usersUsernames: string[]; tags: string[] } = await request.json();
     if (!Array.isArray(usersUsernames) || !Array.isArray(tags)) {
       return NextResponse.json(
@@ -18,7 +23,6 @@ export const POST = async(request: Request) => {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
-
       },
       body: JSON.stringify({ usersUsernames, tags }),
     });

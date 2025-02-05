@@ -19,13 +19,13 @@
  * - Handles 404 not found cases
  * - Processes server errors
  * - Manages network failures
- * 
+ *
  * Error Handling:
  * - Returns null for invalid ID
  * - Returns null for 404 errors
  * - Returns null for network failures
  * - Logs all errors for debugging
- * 
+ *
  * @param {number} id - ID of the query to fetch
  * @returns {Promise<Object|null>} Query data with answers or null if error
  */
@@ -34,10 +34,10 @@ export const fetchQueryWithAnswers = async(id: number) => {
     console.error("Invalid ID passed to fetch function:", id);
     return null;
   }
+  const token = await localStorage.getItem("token");
   const url = `http://localhost:8080/api/v1/queryapplication/queries/${id}/with-answers`;
   try {
-    const token = localStorage.getItem('token');
-    if (!token) throw new Error('No authentication token found');
+    if (!token) throw new Error("No authentication token found");
     const response = await fetch(url, {
       method: "GET",
       headers: {

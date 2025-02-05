@@ -4,18 +4,19 @@ import { API_BASE_URL } from "@/config/apiConfig";
 export const PUT = async(request: Request) => {
   const url = new URL(request.url);
   const id = url.pathname.split("/").pop();
-  const token = localStorage.getItem('token');
-
+  const token = request.headers.get("Authorization");
+  if (!token) {
+    return NextResponse.json(
+      { message: "Authorization token missing" },
+      { status: 401 }
+    );
+  }
 
   if (!id) {
     return NextResponse.json({ message: "User ID is required" }, { status: 400 });
   }
 
   try {
-    if (!token) {
-      throw new Error('Authorization token missing');
-    }
-
     const response = await fetch(`${API_BASE_URL}/admin/toggle-status/${id}`, {
       method: "PUT",
       headers: {

@@ -1,7 +1,7 @@
 import { API_BASE_URL } from "@/config/apiConfig";
 import { NextResponse } from "next/server";
 
-export const POST = async(request: Request) => {
+export const GET = async(request: Request) => {
   const token = request.headers.get("Authorization");
   if (!token) {
     return NextResponse.json(
@@ -10,31 +10,25 @@ export const POST = async(request: Request) => {
     );
   }
   try {
-    const requestBody = await request.json();
-    const { answer, userId, queryId } = requestBody[0];
-    const response = await fetch(`${API_BASE_URL}/queries/id/answers`, {
-      method: "POST",
+    const response = await fetch(`${API_BASE_URL}/queries/tags/details`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`
       },
-      body: JSON.stringify([{
-        answer,
-        userId,
-        queryId,
-      }]),
     });
 
-    if (!response.ok) {
+    if (response.ok) {
       return NextResponse.json(
-        { message: "Failed to add answer" },
-        { status: response.status }
+        { message: "Tags successfully added" },
+        { status: 400 }
       );
     }
 
-    const responseBody = await response.json();
-    return NextResponse.json(responseBody, { status: response.status });
-
+    return NextResponse.json(
+      { message: `Failed to tags. Status: ${response.status}` },
+      { status: response.status }
+    );
   } catch {
     return NextResponse.json(
       { message: "An error occurred while processing the request" },

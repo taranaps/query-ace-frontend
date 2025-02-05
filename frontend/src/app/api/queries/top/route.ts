@@ -1,10 +1,9 @@
-import { NextResponse } from 'next/server';
-import { API_BASE_URL } from '@/config/apiConfig';
-import { headers } from 'next/headers';
+import { NextResponse } from "next/server";
+import { API_BASE_URL } from "@/config/apiConfig";
 
-export async function GET(request: Request) {
+export const GET = async(request: Request) => {
   try {
-    const token = request.headers.get('Authorization');
+    const token = request.headers.get("Authorization");
     if (!token) {
       return NextResponse.json(
         { message: "Authorization token missing" },
@@ -14,18 +13,18 @@ export async function GET(request: Request) {
 
     const response = await fetch(`${API_BASE_URL}/queries/top`, {
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': token,
+        "Content-Type": "application/json",
+        "Authorization": token,
       }
     });
 
     const data = await response.json();
     return NextResponse.json(data, { status: response.status });
-    
-  } catch (error) {
+
+  } catch (error: unknown) {
     return NextResponse.json(
-      { message: "Failed to fetch trending queries" },
+      { message: "Failed to fetch trending queries", error },
       { status: 500 }
     );
   }
-}
+};

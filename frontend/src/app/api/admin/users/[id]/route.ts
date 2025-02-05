@@ -2,9 +2,24 @@ import { NextResponse } from "next/server";
 import { API_BASE_URL } from "@/config/apiConfig";
 
 export const GET = async(request: Request, { params }: { params: { id: string } }) => {
+
+  const token = request.headers.get("Authorization");
+  if (!token) {
+    return NextResponse.json(
+      { message: "Authorization token missing" },
+      { status: 401 }
+    );
+  }
   try {
     const { id } = params;
-    const response = await fetch(`${API_BASE_URL}/admin/users/${id}`);
+    const response = await fetch(`${API_BASE_URL}/admin/users/${id}`,{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+
+      },
+    });
     const data = await response.json();
     if (!response.ok) {
       return NextResponse.json(data, { status: response.status });
@@ -25,11 +40,11 @@ export const GET = async(request: Request, { params }: { params: { id: string } 
 };
 
 export const PATCH = async(request: Request, { params }: { params: { id: string } }) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
 
   try {
     if (!token) {
-      throw new Error('Authorization token missing');
+      throw new Error("Authorization token missing");
     }
     const { id } = params;
     const requestBody = await request.json();

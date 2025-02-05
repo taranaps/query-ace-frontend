@@ -220,14 +220,15 @@ const DataPopup = ({
 
     if (result.success) {
       setLoadingAnimationState("success");
+      await fetchInitialData();
       await new Promise((resolve) => setTimeout(resolve, 2000));
       // onDataChange?.();
 
-      setTagGroups((prevTagGroups) => {
-        const updatedTagGroups = [...prevTagGroups];
-        updatedTagGroups.push({ tagGroupName: newTag.group, tagNames: newTag.tag });
-        return updatedTagGroups;
-      });
+      // setTagGroups((prevTagGroups) => {
+      //   const updatedTagGroups = [...prevTagGroups];
+      //   updatedTagGroups.push({ tagGroupName: newTag.group, tagNames: newTag.tag });
+      //   return updatedTagGroups;
+      // });
       setLoading(false);
       setIsAddTagPopupOpen(false);
     } else {
@@ -254,7 +255,6 @@ const DataPopup = ({
           transition: "all 0.5s ease",
         }}
       >
-
         <div className={styles.popupHeader}>
           <div className={styles.popupHeaderQuestion}>
             <p style={{ fontSize: "18px", fontWeight: "bold" }}>Question:</p>
@@ -330,7 +330,7 @@ const DataPopup = ({
         {isAddModalOpen && (
           <div className={styles.addAnswerModal}>
             <div className={styles.modalContent}>
-              {loading ? (<LottieLoader state={loadingAnimationState} />) : (
+              {loading ? (<LottieLoader state={loadingAnimationState} size={"250px"}/>) : (
                 <>
                   <h3>Add a New Answer</h3>
                   <textarea

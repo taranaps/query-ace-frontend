@@ -1,8 +1,8 @@
-export const fetchCreatedByUsers = async (): Promise<string[]> => {
+export const fetchCreatedByUsers = async(): Promise<string[]> => {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      console.error('No authentication token found');
+      console.error("No authentication token found");
       return [];
     }
 
@@ -17,21 +17,17 @@ export const fetchCreatedByUsers = async (): Promise<string[]> => {
     );
 
     if (!response.ok) {
-      if (response.status === 401) {
-        localStorage.removeItem('token');
-        window.location.href = '/pages/login';
-      }
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
-    
+
     // Validate response format
-    if (!Array.isArray(data) || !data.every(item => 
-      typeof item === 'object' && 
-      typeof item.username === 'string'
+    if (!Array.isArray(data) || !data.every(item =>
+      typeof item === "object" &&
+      typeof item.username === "string"
     )) {
-      throw new Error('Invalid user data format');
+      throw new Error("Invalid user data format");
     }
 
     // Extract usernames from objects

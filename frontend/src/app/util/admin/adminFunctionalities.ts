@@ -8,18 +8,16 @@ interface AdminData {
 }
 export const handleAddAdmin = async(adminData: AdminData) => {
   try {
-    const token = localStorage.getItem('token'); 
-    
+    const token = localStorage.getItem("token");
+
     const payload = {
       firstName: adminData.firstName,
       email: adminData.email,
       username: adminData.username,
       password: adminData.password,
-      location: "BANGLORE",
-      userRole: "ADMIN" 
-
+      location: "TRIVANDRUM",
+      userRole: "ADMIN"
     };
-    console.log('Request Payload:', payload);
 
     const response = await fetch(`${API_BASE_URL}/admin/create`, {
       method: "POST",
@@ -32,7 +30,6 @@ export const handleAddAdmin = async(adminData: AdminData) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.log('Error Response:', errorText);
       const errorData = JSON.parse(errorText);
       throw new Error(errorData.detail || errorText);
     }
@@ -49,18 +46,18 @@ export const handleEditAdmin = async(id: string, adminData: Partial<{
   email: string;
   username: string;
 }>) => {
-try {
-  const token = localStorage.getItem('token');
-  const url = `${API_BASE_URL}/admin/edit`;  
+  try {
+    const token = localStorage.getItem("token");
+    const url = `${API_BASE_URL}/admin/edit`;
 
-  const response = await fetch(url, {
-    method: "PATCH", 
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    },
-    body: JSON.stringify(adminData),
-  });
+    const response = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(adminData),
+    });
 
     if (response.ok) {
       return true;

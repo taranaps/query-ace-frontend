@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
-import { API_BASE_URL } from '@/config/apiConfig';
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { API_BASE_URL } from "@/config/apiConfig";
 
 interface User {
   id: number;
@@ -30,7 +30,7 @@ export const AuthContext = createContext<AuthContextProps>({
   user: null,
   token: null,
   login: () => {},
-  logout: async () => {},
+  logout: async() => {},
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -39,11 +39,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  // Initial auth check
   useEffect(() => {
-    const initializeAuth = async () => {
-      const storedToken = localStorage.getItem('token');
-      const storedUser = localStorage.getItem('user');
+    const initializeAuth = async() => {
+      const storedToken = localStorage.getItem("token");
+      const storedUser = localStorage.getItem("user");
 
       if (storedToken && storedUser) {
         if (isTokenExpired(storedToken)) {
@@ -61,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const isTokenExpired = (token: string): boolean => {
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
+      const payload = JSON.parse(atob(token.split(".")[1]));
       return Date.now() >= payload.exp * 1000;
     } catch {
       return true;
@@ -69,32 +68,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleUnauthorized = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setToken(null);
     setUser(null);
-    router.push('/pages/login');
+    router.push("/pages/login");
   };
 
   useEffect(() => {
     const originalFetch = window.fetch;
-    
-    window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+
+    window.fetch = async(input: RequestInfo | URL, init?: RequestInit) => {
       const response = await originalFetch(input, {
         ...init,
         headers: {
           ...init?.headers,
-          Authorization: token ? `Bearer ${token}` : '',
-          'Content-Type': 'application/json',
+          Authorization: token ? `Bearer ${token}` : "",
+          "Content-Type": "application/json",
         },
       });
-  
+
       // if (response.status === 401) {
-      //   handleUnauthorized();
+      //   handleUnauthorized();  // Automatically logs out on unauthorized response
       // }
+
       return response;
     };
-  
+
     return () => {
       window.fetch = originalFetch;
     };
@@ -119,28 +119,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       status: "ACTIVE" as const,
     };
 
-    localStorage.setItem('token', response.token);
-    localStorage.setItem('user', JSON.stringify(userData));
+    if (typeof window !== "undefined" && window.localStorage) {
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("user", JSON.stringify(userData));
+    } else {
+      console.error("localStorage is not available.");
+    }
+
+    // Set state for token and user
     setToken(response.token);
     setUser(userData);
   };
 
-  const logout = async () => {
+  const logout = async() => {
     try {
       if (token) {
         await fetch(`${API_BASE_URL}/auth/logout`, {
-          method: 'POST',
+          method: "POST",
           headers: { Authorization: `Bearer ${token}` },
         });
       }
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     } finally {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
       setToken(null);
       setUser(null);
-      router.push('/pages/login');
+      router.push("/pages/login");
     }
   };
 
@@ -154,7 +160,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

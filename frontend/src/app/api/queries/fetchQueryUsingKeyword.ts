@@ -12,7 +12,6 @@
 import searchQueryResult from "@/app/interface/query/searchQueryResult";
 import { API_BASE_URL } from "@/config/apiConfig";
 
-
 /**
  * @function fetchQueryUsingKeyword
  * @description
@@ -22,31 +21,30 @@ import { API_BASE_URL } from "@/config/apiConfig";
  * - Response validation
  * - Error cases
  * - Type safety
- * 
+ *
  * Error cases handled:
  * - Network errors
  * - Invalid responses
  * - Server errors
  * - Non-200 status codes
- * 
+ *
  * @param {string} keyword - Search term to find matching queries
  * @returns {Promise<searchQueryResult[]>} Array of matching query results
  * @throws {Error} When request fails or response is invalid
  */
 export const fetchQueryUsingKeyword = async(keyword: string): Promise<searchQueryResult[]> => {
   const url = `${API_BASE_URL}/queries/search`;
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
 
   try {
     if (!token) {
-      throw new Error('Authorization token missing');
+      throw new Error("Authorization token missing");
     }
     const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`
-
 
       },
       body: JSON.stringify({ keyword }),
@@ -63,4 +61,3 @@ export const fetchQueryUsingKeyword = async(keyword: string): Promise<searchQuer
     throw error;
   }
 };
-

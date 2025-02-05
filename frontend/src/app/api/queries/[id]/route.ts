@@ -1,12 +1,20 @@
 import { NextResponse } from "next/server";
 import { API_BASE_URL } from "@/config/apiConfig";
 
-export const GET = async() => {
+export const GET = async(request: Request) => {
+  const token = request.headers.get("Authorization");
+  if (!token) {
+    return NextResponse.json(
+      { message: "Authorization token missing" },
+      { status: 401 }
+    );
+  }
   try {
     const response = await fetch(`${API_BASE_URL}/queries`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
     });
 
@@ -32,6 +40,13 @@ export const GET = async() => {
 };
 
 export const DELETE = async(request: Request) => {
+  const token = request.headers.get("Authorization");
+  if (!token) {
+    return NextResponse.json(
+      { message: "Authorization token missing" },
+      { status: 401 }
+    );
+  }
   try {
     const url = new URL(request.url);
     const id = url.pathname.split("/").pop();
@@ -44,6 +59,7 @@ export const DELETE = async(request: Request) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
     });
 

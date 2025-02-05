@@ -2,6 +2,13 @@ import { NextResponse } from "next/server";
 import { API_BASE_URL } from "@/config/apiConfig";
 
 export const POST = async(request: Request) => {
+  const token = request.headers.get("Authorization");
+  if (!token) {
+    return NextResponse.json(
+      { message: "Authorization token missing" },
+      { status: 401 }
+    );
+  }
   const body = await request.json();
 
   try {
@@ -9,6 +16,8 @@ export const POST = async(request: Request) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+
       },
       body: JSON.stringify(body),
     });
@@ -35,6 +44,13 @@ export const POST = async(request: Request) => {
 };
 
 export const GET = async(request: Request) => {
+  const token = request.headers.get("Authorization");
+  if (!token) {
+    return NextResponse.json(
+      { message: "Authorization token missing" },
+      { status: 401 }
+    );
+  }
   const query = new URL(request.url).searchParams;
   const pageNo = query.get("pageNo") || "0";
   const pageSize = query.get("pageSize") || "3";
@@ -43,8 +59,13 @@ export const GET = async(request: Request) => {
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/questions/paged?pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${sortBy}&sortDir=${sortDir}`
-    );
+      `${API_BASE_URL}/questions/paged?pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${sortBy}&sortDir=${sortDir}`,{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
 
     const data = await response.json();
 

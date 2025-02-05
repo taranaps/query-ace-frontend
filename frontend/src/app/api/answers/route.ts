@@ -4,10 +4,12 @@ import { API_BASE_URL } from "@/config/apiConfig";
 export const POST = async(request: Request, { params }: { params: { questionId: string } }) => {
   const questionId = params.questionId;
   const body = await request.json();
-  const authHeader = request.headers.get("Authorization");
-  const token = authHeader && authHeader.split(" ")[1];
+  const token = request.headers.get("Authorization");
   if (!token) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    return NextResponse.json(
+      { message: "Authorization token missing" },
+      { status: 401 }
+    );
   }
   try {
     const response = await fetch(`${API_BASE_URL}/questions/${questionId}/answers`, {

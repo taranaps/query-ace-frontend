@@ -6,11 +6,10 @@ import DataCardDashboard from "@/app/components/dashboard-datacard/DataCardDashb
 import Pagination from "@/app/components/pagination/Pagination";
 import styles from "./datalookup.module.css";
 import DataPopup from "@/app/components/data-popup/DataPopup";
-import { fetchQueryWithAnswers } from "@/app/api/questioncard/fetchQueryAnswers";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
 import { fetchCreatedByUsers } from "@/app/api/companies/fetchCreatedByUsers";
 import FilterDropdown from "@/app/components/lookup-filterdropdown/FilterDropDown";
-import fetchAllTagDetails from "@/app/api/tags/route.ts";
+import { fetchAllTagDetails } from "@/app/util/tags/tagFunctionalities";
 import { handleFilterQuery } from "@/app/util/query/queryFunctionalities";
 interface QueryItem {
   id: string;
@@ -27,11 +26,10 @@ const QueryLookup = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [answers, setAnswers] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [createdBy, setCreatedBy] = useState<string[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
-  const [sortOrder] = useState<"newest" | "earliest">("newest"); 
+  const [sortOrder] = useState<"newest" | "earliest">("newest");
 
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
   const [selectedCreatedBy, setSelectedCreatedBy] = useState<string[]>([]);
@@ -40,8 +38,6 @@ const QueryLookup = () => {
   const itemsPerPage = 10;
   const [popupPosition, setPopupPosition] = useState<{ top: number, left: number }>({ top: 0, left: 0 });
   const [popupSize, setPopupSize] = useState<{ width: number; height: number }>({ width: 60, height: 20 });
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-
 
   const { user } = useAuth();
   const router = useRouter();
@@ -83,7 +79,7 @@ const QueryLookup = () => {
     };
 
     fetchData();
-  }, [selectedCompanies, selectedCreatedBy, refreshTrigger]);
+  }, [selectedCompanies, selectedCreatedBy]);
 
   const handleFilterChange = async() => {
     setLoading(true);
@@ -123,14 +119,6 @@ const QueryLookup = () => {
     });
 
     setIsPopupOpen(true);
-
-    try {
-      const fetchedData = await fetchQueryWithAnswers(item.id);
-      setAnswers(fetchedData?.answers || []);
-    } catch (error) {
-      console.error("Error fetching answers:", error);
-      setAnswers([]);
-    }
   };
 
   return (
@@ -164,7 +152,7 @@ const QueryLookup = () => {
       <div className={styles.dataItems}>
         {loading ? (
           <div className={styles.loaderContainer}>
-            <LottieLoader size={"180px"} />
+            <LottieLoader size={"180px"}  state="Loading"/>
           </div>
         ) : (
           paginatedData.map((item) => (
@@ -203,18 +191,11 @@ const QueryLookup = () => {
 
       {isPopupOpen && selectedItem && (
         <DataPopup
-          data={{
-            ...selectedItem,
-            answers: answers,
-            tags: selectedItem.tags || [],
-          }}
+          id={selectedItem.id}
           onClose={() => {
             setIsPopupOpen(false);
             setSelectedItem(null);
-            setAnswers([]);
           }}
-          onDataChange={() => setRefreshTrigger(prev => prev + 1)} 
-
           position={popupPosition}
           size={popupSize}
           user={user}

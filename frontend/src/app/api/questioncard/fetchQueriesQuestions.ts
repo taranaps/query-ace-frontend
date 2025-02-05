@@ -1,10 +1,12 @@
 export const fetchQueriesQuestions = async() => {
   const url = "http://localhost:8080/api/v1/queryapplication/queries";
+  const token = await localStorage.getItem("token");
   try {
     const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
     });
     if (!response.ok) {

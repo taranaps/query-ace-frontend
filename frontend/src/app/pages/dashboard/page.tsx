@@ -78,7 +78,6 @@ const Dashboard: React.FC = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        router.push("/pages/login");
         return;
       }
       const response = await fetch(`${API_BASE_URL}/queries/top`, {

@@ -5,12 +5,11 @@ export const postQueryWithAnswers = async(
   questionData: QueryQuestionInetface[],
   answersData: QueryAnswerInterface[]
 ) => {
-  const token = localStorage.getItem('token'); 
-  console.log('Token:', token);
+  const token = localStorage.getItem("token");
 
   const baseUrl = "http://localhost:8080/api/v1/queryapplication/queries";
   if (!token) {
-    throw new Error('No authentication token found');
+    throw new Error("No authentication token found");
   }
   const headers = {
     "Content-Type": "application/json",
