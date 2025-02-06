@@ -139,7 +139,7 @@ const QueryLookup = () => {
         />
 
         <FilterDropdown
-          label="Filter by Account"
+          label="Created By"
           options={createdBy}
           selectedOptions={selectedCreatedBy}
           onChange={(selected) => {

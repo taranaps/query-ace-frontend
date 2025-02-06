@@ -19,13 +19,13 @@ export const Sidebar = memo(() => {
     { navigationPath: "/system-log", iconPath: "/assets/icons/system-log-icon.svg", label: "System Logs" },
   ];
 
-    if (user?.role === 'SUPER_ADMIN') {
-        navItems.push({
-            navigationPath: '/manage-accounts',
-            iconPath: '/assets/icons/manage-accounts-icon.svg',
-            label: 'Manage Accounts'
-        });
-    }
+  if (user?.role === "SUPER_ADMIN") {
+    navItems.push({
+      navigationPath: "/manage-accounts",
+      iconPath: "/assets/icons/manage-accounts-icon.svg",
+      label: "Manage Accounts"
+    });
+  }
 
   useEffect(() => {
     const index = navItems.findIndex((item) => item.navigationPath === pathname);

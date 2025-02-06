@@ -24,6 +24,9 @@ interface LoginResponse {
   token: string;
   role: "SUPER_ADMIN" | "ADMIN";
   userId: number;
+  status?: "ACTIVE" | "INACTIVE";
+  username?: string;
+  email?: string;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
@@ -117,6 +120,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       id: response.userId,
       role: response.role,
       status: "ACTIVE" as const,
+      username: response.username,
+      email: response.email,
     };
 
     if (typeof window !== "undefined" && window.localStorage) {
@@ -125,8 +130,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } else {
       console.error("localStorage is not available.");
     }
-
-    // Set state for token and user
     setToken(response.token);
     setUser(userData);
   };
