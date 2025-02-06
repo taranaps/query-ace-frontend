@@ -1,3 +1,5 @@
+import { API_BASE_URL } from "@/config/apiConfig";
+
 export const fetchCreatedByUsers = async(): Promise<string[]> => {
   try {
     const token = localStorage.getItem("token");
@@ -7,7 +9,7 @@ export const fetchCreatedByUsers = async(): Promise<string[]> => {
     }
 
     const response = await fetch(
-      "http://localhost:8080/api/v1/queryapplication/admin/users-names",
+      `${API_BASE_URL}/admin/users-names`,
       {
         headers: {
           "Authorization": `Bearer ${token}`,

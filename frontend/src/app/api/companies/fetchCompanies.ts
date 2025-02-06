@@ -1,6 +1,8 @@
+import { API_BASE_URL } from "@/config/apiConfig";
+
 export const fetchCompanies = async() => {
   try {
-    const response = await fetch("http://localhost:8080/api/v1/queryapplication/queries/companies", {
+    const response = await fetch(`${API_BASE_URL}/queries/companies`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

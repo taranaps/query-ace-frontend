@@ -1,5 +1,6 @@
 import QueryAnswerInterface from "@/app/interface/query/postQueryAnswerInterface";
 import QueryQuestionInetface from "@/app/interface/query/postQueryQuestionInterface";
+import { API_BASE_URL } from "@/config/apiConfig";
 
 export const postQueryWithAnswers = async(
   questionData: QueryQuestionInetface[],
@@ -7,7 +8,7 @@ export const postQueryWithAnswers = async(
 ) => {
   const token = localStorage.getItem("token");
 
-  const baseUrl = "http://localhost:8080/api/v1/queryapplication/queries";
+  const baseUrl = `${API_BASE_URL}/queries`;
   if (!token) {
     throw new Error("No authentication token found");
   }

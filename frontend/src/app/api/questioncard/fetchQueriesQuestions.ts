@@ -1,5 +1,7 @@
+import { API_BASE_URL } from "@/config/apiConfig";
+
 export const fetchQueriesQuestions = async() => {
-  const url = "http://localhost:8080/api/v1/queryapplication/queries";
+  const url = `${API_BASE_URL}/queries`;
   const token = await localStorage.getItem("token");
   try {
     const response = await fetch(url, {

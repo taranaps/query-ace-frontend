@@ -10,6 +10,8 @@
  * - Graceful error recovery
  */
 
+import { API_BASE_URL } from "@/config/apiConfig";
+
 /**
  * @function fetchQueryWithAnswers
  * @description
@@ -35,7 +37,7 @@ export const fetchQueryWithAnswers = async(id: number) => {
     return null;
   }
   const token = await localStorage.getItem("token");
-  const url = `http://localhost:8080/api/v1/queryapplication/queries/${id}/with-answers`;
+  const url = `${API_BASE_URL}/queries/${id}/with-answers`;
   try {
     if (!token) throw new Error("No authentication token found");
     const response = await fetch(url, {
