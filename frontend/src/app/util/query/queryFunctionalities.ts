@@ -97,6 +97,7 @@ export const handleAddNewQueryAnswer = async(
   userId: number,
   queryId: number
 ) => {
+
   try {
     const payload = [{
       answer: answer,
@@ -104,7 +105,7 @@ export const handleAddNewQueryAnswer = async(
       queryId: queryId
     }];
 
-    const response = await fetch(`/api/queries/${queryId}/answers`, {
+    const response = await fetch("/api/queries/id/answers", {
       method: "POST",
       headers:getAuthHeaders(),
       body: JSON.stringify(payload)

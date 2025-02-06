@@ -124,6 +124,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email: response.email,
     };
 
+    console.log("User Data Before Storing:", userData); // Debugging user data
+
     if (typeof window !== "undefined" && window.localStorage) {
       localStorage.setItem("token", response.token);
       localStorage.setItem("user", JSON.stringify(userData));

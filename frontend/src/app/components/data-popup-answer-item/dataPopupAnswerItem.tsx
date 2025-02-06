@@ -25,12 +25,18 @@ interface Answer {
 
 interface DataPopupAnswerItemProps {
     answer: Answer;
-    onDelete: (itemId: number) => Promise<void>
+    queryId:number;
+    userId:number;
+    onDelete: (itemId: number) => Promise<void>;
+    onDataChange: () => void;
 }
 
 const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
   answer,
-  onDelete
+  queryId,
+  userId,
+  onDelete,
+  onDataChange,
 }) => {
   const [deletingItemId, setDeletingItemId] = useState<number | null>(null);
   const [editing, setEditing] = useState(false);
@@ -70,7 +76,8 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
 
   const handleSaveEdit = async() => {
     setEditing(false);
-    await handleEditQuery(answer.id, editedAnswer, 1, 1);
+    await handleEditQuery(answer.id, editedAnswer, userId, queryId);
+    await onDataChange();
   };
 
   const handleCancelEdit = () => {
@@ -189,8 +196,20 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
                         Are you sure you want to delete this answer?
           </div>
           <div className={styles.actionButtons}>
-            <Button onClick={handleCancelDelete}>Cancel</Button>
-            <Button onClick={handleConfirmDelete}>Confirm</Button>
+            <Button
+              onClick={handleCancelDelete}
+              className={styles.cancelDeleteButton}
+              sx={{ color: "white" }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleConfirmDelete}
+              className={styles.confirmDeleteButton}
+              sx={{ color: "white" }}
+            >
+              Confirm
+            </Button>
           </div>
         </div>
       )}

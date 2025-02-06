@@ -27,6 +27,8 @@ export const Sidebar = memo(() => {
     });
   }
 
+  console.log("User in Sidebar:", user); // Debugging user data
+
   useEffect(() => {
     const index = navItems.findIndex((item) => item.navigationPath === pathname);
     if (index !== -1) setActiveIndex(index);

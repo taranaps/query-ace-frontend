@@ -130,11 +130,10 @@ const DataPopup = ({
    * @description Sets up initial data and animation
    */
   useEffect(() => {
+    fetchInitialData();
     setTimeout(() => {
       setIsTransitionComplete(true);
     }, 50);
-
-    fetchInitialData();
 
     // setAnswers(data.answers || []);
     // setTagGroups(data.tags || []);
@@ -289,6 +288,9 @@ const DataPopup = ({
                   key={answer.id}
                   answer={answer}
                   onDelete={handleConfirmDelete}
+                  queryId={id}
+                  userId={user.id}
+                  onDataChange={fetchInitialData}
                 />
               ))}
             </ul>

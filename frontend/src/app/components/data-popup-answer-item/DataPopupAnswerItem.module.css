@@ -71,6 +71,9 @@
     color: #ffffff;
 }
 
+.confirmDeleteButton, .cancelDeleteButton{
+    color: #F1F3FA;
+}
 .answerItemTop {
     width: 100%;
     display: flex;
