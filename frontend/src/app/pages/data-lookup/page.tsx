@@ -129,7 +129,7 @@ const QueryLookup = () => {
 
       <div className={styles.filtersRow}>
         <FilterDropdown
-          label="Filter by Company"
+          label="Filter by Tags"
           tagGroups={tagGroups}
           selectedOptions={selectedCompanies}
           onChange={(selected) => {
@@ -139,7 +139,7 @@ const QueryLookup = () => {
         />
 
         <FilterDropdown
-          label="Filter by Created By"
+          label="Filter by Account"
           options={createdBy}
           selectedOptions={selectedCreatedBy}
           onChange={(selected) => {
@@ -162,7 +162,6 @@ const QueryLookup = () => {
                 id={item.id}
                 question={item.question || "No question provided"}
                 answer={item.answers[0]?.answer || "No answer provided"}
-                customer={item.customer || "Unknown"}
                 createdBy={item.usersUsername || "Unknown"}
                 createdAt={item.queryCreatedAt || "Unknown"}
                 tags={item.tags || []}

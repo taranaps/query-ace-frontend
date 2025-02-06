@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { formatDate } from "@/app/util/formatDate";
 import LottieIconButton from "../lottie-animated-button/LottieIconButton";
 import copyAnimation from "../../../../public/assets/animatedIcons/copyv3.json";
@@ -86,13 +86,12 @@ const truncateText = (text: string | undefined, limit: number): string =>
  *
  * Uses memo for performance optimization
  */
-const DataCardDashboard: React.FC<DataCardProps> = memo(
+const DataCardDashboard: React.FC<DataCardProps> = (
   ({
     id,
     question,
     answer,
     numberOfAnswers,
-    customer,
     createdBy,
     createdAt,
     tags,
@@ -170,7 +169,6 @@ const DataCardDashboard: React.FC<DataCardProps> = memo(
 
           <div className={styles.dataCardFooter}>
             <div className={styles.dataCardDetails}>
-              <span>Customer: {customer}</span> |{"none"}
               <span>Created By: {createdBy}</span> |{" "}
               <span>Created At: {formatDate(createdAt)}</span>
             </div>

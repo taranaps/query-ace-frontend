@@ -282,7 +282,6 @@ const Dashboard: React.FC = () => {
                   key={result.id}
                   id={result.id}
                   question={result.question}
-                  customer={"Customer"}
                   numberOfAnswers={result.answers.length}
                   createdBy={result.usersUsername}
                   createdAt={result.queryCreatedAt}
