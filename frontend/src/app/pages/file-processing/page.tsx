@@ -382,7 +382,7 @@ const FileProcessingPage: React.FC = () => {
         <div className={styles.questionSection}>
           {loading ? (
             <div className={styles.questionSectionFiller}>
-              <LottieLoader size="180px" />
+              <LottieLoader size="180px" state="loading" />
             </div>
           ) : answersToShow.length === 0 ? (
             <div className={styles.questionSectionFiller}>

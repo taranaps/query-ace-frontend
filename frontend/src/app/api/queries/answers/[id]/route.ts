@@ -1,7 +1,9 @@
 import { API_BASE_URL } from "@/config/apiConfig";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export const PATCH = async(request: Request, { params }: { params: { id: string } }) => {
+
+export const PATCH = async(request: NextRequest, context: { params: Promise<{ id: string }> }) => {
   const token = request.headers.get("Authorization");
   if (!token) {
     return NextResponse.json(
@@ -10,6 +12,7 @@ export const PATCH = async(request: Request, { params }: { params: { id: string 
     );
   }
   try {
+    const params = await context.params;
     const { id } = params;
     const requestBody = await request.json();
 
@@ -40,8 +43,8 @@ export const PATCH = async(request: Request, { params }: { params: { id: string 
 };
 
 export const DELETE = async(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) => {
   const token = request.headers.get("Authorization");
   if (!token) {
@@ -51,6 +54,7 @@ export const DELETE = async(
     );
   }
   try {
+    const params = await context.params;
     const { id } = params;
 
     if (!id) {

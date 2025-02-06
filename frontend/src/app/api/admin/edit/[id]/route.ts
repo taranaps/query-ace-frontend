@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { API_BASE_URL } from "@/config/apiConfig";
+import { NextRequest } from "next/server";
 
-export const PATCH = async(request: Request, { params }: { params: { id: number } }) => {
 
+export async function PATCH(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   const token = request.headers.get("Authorization");
   if (!token) {
     return NextResponse.json(
@@ -12,7 +16,8 @@ export const PATCH = async(request: Request, { params }: { params: { id: number 
   }
 
   try {
-    const { id } = params;
+    const resolvedParams = await context.params;
+    const { id } = resolvedParams;
 
     const requestBody = await request.json();
 

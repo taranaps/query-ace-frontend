@@ -333,7 +333,7 @@ const SystemLogPage: React.FC = () => {
      
      {loading ? (
        <div className={styles.loaderContainer}>
-         <LottieLoader size={"180px"} />
+        <LottieLoader size={"180px"} state="loading" />
        </div>
      ) : error ? (
        <div className={styles.error}>{error}</div>

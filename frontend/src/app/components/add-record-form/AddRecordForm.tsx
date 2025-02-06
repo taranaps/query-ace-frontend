@@ -113,7 +113,7 @@ const AddRecordForm = () => {
 
     const answersData: PostQueryAnswerInterface[] = answers.map((answer) => ({
       answer,
-      userId: user.id,
+      userId: user?.id || user?.userId || 1,  
     }));
 
     setLoadingAnimationState("loading");

@@ -1,7 +1,9 @@
 import { API_BASE_URL } from "@/config/apiConfig";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export const POST = async(request: Request, { params }: { params: { id: string } }) => {
+
+export const POST = async(request: Request, context: { params: Promise<{ id: string }> }) => {
   const token = request.headers.get("Authorization");
   if (!token) {
     return NextResponse.json(
@@ -10,6 +12,7 @@ export const POST = async(request: Request, { params }: { params: { id: string }
     );
   }
   try {
+    const params = await context.params;
     const { id } = params;
     const response = await fetch(`${API_BASE_URL}/queries/answers/${id}/copy`, {
       method: "POST",

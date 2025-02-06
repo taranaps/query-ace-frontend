@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { API_BASE_URL } from "@/config/apiConfig";
+import type { NextRequest } from "next/server";
 
-export const POST = async(request: Request, { params }: { params: { questionId: string } }) => {
-  const questionId = params.questionId;
-  const body = await request.json();
+export async function POST(
+  request: NextRequest,
+  context: { params: Promise<{ questionId: string }> }
+) {
   const token = request.headers.get("Authorization");
   if (!token) {
     return NextResponse.json(
@@ -11,7 +13,12 @@ export const POST = async(request: Request, { params }: { params: { questionId: 
       { status: 401 }
     );
   }
+
   try {
+    const params = await context.params;
+    const { questionId } = params;
+    const body = await request.json();
+
     const response = await fetch(`${API_BASE_URL}/questions/${questionId}/answers`, {
       method: "POST",
       headers: {
@@ -22,11 +29,6 @@ export const POST = async(request: Request, { params }: { params: { questionId: 
     });
 
     const data = await response.json();
-
-    if (!response.ok) {
-      return NextResponse.json(data, { status: response.status });
-    }
-
     return NextResponse.json(data, { status: response.status });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -40,15 +42,24 @@ export const POST = async(request: Request, { params }: { params: { questionId: 
       { status: 500 }
     );
   }
-};
+}
 
-export const GET = async(request: Request, { params }: { params: { questionId: string } }) => {
-  const questionId = params.questionId;
-
-  const authHeader = request.headers.get("Authorization");
-  const token = authHeader && authHeader.split(" ")[1];
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ questionId: string }> }
+) {
+  const token = request.headers.get("Authorization");
+  if (!token) {
+    return NextResponse.json(
+      { message: "Authorization token missing" },
+      { status: 401 }
+    );
+  }
 
   try {
+    const params = await context.params;
+    const { questionId } = params;
+
     const response = await fetch(`${API_BASE_URL}/questions/${questionId}/answers`, {
       method: "GET",
       headers: {
@@ -58,11 +69,6 @@ export const GET = async(request: Request, { params }: { params: { questionId: s
     });
 
     const data = await response.json();
-
-    if (!response.ok) {
-      return NextResponse.json(data, { status: response.status });
-    }
-
     return NextResponse.json(data, { status: response.status });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -76,4 +82,4 @@ export const GET = async(request: Request, { params }: { params: { questionId: s
       { status: 500 }
     );
   }
-};
+}

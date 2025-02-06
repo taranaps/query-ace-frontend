@@ -153,7 +153,7 @@ const ManageAccountsPage: React.FC = () => {
   };
 
   const handleUpdateAdmin = async(updatedAdminData: AdminFormData) => {
-    if (!selectedAdmin) return;
+    if (!selectedAdmin) return false;
   
     try {
       const response = await fetch(`${API_BASE_URL}/admin/edit`, {
@@ -179,8 +179,10 @@ const ManageAccountsPage: React.FC = () => {
         ));
         setOpenEditPopup(false);
       }
+      return response.ok;
     } catch (error) {
       console.error("Error updating admin:", error);
+      return false;
     }
   };
 
@@ -229,7 +231,7 @@ const ManageAccountsPage: React.FC = () => {
       <div className={styles.tableData}>
         {isLoading ? (
           <div className={styles.loaderContainer}>
-            <LottieLoader size={"180px"} />
+            <LottieLoader size={"180px"} state="loading" />
           </div>
         ) : (
           <TableWrapper

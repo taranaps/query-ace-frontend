@@ -2,9 +2,17 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-const ResetPasswordPage = ({ params }: { params: { token: string } }) => {
+
+type PageProps = {
+  params: Promise<{ token: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+const ResetPasswordPage = async({ params, searchParams }: PageProps) => {
   const router = useRouter();
-  const token = params?.token;
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+  const token = resolvedParams?.token;
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");

@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { API_BASE_URL } from "@/config/apiConfig";
+import type { NextRequest } from "next/server";
 
-export const GET = async(  request: Request,  { params }: { params: { id: string } }) => {
+
+export const GET = async(  request: NextRequest,  context: { params: Promise<{ id: string }> }) => {
   const token = request.headers.get("Authorization");
   if (!token) {
     return NextResponse.json(
@@ -9,6 +11,7 @@ export const GET = async(  request: Request,  { params }: { params: { id: string
       { status: 401 }
     );
   }
+  const params = await context.params;
   const questionId = params.id;
   try {
     const response = await fetch(`${API_BASE_URL}/questions/${questionId}`,{

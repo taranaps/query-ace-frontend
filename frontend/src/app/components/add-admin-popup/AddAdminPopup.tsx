@@ -40,13 +40,12 @@ interface AdminFormData {
  * @property {Partial<AdminFormData>} [formData={}] - Optional partial data to initialize the form with.
  */
 interface AddAdminPopupProps {
-    header: string;
-    onClose: () => void;
-    // eslint-disable-next-line no-unused-vars
-    onConfirm: (adminData: AdminFormData) => boolean;
-    closePopup: () => void;
-    passwordOn?: boolean;
-    formData?: Partial<AdminFormData>;
+  header: string;
+  onClose: () => void;
+  onConfirm: (adminData: AdminFormData) => Promise<boolean>;  // Changed to async
+  closePopup: () => void;
+  passwordOn?: boolean;
+  formData?: Partial<AdminFormData>;
 }
 
 /**

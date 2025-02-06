@@ -9,7 +9,7 @@ import DataPopup from "@/app/components/data-popup/DataPopup";
 import { LottieLoader } from "@/app/components/lottie-loader/lottieLoader";
 import { fetchCreatedByUsers } from "@/app/api/companies/fetchCreatedByUsers";
 import FilterDropdown from "@/app/components/lookup-filterdropdown/FilterDropDown";
-import { fetchAllTagDetails } from "@/app/util/tags/tagFunctionalities";
+import { fetchAllTagsWithDetails } from "@/app/util/tags/tagFunctionalities";
 import { handleFilterQuery } from "@/app/util/query/queryFunctionalities";
 interface QueryItem {
   id: string;
@@ -54,7 +54,7 @@ const QueryLookup = () => {
         const createdByResult = await fetchCreatedByUsers();
         if (Array.isArray(createdByResult)) setCreatedBy(createdByResult);
 
-        const tags = await fetchAllTagDetails();
+        const tags = await fetchAllTagsWithDetails();
         setTagGroups(tags);
 
         const filteredQueriesResponse = await handleFilterQuery(selectedCreatedBy, selectedCompanies);
