@@ -48,7 +48,6 @@ interface DataCardProps {
   question: string;
   answer: string;
   numberOfAnswers: number;
-  customer: string;
   createdBy: string;
   createdAt: string;
   tags: { tagName: string; tagGroupName: string }[];
