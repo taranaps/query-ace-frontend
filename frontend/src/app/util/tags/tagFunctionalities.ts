@@ -97,3 +97,22 @@ export const removeTagFromBackend = async(id: string) => {
     return { success: false, message: "An error occurred while removing tag." };
   }
 };
+
+export const removeTagFromExistingQuery = async(querId: string, tagId: string) => {
+  try {
+    const response = await fetch(`/api/queries/tags/${querId}/tags/${tagId}/remove`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+
+    if (response.ok) {
+      return { success: true, message: "Tag successfully removed." };
+    }
+
+    console.error(`Failed to remove tag. Status: ${response.status}`);
+    return { success: false, message: `Failed to remove tag. Status: ${response.status}` };
+  } catch (error) {
+    console.error("An error occurred while removing tag:", error);
+    return { success: false, message: "An error occurred while removing tag." };
+  }
+};
