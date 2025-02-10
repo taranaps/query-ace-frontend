@@ -148,16 +148,12 @@ const SystemLogPage: React.FC = () => {
   */
  const loadLogs = async (pageNumber: number = currentPage, userToLoad: string | null = selectedUser) => {
     try {
-      console.log('loadLogs - Start with userToLoad:', userToLoad);
       setLoading(true);
       setVisibleIndexes([]);
       let data;
  
       if (userToLoad) {
-         console.log('Trying to fetch user logs for:', userToLoad);
-         const userInfo = userNames.find(u => u.username === userToLoad);
-         console.log('Found userInfo:', userInfo);
-         
+         const userInfo = userNames.find(u => u.username === userToLoad);         
          if (!userInfo) {
            setLogs([]);
            setHasMoreData(false);
@@ -199,7 +195,7 @@ const SystemLogPage: React.FC = () => {
         animateLogs(data);
       }
     } catch (err: any) {
-      setError("Failed to load logs");
+      setError("No Logs to Show Yet");
       if (err.response?.status === 401) {
         router.push("/pages/login");
       }
