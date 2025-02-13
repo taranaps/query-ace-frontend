@@ -162,7 +162,7 @@ const SystemLogPage: React.FC = () => {
          }
          try {
            data = await fetchUserLogs(userInfo.id, pageNumber, token);
-           setHasMoreData(data && data.length > 0);
+           setHasMoreData(data && data.length === DATES_PER_PAGE);
          } catch (error: any) {
            if (error.response?.status === 404) {
              setLogs([]);
