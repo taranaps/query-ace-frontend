@@ -147,29 +147,35 @@ const DataPopupAnswerItem: React.FC<DataPopupAnswerItemProps> = ({
       ) : (
         <>
           <div className={styles.answerItemTop}>
-            <p>{answer.answer}</p>
+              <p>{answer.answer}</p>
             <div className={styles.actionButtons}>
-              <LottieIconButton
-                animationData={copyAnimation}
-                label="Copy Answer"
-                onClick={() => handleCopy(answer.answer, answer.id)}
-              />
-              <LottieIconButton
-                animationData={editAnimation}
-                label="Edit"
-                onClick={handleEdit}
-              />
-              <LottieIconButton
-                animationData={deleteAnimation}
-                label="Delete"
-                onClick={handleDeleteClick}
-              />
+              <div className={styles.iconWrapper}>
+                <LottieIconButton
+                    animationData={copyAnimation}
+                    label="Copy Answer"
+                    onClick={() => handleCopy(answer.answer, answer.id)}
+                />
+              </div>
+              <div className={styles.iconWrapper}>
+                <LottieIconButton
+                    animationData={editAnimation}
+                    label="Edit"
+                    onClick={handleEdit}
+                />
+              </div>
+              <div className={styles.iconWrapper}>
+                <LottieIconButton
+                    animationData={deleteAnimation}
+                    label="Delete"
+                    onClick={handleDeleteClick}
+                />
+              </div>
             </div>
           </div>
           <div className={styles.answerItemBottom}>
             <span>Updated By: {answer.usersUsername}</span> |{" "}
-            <span>Updated At: {formatDate(answer.createdAt)}</span>
-          </div>
+            <span>Updated At: {answer.updatedAt ? formatDate(answer.updatedAt) : "N/A"}</span>
+            </div>
         </>
       )}
       {contextMenu.visible && (

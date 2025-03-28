@@ -160,7 +160,7 @@ const DataPopup = ({
    * @function handleAddAnswer
    * @description Handles adding new answer with validation
    */
-  const handleAddAnswer = async() => {
+  const handleAddAnswer = async () => {
     if (!newAnswer.trim()) {
       setError("Please enter an answer before submitting.");
       return;
@@ -169,35 +169,39 @@ const DataPopup = ({
       setError("User information not available");
       return;
     }
+  
     setLoadingAnimationState("loading");
     setLoading(true);
+  
     const result = await handleAddNewQueryAnswer(newAnswer, user.id, id);
-
+  
     if (result.success) {
-      // setAnswers((prevAnswers: any[]) => [
+      
+      // setAnswers((prevAnswers) => [
       //   ...prevAnswers,
       //   {
-      //     id: Date.now(),
+      //     id: result.data?.answerId, 
       //     answer: newAnswer,
-      //     createdAt: new Date().toString(),
+      //     createdAt: currentTime,
+      //     updatedAt: currentTime, 
       //     email: user.email,
       //     firstName: user.firstName,
-      //     roleName: user.roles[0].roleName,
-      //     updatedAt: formatDate(new Date().toString()),
+      //     roleName: user.roles?.[0]?.roleName,
       //     usersId: user.id,
       //     usersUsername: user.username,
       //   },
       // ]);
+  
       // setNewAnswer("");
-
-      await fetchInitialData();
+      await fetchInitialData(); 
       setIsAddModalOpen(false);
       setLoadingAnimationState("success");
       await new Promise((resolve) => setTimeout(resolve, 2000));
     }
+  
     setLoading(false);
   };
-
+  
   /**
    * @function handleCancelAdd
    * @description Cancels adding new answer
