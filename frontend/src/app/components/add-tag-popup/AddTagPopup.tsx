@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import styles from "./AddTagPopup.module.css";
 import {
@@ -160,7 +159,7 @@ const AddTagPopup: React.FC<AddTagPopupProps> = ({ open, onClose, onAddTags }) =
           <FormControl
             className={styles.formControl}
             fullWidth
-            disabled={!tagsForSelectedGroup.length}
+            disabled={!selectedGroup}  // Fixed issue: Now only disabled if no group is selected
           >
             <InputLabel id="tag-label">Tag Name</InputLabel>
             <Select
